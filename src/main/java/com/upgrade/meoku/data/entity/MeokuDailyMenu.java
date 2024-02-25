@@ -1,14 +1,12 @@
 package com.upgrade.meoku.data.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 //일자별 식단
-@Data
 @Entity
 @Table(name = "MEOKU_DAILY_MENU")
 public class MeokuDailyMenu {
@@ -37,7 +35,8 @@ public class MeokuDailyMenu {
 
     @Column(name = "UPDATED_BY")
     private String updatedBy;
-    @jakarta.persistence.Id
-    private Long id;
+    // 1 : N
+    @OneToMany(mappedBy = "meokuDailyMenu", cascade = CascadeType.ALL)
+    private List<MeokuDetailedMenu> detailedMenuList;
 
 }

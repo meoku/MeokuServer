@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 //상세 식단
 @Entity
@@ -14,9 +15,12 @@ public class MeokuDetailedMenu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DETAILED_MENU_ID")
     private Integer detailedMenuId;
-
-    @Column(name = "DAILY_MENU_ID", nullable = false)
-    private Integer dailyMenuId;
+//    @Column(name = "DAILY_MENU_ID", nullable = false)//불필요
+//    private Integer dailyMenuId;
+    //MEOKU_DAILY_MENU와 관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DAILY_MENU_ID")
+    private MeokuDailyMenu meokuDailyMenu;
     @Column(name = "DAILY_MENU_DATE")
     private Date dailyMenuDate;
     @Column(name = "DAILY_MENU_CATEGORY")
@@ -49,6 +53,5 @@ public class MeokuDetailedMenu {
     private Timestamp updatedDate;
     @Column(name = "UPDATED_BY")
     private String updatedBy;
-
 }
 

@@ -12,8 +12,6 @@ public class MeokuMenuDetail {
     @Column(name = "MENU_DETAIL_ID")
     private Integer menuDetailId;
 
-    @Column(name = "DETAILED_MENU_ID", nullable = false)
-    private Integer detailedMenuId;
     @Column(name = "MENU_DETAIL_NAME")
     private String menuDetailName;
     @Column(name = "FREQUENCY_CNT")
@@ -34,5 +32,6 @@ public class MeokuMenuDetail {
     private Timestamp updatedDate;
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+
 }
 
