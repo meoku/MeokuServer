@@ -1,4 +1,7 @@
 spring:
+  #민감정보
+  config:
+    location: classpath:/naver-cloud-config.yml
   #DB
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
