@@ -10,6 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface AdminService {
-    public List<MeokuDailyMenuDTO> MenuImageUploadAndReturnMenu(MultipartFile menuFile) throws Exception; // image to menuData By OCR API
+    public List<MeokuDailyMenuDTO> MenuImageUploadAndReturnMenuData(MultipartFile menuFile) throws Exception; // image to menuData By OCR API
     public void WeekMenuUpload(List<MeokuDailyMenuDTO> weekMenu); // 주간 메뉴 저장
 }

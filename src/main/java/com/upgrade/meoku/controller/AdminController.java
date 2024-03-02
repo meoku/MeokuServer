@@ -24,11 +24,12 @@ public class AdminController {
     }
 
     @Operation(summary = "식단 이미지 OCR", description = "업로드된 이미지 or 파일을 받아 API를 이용해 식단 데이터를 반환한다")
-    @PostMapping(value = "menuImageUploadAndReturnMenu")
+    @PostMapping(value = "/MenuImageUploadAndReturnMenuData")
     @ResponseBody
-    public String MenuImageUploadAndReturnMenu(@RequestParam("menuFile") MultipartFile menuFile) {
+    public List<MeokuDailyMenuDTO> MenuImageUploadAndReturnMenuData(@RequestParam("menuFile") MultipartFile menuFile) throws Exception {
         //이미지 -> 식단 데이터 로직
-        return "JSON 파일";
+        List<MeokuDailyMenuDTO> menuData = adminService.MenuImageUploadAndReturnMenuData(menuFile);
+        return menuData;
     }
 
     @Operation(summary = "주간 식단데이터 업로드", description = "업로드된 이미지에서 추출한 식단데이터를 확인 후 서버DB로 저장")
