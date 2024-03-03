@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -16,10 +17,10 @@ public class MeokuMealOrderGroup {
     private Integer mealOrderGroupId;
 
     @Column(name = "MEAL_ORDER_START_DATE")
-    private Date mealOrderStartDate;
+    private Timestamp mealOrderStartDate;
 
     @Column(name = "MEAL_ORDER_END_DATE")
-    private Date mealOrderEndDate;
+    private Timestamp mealOrderEndDate;
 
     @Column(name = "CREATED_DATE")
     private Timestamp createdDate;

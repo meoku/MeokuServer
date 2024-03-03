@@ -84,8 +84,6 @@ public class AdminServiceImpl implements AdminService{
         ResponseEntity<Map> responseEntity = restTemplate.postForEntity(naverCloudConfig.getNaverOcrUrl(), requestEntity, Map.class);
         Map<String, Object> responseObject = responseEntity.getBody();
 
-        System.out.println(responseObject.keySet().toString());
-
         return this.getMeokuDailyMenuDTOList(responseObject);
     }
     @Override

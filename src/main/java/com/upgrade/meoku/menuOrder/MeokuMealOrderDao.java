@@ -20,7 +20,8 @@ public class MeokuMealOrderDao {
 
     //가장 최신 배식그룹ID 가져오기
     public Integer findLatestMealOrderGroupId(){
-        return meokuMealOrderGroupRepository.findTopByOrderByMealOrderGroupId();
+        MeokuMealOrderGroup latestGroup = meokuMealOrderGroupRepository.findTopByOrderByMealOrderGroupId();
+        return latestGroup.getMealOrderGroupId();
     }
     //배식그룹 데이터 저장
     public void saveMealOrderGroupData(MeokuMealOrderGroup mealOrderGroup){
