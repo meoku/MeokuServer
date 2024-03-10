@@ -1,12 +1,14 @@
 package com.upgrade.meoku.data.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
 //일자별 식단
+@Data
 @Entity
 @Table(name = "MEOKU_DAILY_MENU")
 public class MeokuDailyMenu {
@@ -16,7 +18,7 @@ public class MeokuDailyMenu {
     private Integer dailyMenuId;
 
     @Column(name = "DATE", nullable = false)
-    private Date date;
+    private Timestamp date;
 
     @Column(name = "HOLIDAY_FG")
     private String holidayFg;

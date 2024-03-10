@@ -1,12 +1,14 @@
 package com.upgrade.meoku.data.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
 //상세 식단
+@Data
 @Entity
 @Table(name = "MEOKU_DETAILED_MENU")
 public class MeokuDetailedMenu {
@@ -22,11 +24,11 @@ public class MeokuDetailedMenu {
     @JoinColumn(name = "DAILY_MENU_ID")
     private MeokuDailyMenu meokuDailyMenu;
     @Column(name = "DAILY_MENU_DATE")
-    private Date dailyMenuDate;
+    private Timestamp dailyMenuDate;
     @Column(name = "DAILY_MENU_CATEGORY")
     private String dailyMenuCategory;
     @Column(name = "MAIN_MENU_YN")
-    private String mainMenu;
+    private String mainMenuYn;
     @Column(name = "DETAILED_MENU_NAME")
     private String detailedMenuName;
     @Column(name = "DETAILED_MENU_IMG_URL")
@@ -53,5 +55,29 @@ public class MeokuDetailedMenu {
     private Timestamp updatedDate;
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+
+    //Menu Detail 정보
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail mainMenu;
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail menu1;
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail menu2;
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail menu3;
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail menu4;
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail menu5;
+    @ManyToOne
+    @JoinColumn(name = "MENU_DETAIL_ID")
+    private MeokuMenuDetail menu6;
+
 }
 

@@ -10,7 +10,7 @@ import java.util.List;
 public class MeokuDailyMenuDTO {
 
     private Integer dailyMenuId;
-    private Date date;
+    private Timestamp date;
     private String holidayFg;
     private String restaurantOpenFg;
     private Timestamp createdDate;

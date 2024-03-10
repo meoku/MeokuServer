@@ -1,8 +1,11 @@
 package com.upgrade.meoku.data.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.sql.Timestamp;
 //상세식단
+@Data
 @Entity
 @Table(name = "MEOKU_MENU_DETAIL")
 public class MeokuMenuDetail {

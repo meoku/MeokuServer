@@ -13,7 +13,7 @@ public class MeokuDetailedMenuDTO {
 
     private int detailedMenuId;
     private int dailyMenuId;
-    private Date dailyMenuDate;
+    private Timestamp dailyMenuDate;
     private String dailyMenuCategory;
     private String mainMenuYn;
     private String detailedMenuName;

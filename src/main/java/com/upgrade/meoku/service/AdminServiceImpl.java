@@ -1,9 +1,13 @@
 package com.upgrade.meoku.service;
 
 import com.upgrade.meoku.config.NaverCloudConfig;
+import com.upgrade.meoku.data.dao.MeokuMenuDao;
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.data.dto.MeokuDetailedMenuDTO;
 import com.upgrade.meoku.data.dto.MeokuMenuDetailDTO;
+import com.upgrade.meoku.data.entity.MeokuDailyMenu;
+import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
+import com.upgrade.meoku.data.entity.MeokuMenuDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -11,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -28,13 +33,16 @@ import java.util.stream.Stream;
 @Service
 public class AdminServiceImpl implements AdminService{
 
-    private final RestTemplate restTemplate; //NAVER 외부 API 호출을 위한 객체
+    private final RestTemplate restTemplate;        //NAVER 외부 API 호출을 위한 객체
     private final NaverCloudConfig naverCloudConfig; //NAVER 외부 API 호출을 위한 정보
+    private final MeokuMenuDao meokuMenuDao;        // 메뉴 관련 Dao
     @Autowired
     public AdminServiceImpl(RestTemplate restTemplate,
-                            NaverCloudConfig naverCloudConfig) {
+                            NaverCloudConfig naverCloudConfig,
+                            MeokuMenuDao meokuMenuDao) {
         this.restTemplate = restTemplate;
         this.naverCloudConfig = naverCloudConfig;
+        this.meokuMenuDao = meokuMenuDao;
     }
 
     @Override
@@ -87,8 +95,55 @@ public class AdminServiceImpl implements AdminService{
         return this.getMeokuDailyMenuDTOList(responseObject);
     }
     @Override
+    @Transactional
     public void WeekMenuUpload(List<MeokuDailyMenuDTO> weekMenu) {
+        //List<MeokuDailyMenuDTO> 각각 객체 List로 가져오기
+        List<MeokuDailyMenu> savedDailyMenuList = new ArrayList<>();
 
+        //DailyMenu
+        for(MeokuDailyMenuDTO dailyMenuDTO : weekMenu){
+            MeokuDailyMenu savedDailyMenu = new MeokuDailyMenu();
+            savedDailyMenu.setDate(dailyMenuDTO.getDate());
+            savedDailyMenu.setHolidayFg(dailyMenuDTO.getHolidayFg());
+            savedDailyMenu.setRestaurantOpenFg(dailyMenuDTO.getRestaurantOpenFg());
+
+            //DailyMenu Data 저장
+            meokuMenuDao.insertDailyMenu(savedDailyMenu);
+
+            //저장될 상세식단 List
+            List<MeokuDetailedMenu> savedDetailedMenuList = new ArrayList<>();
+
+            //상세 식단
+            //param(only menuName)
+            for(MeokuDetailedMenuDTO detailedMenuDTO : dailyMenuDTO.getDetailedMenuDTOList()){
+                MeokuDetailedMenu savedDetailedMenu = new MeokuDetailedMenu();
+                savedDetailedMenu.setMeokuDailyMenu(savedDailyMenu);
+                savedDetailedMenu.setDailyMenuDate(detailedMenuDTO.getDailyMenuDate());
+                savedDetailedMenu.setDailyMenuCategory(detailedMenuDTO.getDailyMenuCategory());
+                savedDetailedMenu.setMainMenuYn(detailedMenuDTO.getMainMenuYn());
+                savedDetailedMenu.setDetailedMenuName(detailedMenuDTO.getDetailedMenuName());
+
+                //메뉴 이름으로 MenuDetail에서 찾은 후 없으면 데이터 저장( 저장은 Dao에서 처리)
+                MeokuMenuDetail mainMenuEntity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMainMenuName());
+                MeokuMenuDetail menu1Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu1Name());
+                MeokuMenuDetail menu2Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu2Name());
+                MeokuMenuDetail menu3Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu3Name());
+                MeokuMenuDetail menu4Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu4Name());
+                MeokuMenuDetail menu5Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu5Name());
+                MeokuMenuDetail menu6Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu6Name());
+
+                savedDetailedMenu.setMainMenu(mainMenuEntity);
+                savedDetailedMenu.setMenu1(menu1Entity);
+                savedDetailedMenu.setMenu2(menu2Entity);
+                savedDetailedMenu.setMenu3(menu3Entity);
+                savedDetailedMenu.setMenu4(menu4Entity);
+                savedDetailedMenu.setMenu5(menu5Entity);
+                savedDetailedMenu.setMenu6(menu6Entity);
+            }
+
+            //DetailedMenu Data 저장
+            meokuMenuDao.insertDetailedMenu(savedDetailedMenuList);
+        }
     }
 
     private List<MeokuDailyMenuDTO> getMeokuDailyMenuDTOList(Map<String, Object> map) throws Exception {
@@ -195,19 +250,23 @@ public class AdminServiceImpl implements AdminService{
         return returnList;
     }
 
-    private Date getDate(String day) throws ParseException {
-        // 현재 날짜를
-        Date currentDate = new Date();
+    // ex) 3월3일 (일) 이라는 값을 Timestamp로 변환 (년도는 현재기준 올해 년도)
+    private Timestamp getDate(String dateString) throws ParseException {
 
-        // 날짜 포맷을 지정합니다.
-        SimpleDateFormat formatter = new SimpleDateFormat("MM월 dd일(EEE)", Locale.KOREAN);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MMMMd일 (E)", Locale.KOREAN);
+        try {
+            // 올해의 년도 가져오기
+            int currentYear = LocalDate.now().getYear();
 
-        // 문자열을 Date로 파싱
-        Date parsedDate = formatter.parse(day);
+            // 입력 문자열에서 년도를 현재 년도로 변경하여 처리
+            dateString = currentYear + "년 " + dateString;
 
-        // 현재 연도를 가져와서 parsedDate에 추가
-        parsedDate.setYear(currentDate.getYear());
-
-        return parsedDate;
+            Date date = dateFormat.parse(dateString);
+            Timestamp timestamp = new Timestamp(date.getTime());
+            System.out.println(timestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

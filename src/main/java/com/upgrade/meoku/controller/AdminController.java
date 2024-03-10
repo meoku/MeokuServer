@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Tag(name = "관리자 관련 컨트롤러", description = "Meoku 관리를 위한 관리자 요청")
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -37,6 +37,7 @@ public class AdminController {
     @ResponseBody
     public String WeekMenuUpload(@RequestParam List<MeokuDailyMenuDTO> weekMenu){
         //식단 정보 저장
+        adminService.WeekMenuUpload(weekMenu);
         return "";
     }
 
