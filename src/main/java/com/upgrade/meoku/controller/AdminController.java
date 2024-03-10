@@ -1,6 +1,7 @@
 package com.upgrade.meoku.controller;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.exception.MeokuException;
 import com.upgrade.meoku.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +36,7 @@ public class AdminController {
     @Operation(summary = "주간 식단데이터 업로드", description = "업로드된 이미지에서 추출한 식단데이터를 확인 후 서버DB로 저장")
     @PostMapping(value = "WeekMenuUpload")
     @ResponseBody
-    public String WeekMenuUpload(@RequestParam List<MeokuDailyMenuDTO> weekMenu){
+    public String WeekMenuUpload(@RequestParam List<MeokuDailyMenuDTO> weekMenu) throws MeokuException {
         //식단 정보 저장
         adminService.WeekMenuUpload(weekMenu);
         return "";

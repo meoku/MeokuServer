@@ -8,6 +8,7 @@ import com.upgrade.meoku.data.dto.MeokuMenuDetailDTO;
 import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
+import com.upgrade.meoku.exception.MeokuException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -96,7 +97,7 @@ public class AdminServiceImpl implements AdminService{
     }
     @Override
     @Transactional
-    public void WeekMenuUpload(List<MeokuDailyMenuDTO> weekMenu) {
+    public void WeekMenuUpload(List<MeokuDailyMenuDTO> weekMenu){
         //List<MeokuDailyMenuDTO> 각각 객체 List로 가져오기
         List<MeokuDailyMenu> savedDailyMenuList = new ArrayList<>();
 
