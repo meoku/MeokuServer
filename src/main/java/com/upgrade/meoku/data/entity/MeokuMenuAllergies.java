@@ -1,6 +1,9 @@
 package com.upgrade.meoku.data.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.sql.Timestamp;
 //메뉴 알러지
 @Entity
@@ -18,10 +21,12 @@ public class MeokuMenuAllergies {
     private String menuAllergyName;
     @Column(name = "ALLERGY_DESCRIPTION")
     private String allergyDescription;
+    @CreationTimestamp
     @Column(name = "CREATED_DATE")
     private Timestamp createdDate;
     @Column(name = "CREATED_BY")
     private String createdBy;
+    @UpdateTimestamp
     @Column(name = "UPDATED_DATE")
     private Timestamp updatedDate;
     @Column(name = "UPDATED_BY")

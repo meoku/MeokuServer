@@ -4,21 +4,16 @@ import com.upgrade.meoku.config.NaverCloudConfig;
 import com.upgrade.meoku.data.dao.MeokuMenuDao;
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.data.dto.MeokuDetailedMenuDTO;
-import com.upgrade.meoku.data.dto.MeokuMenuDetailDTO;
 import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
-import com.upgrade.meoku.exception.MeokuException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +21,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -125,14 +119,15 @@ public class AdminServiceImpl implements AdminService{
                 savedDetailedMenu.setDetailedMenuName(detailedMenuDTO.getDetailedMenuName());
 
                 //메뉴 이름으로 MenuDetail에서 찾은 후 없으면 데이터 저장( 저장은 Dao에서 처리)
-                MeokuMenuDetail mainMenuEntity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMainMenuName());
-                MeokuMenuDetail menu1Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu1Name());
-                MeokuMenuDetail menu2Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu2Name());
-                MeokuMenuDetail menu3Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu3Name());
-                MeokuMenuDetail menu4Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu4Name());
-                MeokuMenuDetail menu5Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu5Name());
-                MeokuMenuDetail menu6Entity = meokuMenuDao.searchMenuDetail(detailedMenuDTO.getMenu6Name());
+                MeokuMenuDetail mainMenuEntity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMainMenuName());
+                MeokuMenuDetail menu1Entity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMenu1Name());
+                MeokuMenuDetail menu2Entity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMenu2Name());
+                MeokuMenuDetail menu3Entity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMenu3Name());
+                MeokuMenuDetail menu4Entity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMenu4Name());
+                MeokuMenuDetail menu5Entity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMenu5Name());
+                MeokuMenuDetail menu6Entity = meokuMenuDao.searchMenuDetailAndSave(detailedMenuDTO.getMenu6Name());
 
+                //상세식단에 메뉴정보 넣기
                 savedDetailedMenu.setMainMenu(mainMenuEntity);
                 savedDetailedMenu.setMenu1(menu1Entity);
                 savedDetailedMenu.setMenu2(menu2Entity);
@@ -140,6 +135,8 @@ public class AdminServiceImpl implements AdminService{
                 savedDetailedMenu.setMenu4(menu4Entity);
                 savedDetailedMenu.setMenu5(menu5Entity);
                 savedDetailedMenu.setMenu6(menu6Entity);
+
+                savedDetailedMenuList.add(savedDetailedMenu);
             }
 
             //DetailedMenu Data 저장
@@ -183,10 +180,12 @@ public class AdminServiceImpl implements AdminService{
                     curMeokuDailyMenuDTO.setDate(this.getDate(menuArray[0]));//첫번째는 날짜이므로 Date로 변환한 값 저장
                     // 총 메뉴 길이가 최소 13개이상 일 때 메뉴정보 넣기
                     if(menuArraySize > 13){
+                        curMeokuDailyMenuDTO.setHolidayFg("N");
                         curMeokuDailyMenuDTO.setRestaurantOpenFg("Y");
                         //한식 (6개씩)
                         MeokuDetailedMenuDTO menu1 = new MeokuDetailedMenuDTO();
                         menu1.setDetailedMenuName("한식");
+                        menu1.setMainMenuYn("Y");
                         menu1.setMainMenuName(menuArray[1]);
                         menu1.setMenu1Name(menuArray[2]);
                         menu1.setMenu2Name(menuArray[3]);
@@ -197,6 +196,7 @@ public class AdminServiceImpl implements AdminService{
                         //일품 (6개씩)
                         MeokuDetailedMenuDTO menu2 = new MeokuDetailedMenuDTO();
                         menu2.setDetailedMenuName("일품");
+                        menu2.setMainMenuYn("Y");
                         menu2.setMainMenuName(menuArray[7]);
                         menu2.setMenu1Name(menuArray[8]);
                         menu2.setMenu2Name(menuArray[9]);
@@ -207,16 +207,19 @@ public class AdminServiceImpl implements AdminService{
                         //Plus (뒤에서 3번째, 2번째)
                         MeokuDetailedMenuDTO menu3 = new MeokuDetailedMenuDTO();
                         menu3.setDetailedMenuName("점심Plus");
+                        menu3.setMainMenuYn("N");
                         menu3.setMenu1Name(menuArray[menuArraySize-3]);
                         menu3.setMenu2Name(menuArray[menuArraySize-2]);
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu3);
                         //샐러드팩 (뒤에서 첫번째)
                         MeokuDetailedMenuDTO menu4 = new MeokuDetailedMenuDTO();
                         menu4.setDetailedMenuName("샐러드팩");
+                        menu4.setMainMenuYn("N");
                         menu4.setMainMenuName(menuArray[menuArraySize-1]);
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu4);
 
                     }else{// 5개 이하일 때는 식당 오픈 X
+                        curMeokuDailyMenuDTO.setHolidayFg("Y");
                         curMeokuDailyMenuDTO.setRestaurantOpenFg("N");
                     }
 
@@ -225,6 +228,7 @@ public class AdminServiceImpl implements AdminService{
                         //석식 (6개씩)
                         MeokuDetailedMenuDTO dinerMenu = new MeokuDetailedMenuDTO();
                         dinerMenu.setDetailedMenuName("석식");
+                        dinerMenu.setMainMenuYn("Y");
                         dinerMenu.setMainMenuName(menuArray[0]);
                         dinerMenu.setMenu1Name(menuArray[1]);
                         dinerMenu.setMenu2Name(menuArray[2]);
@@ -235,6 +239,7 @@ public class AdminServiceImpl implements AdminService{
                         //Plus 뒤에 두개
                         MeokuDetailedMenuDTO dinerPlus = new MeokuDetailedMenuDTO();
                         dinerPlus.setDetailedMenuName("석식Plus");
+                        dinerPlus.setMainMenuYn("N");
                         dinerPlus.setMenu1Name(menuArray[menuArraySize-2]);
                         dinerPlus.setMenu2Name(menuArray[menuArraySize-1]);
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(dinerPlus);
@@ -253,21 +258,22 @@ public class AdminServiceImpl implements AdminService{
 
     // ex) 3월3일 (일) 이라는 값을 Timestamp로 변환 (년도는 현재기준 올해 년도)
     private Timestamp getDate(String dateString) throws ParseException {
+        // "(요일)" 부분 제거
+        dateString = dateString.replaceAll("\\(.*\\)", "");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MMMMd일 (E)", Locale.KOREAN);
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREAN);
         try {
             // 올해의 년도 가져오기
             int currentYear = LocalDate.now().getYear();
-
             // 입력 문자열에서 년도를 현재 년도로 변경하여 처리
             dateString = currentYear + "년 " + dateString;
-
-            Date date = dateFormat.parse(dateString);
-            Timestamp timestamp = new Timestamp(date.getTime());
-            System.out.println(timestamp);
+            date = dateFormat.parse(dateString);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return null;
+
+        Timestamp timestamp = new Timestamp(date.getTime());
+        return timestamp;
     }
 }

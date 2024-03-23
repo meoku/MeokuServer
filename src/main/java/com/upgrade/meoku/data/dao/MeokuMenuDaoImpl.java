@@ -48,7 +48,7 @@ public class MeokuMenuDaoImpl implements MeokuMenuDao{
     }
 
     //Menu 이름대로 MenuDetail에서 찾기
-    public MeokuMenuDetail searchMenuDetail(String menuName){
+    public MeokuMenuDetail searchMenuDetailAndSave(String menuName){
         //메뉴이름 이 없으면 null 반환
         if(menuName == null || menuName.equals("")) return null;
 
