@@ -1,5 +1,6 @@
 package com.upgrade.meoku.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -10,6 +11,7 @@ import java.util.List;
 public class MeokuDailyMenuDTO {
 
     private Integer dailyMenuId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp date;
     private String holidayFg;
     private String restaurantOpenFg;
@@ -19,5 +21,4 @@ public class MeokuDailyMenuDTO {
     private String updatedBy;
 
     private List<MeokuDetailedMenuDTO> detailedMenuDTOList;
-    // Getters and setters
 }

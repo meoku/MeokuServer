@@ -2,6 +2,8 @@ package com.upgrade.meoku.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 //상세식단
@@ -27,10 +29,12 @@ public class MeokuMenuDetail {
     private String recentDetailedMenuUrl;
     @Column(name = "CALORIES")
     private Integer calories;
+    @CreationTimestamp
     @Column(name = "CREATED_DATE")
     private Timestamp createdDate;
     @Column(name = "CREATED_BY")
     private String createdBy;
+    @UpdateTimestamp
     @Column(name = "UPDATED_DATE")
     private Timestamp updatedDate;
     @Column(name = "UPDATED_BY")

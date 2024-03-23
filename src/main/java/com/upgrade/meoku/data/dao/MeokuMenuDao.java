@@ -14,5 +14,5 @@ public interface MeokuMenuDao {
     public void inserMenuDetail(MeokuMenuDetail meokuMenuDetail);
     public void insertMenuDetailList(List<MeokuMenuDetail> menuDetailList);
     //Menu 이름대로 MenuDetail에서 찾기
-    public MeokuMenuDetail searchMenuDetail(String menuName);
+    public MeokuMenuDetail searchMenuDetailAndSave(String menuName);
 }
