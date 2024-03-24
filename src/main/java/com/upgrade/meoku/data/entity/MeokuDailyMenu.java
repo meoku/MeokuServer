@@ -42,7 +42,7 @@ public class MeokuDailyMenu {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     // 1 : N
-    @OneToMany(mappedBy = "meokuDailyMenu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "meokuDailyMenu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MeokuDetailedMenu> detailedMenuList;
 
 }

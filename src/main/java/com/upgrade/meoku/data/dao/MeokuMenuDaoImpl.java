@@ -1,5 +1,7 @@
 package com.upgrade.meoku.data.dao;
 
+import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.data.dto.MeokuDetailedMenuDTO;
 import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
@@ -7,6 +9,11 @@ import com.upgrade.meoku.data.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -65,6 +72,55 @@ public class MeokuMenuDaoImpl implements MeokuMenuDao{
         return menuDetailRepository.save(searchedMenuDetail);
     }
 
+    //startDate ~  endDate 입력받고 해당 주간 DailyMenu가져오기
+    public List<MeokuDailyMenuDTO> searchDailyMenuOfWeekDays(Timestamp startDate, Timestamp endDate){
+        List<MeokuDailyMenu> dailyMenuList = dailyMenuRepository.findByDateBetween(startDate, endDate);
+
+        List<MeokuDailyMenuDTO> dailyMenuDTOList = new ArrayList<>();
+        //Entity to DTO
+        for(MeokuDailyMenu dailyMenuEntity : dailyMenuList){
+            MeokuDailyMenuDTO dailyMenuDTO = new MeokuDailyMenuDTO();
+
+            dailyMenuDTO.setDate(dailyMenuEntity.getDate());
+            dailyMenuDTO.setHolidayFg(dailyMenuEntity.getHolidayFg());
+            dailyMenuDTO.setRestaurantOpenFg(dailyMenuEntity.getRestaurantOpenFg());
+
+            //dailyMenu 아래 DetailedMenu Entity List to DTO List
+            List<MeokuDetailedMenu> detailedMenuEntityList = dailyMenuEntity.getDetailedMenuList();
+
+            List<MeokuDetailedMenuDTO> detailedMenuDTOList = new ArrayList<>();
+            for(MeokuDetailedMenu detailedMenu : detailedMenuEntityList){
+                MeokuDetailedMenuDTO detailedMenuDTO = new MeokuDetailedMenuDTO();
+
+                detailedMenuDTO.setMainMenuYn(detailedMenu.getMainMenuYn());
+                detailedMenuDTO.setDetailedMenuName(detailedMenu.getDetailedMenuName());
+
+                //Menu이름 추출
+                String mainMenuName = detailedMenu.getMainMenu() != null ? detailedMenu.getMainMenu().getMenuDetailName() : "N/A";
+                String menu1Name = detailedMenu.getMenu1() != null ? detailedMenu.getMenu1().getMenuDetailName() : "N/A";
+                String menu2Name = detailedMenu.getMenu2() != null ? detailedMenu.getMenu2().getMenuDetailName() : "N/A";
+                String menu3Name = detailedMenu.getMenu3() != null ? detailedMenu.getMenu3().getMenuDetailName() : "N/A";
+                String menu4Name = detailedMenu.getMenu4() != null ? detailedMenu.getMenu4().getMenuDetailName() : "N/A";
+                String menu5Name = detailedMenu.getMenu5() != null ? detailedMenu.getMenu5().getMenuDetailName() : "N/A";
+                String menu6Name = detailedMenu.getMenu6() != null ? detailedMenu.getMenu6().getMenuDetailName() : "N/A";
+
+                detailedMenuDTO.setMainMenuName(mainMenuName);
+                detailedMenuDTO.setMenu1Name(menu1Name);
+                detailedMenuDTO.setMenu2Name(menu2Name);
+                detailedMenuDTO.setMenu3Name(menu3Name);
+                detailedMenuDTO.setMenu4Name(menu4Name);
+                detailedMenuDTO.setMenu5Name(menu5Name);
+                detailedMenuDTO.setMenu6Name(menu6Name);
+
+                detailedMenuDTOList.add(detailedMenuDTO);
+            }
+            //식단 상세목록 날별메뉴 DTO에 넣기
+            dailyMenuDTO.setDetailedMenuDTOList(detailedMenuDTOList);
+
+            dailyMenuDTOList.add(dailyMenuDTO);
+        }
+
+        return dailyMenuDTOList;
+    }
 
 }
-

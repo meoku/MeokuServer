@@ -37,6 +37,5 @@ public class MeokuDetailedMenuDTO {
     private Timestamp updatedDate;
     private String updatedBy;
 
-    private List<MeokuMenuDetailDTO> menuDetailDTOList;
     // Getters and setters
 }

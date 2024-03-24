@@ -14,7 +14,7 @@ import java.util.List;
 
 @Tag(name = "관리자 관련 컨트롤러", description = "Meoku 관리를 위한 관리자 요청")
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminController {
 
     private final AdminService adminService;
