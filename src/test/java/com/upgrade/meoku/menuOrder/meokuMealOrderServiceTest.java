@@ -1,16 +1,14 @@
 package com.upgrade.meoku.menuOrder;
 
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +62,8 @@ public class meokuMealOrderServiceTest {
         meokuMealOrderDao.saveMealOrders(orderList);
 
         // 확인
-        int groupId = meokuMealOrderDao.findLatestMealOrderGroupId();
+        MeokuMealOrderGroup orderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
+        int groupId = orderGroup.getMealOrderGroupId();
         List<MeokuMealOrder> savedOrderData = meokuMealOrderDao.findMealOrdersByGroupId(groupId);
         System.out.println(groupId + "");
         System.out.println(savedOrderData.toString());
@@ -76,5 +75,23 @@ public class meokuMealOrderServiceTest {
         meokuMealOrderService.saveWeeklyMealOrderDataByLatestData();
     }
 
+    @Test
+    @DisplayName("다음주 시작, 종료날짜 추출하는 메소드 Test")
+    public void testNextStartAndEndDays(){
+        // 임의의 날짜와 시간 설정
+        int year = 2024;
+        int month = 3;
+        int day = 24;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+
+        // LocalDateTime 생성
+        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour, minute, second);
+
+        // LocalDateTime을 Timestamp로 변환
+        Timestamp timestamp = Timestamp.valueOf(localDateTime);
+        System.out.println(meokuMealOrderService.getNextWeekStartAndEndDate(timestamp).toString());
+    }
 
 }

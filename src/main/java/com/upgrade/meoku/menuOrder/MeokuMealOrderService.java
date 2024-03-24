@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -29,15 +34,25 @@ public class MeokuMealOrderService {
     public void saveWeeklyMealOrderDataByLatestData(){
 
         /* 저장에 필요한 Data 준비 */
-        int latestMealOrderGroupId = meokuMealOrderDao.findLatestMealOrderGroupId();//최신 배식 순서 Id 가져오기
+        MeokuMealOrderGroup latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
+        int latestMealOrderGroupId = latestMealOrderGroup.getMealOrderGroupId();//최신 배식 순서 Id 가져오기
+
         List<MeokuMealOrder> latestOrderList = meokuMealOrderDao.findMealOrdersByGroupId(latestMealOrderGroupId);
 
+        List<String> mealTargetList = new ArrayList<>();
+        for(MeokuMealOrder mealOrder : latestOrderList){
+            mealTargetList.add(mealOrder.getMealTarget());
+        }
+
         //직전 주 순서에서 하나씩 앞순 서로 배치(맨앞은 맨 뒤로)
-        MeokuMealOrder firstElement = latestOrderList.remove(0);
-        latestOrderList.add(firstElement);
+        String firstTarget = mealTargetList.remove(0);
+        mealTargetList.add(firstTarget);
 
         MeokuMealOrderGroup savedOrderGroup = new MeokuMealOrderGroup();//저장할 OrderGroup Entity 생성
-        //배식순서 시작, 종료 일자 넣는 로직 필요(추후 작성 예정)
+        //배식순서 시작, 종료 일자 넣는 로직
+        List<Timestamp> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.getMealOrderStartDate());
+        savedOrderGroup.setMealOrderStartDate(nextWeeekStartAndEndDay.get(0));
+        savedOrderGroup.setMealOrderEndDate(nextWeeekStartAndEndDay.get(1));
 
         List<MeokuMealOrder> savedOrderDataList = new ArrayList<>();
         //위에서 직전 주 순서를 하나씩 앞으로 댕긴 List로 새로 저장될 순서 데이터 적용
@@ -49,7 +64,7 @@ public class MeokuMealOrderService {
 
                     savedOrder.setMeokuMealOrderGroup(savedOrderGroup);
                     savedOrder.setMealOrder(i+1);
-                    savedOrder.setMealTarget(latestOrderData.getMealTarget());
+                    savedOrder.setMealTarget(mealTargetList.get(i));
                     savedOrder.setMealTime(latestOrderData.getMealTime());
 
                     savedOrderDataList.add(savedOrder);
@@ -57,7 +72,26 @@ public class MeokuMealOrderService {
 
         meokuMealOrderDao.saveMealOrderGroupData(savedOrderGroup);
         meokuMealOrderDao.saveMealOrders(savedOrderDataList);
+    }
 
+    public List<Timestamp> getNextWeekStartAndEndDate(Timestamp givendate){
+        // Timestamp를 LocalDate로 변환
+        Instant instant = givendate.toInstant();
+        LocalDate givenDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+
+        LocalDate startOfWeek = givenDate.with(DayOfWeek.MONDAY);       // 주의 시작일 (월요일)
+        LocalDate startOfNextWeek = startOfWeek.plusWeeks(1);// 다음 주의 시작일 (월요일)
+        LocalDate endOfWeek = startOfWeek.with(DayOfWeek.FRIDAY);       // 해당 주의 금요일
+        LocalDate endOfNextWeek = startOfNextWeek.with(DayOfWeek.FRIDAY);// 다음 주의 금요일
+
+        Timestamp startDay = Timestamp.valueOf(startOfNextWeek.atStartOfDay());
+        Timestamp endDay = Timestamp.valueOf(endOfNextWeek.atStartOfDay());
+
+        List<Timestamp> resultTimeStampList = new ArrayList<>();
+        resultTimeStampList.add(startDay);
+        resultTimeStampList.add(endDay);
+
+        return resultTimeStampList;
     }
 
 }
