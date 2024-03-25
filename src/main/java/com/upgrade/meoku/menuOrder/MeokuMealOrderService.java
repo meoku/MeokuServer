@@ -1,6 +1,7 @@
 package com.upgrade.meoku.menuOrder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +37,11 @@ public class MeokuMealOrderService {
         /* 저장에 필요한 Data 준비 */
         MeokuMealOrderGroup latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
         int latestMealOrderGroupId = latestMealOrderGroup.getMealOrderGroupId();//최신 배식 순서 Id 가져오기
+        List<Timestamp> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.getMealOrderStartDate());// 다음 배식 순서 시작날짜, 종료날짜
 
         List<MeokuMealOrder> latestOrderList = meokuMealOrderDao.findMealOrdersByGroupId(latestMealOrderGroupId);
 
+        //target 맨 앞을 맨 뒤로 변경 처리위한 전처리
         List<String> mealTargetList = new ArrayList<>();
         for(MeokuMealOrder mealOrder : latestOrderList){
             mealTargetList.add(mealOrder.getMealTarget());
@@ -49,8 +52,7 @@ public class MeokuMealOrderService {
         mealTargetList.add(firstTarget);
 
         MeokuMealOrderGroup savedOrderGroup = new MeokuMealOrderGroup();//저장할 OrderGroup Entity 생성
-        //배식순서 시작, 종료 일자 넣는 로직
-        List<Timestamp> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.getMealOrderStartDate());
+        //배식순서 시작, 종료 일자 넣기
         savedOrderGroup.setMealOrderStartDate(nextWeeekStartAndEndDay.get(0));
         savedOrderGroup.setMealOrderEndDate(nextWeeekStartAndEndDay.get(1));
 
