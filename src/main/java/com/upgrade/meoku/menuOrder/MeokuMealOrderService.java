@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -28,6 +25,14 @@ public class MeokuMealOrderService {
     // 한주간 새로운 배식순서 Data 저장
     public void saveWeeklyMealOrderData(){
 
+    }
+
+    //이번주 배식 순서
+    public List<MeokuMealOrder> findThisWeekMealOrder(Timestamp requestDate){
+        MeokuMealOrderGroup finedOrderGroup = meokuMealOrderDao.findMealOrderGroupsByDate(requestDate);
+        List<MeokuMealOrder> findedOrderList = meokuMealOrderDao.findMealOrdersByGroupId(finedOrderGroup.getMealOrderGroupId());
+
+        return findedOrderList;
     }
 
     // 이전 데이터를 이용한 새로운 배식 순서 Data 저장
