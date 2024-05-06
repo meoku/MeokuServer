@@ -24,7 +24,7 @@ public class MeokuMealOrderController {
         this.mealOrderService= mealOrderService;
     }
 
-    @Operation(summary = "현 날짜로 해당 주의 배식 순서 가져오기")
+    @Operation(summary = "현 날짜로 해당 주의 배식 순서 가져오기 요청 데이터 Format : ex) 2024-05-06 00:00:00")
     @GetMapping(value = "/findThisWeekMealOrder")
     @ResponseBody
     public List<MeokuMealOrder> findThisWeekMealOrder(@RequestParam("requestDate") String requestDate) {
