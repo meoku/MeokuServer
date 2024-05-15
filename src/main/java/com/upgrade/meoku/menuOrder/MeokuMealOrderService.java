@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @Service
@@ -35,6 +36,30 @@ public class MeokuMealOrderService {
         return findedOrderList;
     }
 
+    // 직접 데이터 저장
+    @Transactional
+    public void saveWeeklyMealOrderData(Map<String, Object> jsonData){
+
+        // 입력받은 데이터 정렬
+        String startDate = (String)jsonData.get("startDate");
+        String endDate = (String)jsonData.get("endDate");
+        List<MeokuMealOrder> newMealOrderList = (List<MeokuMealOrder>)jsonData.get("mealOrderList");
+
+
+        Timestamp startDateTimestamp = Timestamp.valueOf(startDate);
+        Timestamp endDateTimestamp = Timestamp.valueOf(endDate);
+
+        MeokuMealOrderGroup newMealOrderGroup = new MeokuMealOrderGroup();
+        newMealOrderGroup.setMealOrderStartDate(startDateTimestamp);
+        newMealOrderGroup.setMealOrderEndDate(endDateTimestamp);
+
+        newMealOrderList.forEach(meokuMealOrder -> {
+            meokuMealOrder.setMeokuMealOrderGroup(newMealOrderGroup);
+        });
+
+        meokuMealOrderDao.saveMealOrderGroupData(newMealOrderGroup);
+        meokuMealOrderDao.saveMealOrders(newMealOrderList);
+    }
     // 이전 데이터를 이용한 새로운 배식 순서 Data 저장
     @Transactional
     public void saveWeeklyMealOrderDataByLatestData(){

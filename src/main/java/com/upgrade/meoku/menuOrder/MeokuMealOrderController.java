@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "배식순서 관련 컨트롤러", description = "배식순서 정보 CRUD")
 @RestController
@@ -37,6 +38,14 @@ public class MeokuMealOrderController {
         return findedMeokuOrderList;
     }
 
+    @Operation(summary = "수동으로 직접 배식 정보 입력")
+    @PostMapping(value = "/saveWeekMealOrder")
+    @ResponseBody
+    public String saveWeekMealOrder(@RequestBody Map<String, Object> jsonData) {
+        // 저장 로직 수행
+
+        return "Success";
+    }
 
 
 }
