@@ -1,16 +1,14 @@
 package com.upgrade.meoku.menuOrder;
 
-import com.upgrade.meoku.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,10 +39,14 @@ public class MeokuMealOrderController {
     @Operation(summary = "수동으로 직접 배식 정보 입력")
     @PostMapping(value = "/saveWeekMealOrder")
     @ResponseBody
-    public String saveWeekMealOrder(@RequestBody Map<String, Object> jsonData) {
-        // 저장 로직 수행
+    public ResponseEntity saveWeekMealOrder(@RequestBody Map<String, Object> jsonData) {
+        try{
+            mealOrderService.saveWeeklyMealOrderData(jsonData);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
 
-        return "Success";
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 

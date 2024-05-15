@@ -39,12 +39,9 @@ public class MeokuMealOrderService {
     // 직접 데이터 저장
     @Transactional
     public void saveWeeklyMealOrderData(Map<String, Object> jsonData){
-
         // 입력받은 데이터 정렬
         String startDate = (String)jsonData.get("startDate");
         String endDate = (String)jsonData.get("endDate");
-        List<MeokuMealOrder> newMealOrderList = (List<MeokuMealOrder>)jsonData.get("mealOrderList");
-
 
         Timestamp startDateTimestamp = Timestamp.valueOf(startDate);
         Timestamp endDateTimestamp = Timestamp.valueOf(endDate);
@@ -53,9 +50,19 @@ public class MeokuMealOrderService {
         newMealOrderGroup.setMealOrderStartDate(startDateTimestamp);
         newMealOrderGroup.setMealOrderEndDate(endDateTimestamp);
 
-        newMealOrderList.forEach(meokuMealOrder -> {
-            meokuMealOrder.setMeokuMealOrderGroup(newMealOrderGroup);
-        });
+        List<MeokuMealOrder> newMealOrderList = new ArrayList<>();
+
+        List<Map<String, Object>> mealOrderListData = (List<Map<String, Object>>) jsonData.get("mealOrderListData");
+        for (Map<String, Object> data : mealOrderListData) {
+            // 필요한 필드를 추출하여 A 객체 생성
+            MeokuMealOrder mealOrder = new MeokuMealOrder();
+            mealOrder.setMeokuMealOrderGroup(newMealOrderGroup);
+            mealOrder.setMealOrder((Integer) data.get("mealOrder"));
+            mealOrder.setMealTarget((String) data.get("mealTarget"));
+            mealOrder.setMealTime(Timestamp.valueOf((String)data.get("mealTime")));
+
+            newMealOrderList.add(mealOrder);
+        }
 
         meokuMealOrderDao.saveMealOrderGroupData(newMealOrderGroup);
         meokuMealOrderDao.saveMealOrders(newMealOrderList);
