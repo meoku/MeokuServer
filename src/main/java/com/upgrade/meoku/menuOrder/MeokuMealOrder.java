@@ -26,7 +26,7 @@ public class MeokuMealOrder {
     private Integer mealOrder;
 
     @Column(name = "MEAL_TIME")
-    private Timestamp mealTime;
+    private Time mealTime;
 
     @Column(name = "MEAL_TARGET", length = 50)
     private String mealTarget;

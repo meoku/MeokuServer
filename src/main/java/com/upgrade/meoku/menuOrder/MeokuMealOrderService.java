@@ -5,6 +5,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class MeokuMealOrderService {
 
     // 직접 데이터 저장
     @Transactional
-    public void saveWeeklyMealOrderData(Map<String, Object> jsonData){
+    public List<MeokuMealOrderDTO> saveWeeklyMealOrderData(Map<String, Object> jsonData){
         // 입력받은 데이터 정렬
         String startDate = (String)jsonData.get("startDate");
         String endDate = (String)jsonData.get("endDate");
@@ -59,18 +60,21 @@ public class MeokuMealOrderService {
             mealOrder.setMeokuMealOrderGroup(newMealOrderGroup);
             mealOrder.setMealOrder((Integer) data.get("mealOrder"));
             mealOrder.setMealTarget((String) data.get("mealTarget"));
-            mealOrder.setMealTime(Timestamp.valueOf((String)data.get("mealTime")));
+            mealOrder.setMealTime(Time.valueOf((String)data.get("mealTime")));
 
             newMealOrderList.add(mealOrder);
         }
 
         //데이터 저장
         meokuMealOrderDao.saveMealOrderGroupData(newMealOrderGroup);
-        meokuMealOrderDao.saveMealOrders(newMealOrderList);
+        List<MeokuMealOrderDTO> savedMealOrderDTOList = meokuMealOrderDao.saveMealOrders(newMealOrderList);
+
+        return savedMealOrderDTOList;
+
     }
     // 이전 데이터를 이용한 새로운 배식 순서 Data 저장
     @Transactional
-    public void saveWeeklyMealOrderDataByLatestData(){
+    public List<MeokuMealOrderDTO> saveWeeklyMealOrderDataByLatestData(){
 
         /* 저장에 필요한 Data 준비 */
         MeokuMealOrderGroup latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
@@ -111,7 +115,9 @@ public class MeokuMealOrderService {
                 });
 
         meokuMealOrderDao.saveMealOrderGroupData(savedOrderGroup);
-        meokuMealOrderDao.saveMealOrders(savedOrderDataList);
+        List<MeokuMealOrderDTO> savedMealOrderDTOList = meokuMealOrderDao.saveMealOrders(savedOrderDataList);
+
+        return savedMealOrderDTOList;
     }
 
     public List<Timestamp> getNextWeekStartAndEndDate(Timestamp givendate){
