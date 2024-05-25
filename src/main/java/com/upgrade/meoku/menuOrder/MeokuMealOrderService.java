@@ -64,6 +64,7 @@ public class MeokuMealOrderService {
             newMealOrderList.add(mealOrder);
         }
 
+        //데이터 저장
         meokuMealOrderDao.saveMealOrderGroupData(newMealOrderGroup);
         meokuMealOrderDao.saveMealOrders(newMealOrderList);
     }
