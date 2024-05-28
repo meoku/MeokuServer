@@ -276,4 +276,15 @@ public class AdminServiceImpl implements AdminService{
         Timestamp timestamp = new Timestamp(date.getTime());
         return timestamp;
     }
+
+    // --- Util ----
+
+    //식단에서 특수문자, 공백 제거
+    public static String removeCharacters(String input) {
+        if (input == null) {
+            return null;
+        }
+        // 한글과 '*'를 제외한 나머지 문자를 제거
+        return input.replaceAll("[^가-힣*]", "");
+    }
 }
