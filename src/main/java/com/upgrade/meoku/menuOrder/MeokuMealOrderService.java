@@ -5,13 +5,12 @@ import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @Service
@@ -30,9 +29,52 @@ public class MeokuMealOrderService {
 
     }
 
+    //이번주 배식 순서
+    public List<MeokuMealOrder> findThisWeekMealOrder(Timestamp requestDate){
+        MeokuMealOrderGroup finedOrderGroup = meokuMealOrderDao.findMealOrderGroupsByDate(requestDate);
+        List<MeokuMealOrder> findedOrderList = meokuMealOrderDao.findMealOrdersByGroupId(finedOrderGroup.getMealOrderGroupId());
+
+        return findedOrderList;
+    }
+
+    // 직접 데이터 저장
+    @Transactional
+    public List<MeokuMealOrderDTO> saveWeeklyMealOrderData(Map<String, Object> jsonData){
+        // 입력받은 데이터 정렬
+        String startDate = (String)jsonData.get("startDate");
+        String endDate = (String)jsonData.get("endDate");
+
+        Timestamp startDateTimestamp = Timestamp.valueOf(startDate);
+        Timestamp endDateTimestamp = Timestamp.valueOf(endDate);
+
+        MeokuMealOrderGroup newMealOrderGroup = new MeokuMealOrderGroup();
+        newMealOrderGroup.setMealOrderStartDate(startDateTimestamp);
+        newMealOrderGroup.setMealOrderEndDate(endDateTimestamp);
+
+        List<MeokuMealOrder> newMealOrderList = new ArrayList<>();
+
+        List<Map<String, Object>> mealOrderListData = (List<Map<String, Object>>) jsonData.get("mealOrderListData");
+        for (Map<String, Object> data : mealOrderListData) {
+            // 필요한 필드를 추출하여 A 객체 생성
+            MeokuMealOrder mealOrder = new MeokuMealOrder();
+            mealOrder.setMeokuMealOrderGroup(newMealOrderGroup);
+            mealOrder.setMealOrder((Integer) data.get("mealOrder"));
+            mealOrder.setMealTarget((String) data.get("mealTarget"));
+            mealOrder.setMealTime(Time.valueOf((String)data.get("mealTime")));
+
+            newMealOrderList.add(mealOrder);
+        }
+
+        //데이터 저장
+        meokuMealOrderDao.saveMealOrderGroupData(newMealOrderGroup);
+        List<MeokuMealOrderDTO> savedMealOrderDTOList = meokuMealOrderDao.saveMealOrders(newMealOrderList);
+
+        return savedMealOrderDTOList;
+
+    }
     // 이전 데이터를 이용한 새로운 배식 순서 Data 저장
     @Transactional
-    public void saveWeeklyMealOrderDataByLatestData(){
+    public List<MeokuMealOrderDTO> saveWeeklyMealOrderDataByLatestData(){
 
         /* 저장에 필요한 Data 준비 */
         MeokuMealOrderGroup latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
@@ -73,7 +115,9 @@ public class MeokuMealOrderService {
                 });
 
         meokuMealOrderDao.saveMealOrderGroupData(savedOrderGroup);
-        meokuMealOrderDao.saveMealOrders(savedOrderDataList);
+        List<MeokuMealOrderDTO> savedMealOrderDTOList = meokuMealOrderDao.saveMealOrders(savedOrderDataList);
+
+        return savedMealOrderDTOList;
     }
 
     public List<Timestamp> getNextWeekStartAndEndDate(Timestamp givendate){

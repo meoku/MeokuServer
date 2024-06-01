@@ -34,7 +34,7 @@ public class MainController {
         return "HelloWorld";
     }
 
-    @Operation(summary = "주간별 식단메뉴 불러오기", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다.")
+    @Operation(summary = "주간별 식단메뉴 불러오기", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
     @PostMapping(value = "weekdaysmenu")
     public List<MeokuDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
 //    @RequestParam("isMonthOrWeek")String isMonthOrWeekend,

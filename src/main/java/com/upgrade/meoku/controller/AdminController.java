@@ -24,6 +24,13 @@ public class AdminController {
         this.adminService= adminService;
     }
 
+    @Operation(summary = "health check")
+    @GetMapping(value = "/healthCheck")
+    @ResponseBody
+    public String healthCheck() throws Exception {
+        return "OK";
+    }
+
     @Operation(summary = "식단 이미지 OCR", description = "업로드된 이미지 or 파일을 받아 API를 이용해 식단 데이터를 반환한다")
     @PostMapping(value = "/MenuImageUploadAndReturnMenuData")
     @ResponseBody
