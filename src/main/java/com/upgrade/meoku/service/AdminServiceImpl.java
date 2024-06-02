@@ -102,6 +102,8 @@ public class AdminServiceImpl implements AdminService{
             savedDailyMenu.setHolidayFg(dailyMenuDTO.getHolidayFg());
             savedDailyMenu.setRestaurantOpenFg(dailyMenuDTO.getRestaurantOpenFg());
 
+            //해당 날짜로 이미 존재하는 데이터가 있다면 취소처리 필요
+
             //DailyMenu Data 저장
             meokuMenuDao.insertDailyMenu(savedDailyMenu);
 
@@ -193,7 +195,7 @@ public class AdminServiceImpl implements AdminService{
                         menu1.setMenu4Name(menuArray[5]);
                         menu1.setMenu5Name(menuArray[6]);
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu1);
-                        //일품 (6개씩)
+                        //일품 (5개씩)
                         MeokuDetailedMenuDTO menu2 = new MeokuDetailedMenuDTO();
                         menu2.setDetailedMenuName("일품");
                         menu2.setMainMenuYn("Y");
@@ -202,7 +204,6 @@ public class AdminServiceImpl implements AdminService{
                         menu2.setMenu2Name(menuArray[9]);
                         menu2.setMenu3Name(menuArray[10]);
                         menu2.setMenu4Name(menuArray[11]);
-                        menu2.setMenu5Name(menuArray[12]);
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu2);
                         //Plus (뒤에서 3번째, 2번째)
                         MeokuDetailedMenuDTO menu3 = new MeokuDetailedMenuDTO();
@@ -234,7 +235,7 @@ public class AdminServiceImpl implements AdminService{
                         dinerMenu.setMenu2Name(menuArray[2]);
                         dinerMenu.setMenu3Name(menuArray[3]);
                         dinerMenu.setMenu4Name(menuArray[4]);
-                        dinerMenu.setMenu5Name(menuArray[5]);
+                        //dinerMenu.setMenu5Name(menuArray[5]);
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(dinerMenu);
                         //Plus 뒤에 두개
                         MeokuDetailedMenuDTO dinerPlus = new MeokuDetailedMenuDTO();
