@@ -64,6 +64,7 @@ public class RequestApiUtil {
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uriString, String.class);
 
+        System.out.println(response.getBody());
         //성공 아니면 에러 뱉기
         if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
 
@@ -98,7 +99,7 @@ public class RequestApiUtil {
                         weatherDataDTO.setWindDirection((String) item.get("obsrValue"));
                         break;
                     case "VVV":
-                        weatherDataDTO.setPrecipitationType((String) item.get("obsrValue"));
+                        weatherDataDTO.setVComponentWind((String) item.get("obsrValue"));
                         break;
                     case "WSD":
                         weatherDataDTO.setWindSpeed((String) item.get("obsrValue"));

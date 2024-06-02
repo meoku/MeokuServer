@@ -1,18 +1,24 @@
 package com.upgrade.meoku.controller;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.data.dto.WeatherDataDTO;
+import com.upgrade.meoku.menuOrder.MeokuMealOrderDTO;
 import com.upgrade.meoku.service.AdminService;
 import com.upgrade.meoku.service.MainService;
+import com.upgrade.meoku.util.RequestApiUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +28,13 @@ import java.util.Map;
 public class MainController {
 
     private final MainService mainService;
+    private final RequestApiUtil requestApiUtil;
 
     @Autowired
-    public MainController(MainService mainService){
+    public MainController(MainService mainService,
+                          RequestApiUtil requestApiUtil){
         this.mainService= mainService;
+        this.requestApiUtil = requestApiUtil;
     }
 
     @Operation(summary = "서버동작 확인", description = "Just Print Hello World")
@@ -53,6 +62,21 @@ public class MainController {
         }
 
         return resultMealMenuList;
+    }
+
+    @Operation(summary = "날씨 데이터 가져오기", description = "기상청 API 호출로 구현 (1000번 제한있으므로 추후 개선 필요)")
+    @GetMapping(value = "/getCurrentWeatherData")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getCurrentWeatherData() {
+        Map<String, Object> responseBody = new HashMap<>();
+        try{
+            WeatherDataDTO  weatherDataDTO = requestApiUtil.getWeatherDataFromApi();
+            responseBody.put("responseBody", weatherDataDTO);
+        }catch (Exception e) {
+            responseBody.put("error", "Internal server error");
+            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
 }
