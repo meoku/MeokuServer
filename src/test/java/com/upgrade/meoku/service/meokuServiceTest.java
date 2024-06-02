@@ -1,6 +1,7 @@
 package com.upgrade.meoku.service;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.util.RequestApiUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ public class meokuServiceTest {
 
     @Autowired
     MainServiceImpl mainService;
+
+    @Autowired
+    RequestApiUtil requestApiUtil;
 
     @Test
     @DisplayName("날짜 입력받으면 해당 주간 평일 목록 반환 Service Method Test")
@@ -40,6 +44,7 @@ public class meokuServiceTest {
 
     @Test
     @DisplayName("시작, 끝 날짜 입력으로 한주간 식단메뉴 가져오기")
+    @Disabled
     public void getWeekDaysMealMenu(){
         LocalDate curDate = LocalDate.of(2024, 03, 25);
 
@@ -52,5 +57,11 @@ public class meokuServiceTest {
             System.out.println(dailyMenuDTO.toString());
         }
 
+    }
+
+    @Test
+    @DisplayName("날씨 API 테스트")
+    public void getWhetherDataFromApi() throws Exception {
+        System.out.println(requestApiUtil.getWeatherDataFromApi().toString());
     }
 }

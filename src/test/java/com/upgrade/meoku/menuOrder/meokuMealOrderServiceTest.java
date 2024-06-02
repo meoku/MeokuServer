@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,9 +50,9 @@ public class meokuMealOrderServiceTest {
         order2.setMealTarget("4,5,6층");
         order3.setMealTarget("1,3층");
 
-        order1.setMealTime(Timestamp.valueOf("1970-01-01 11:30:00"));
-        order2.setMealTime(Timestamp.valueOf("1970-01-01 12:00:00"));
-        order3.setMealTime(Timestamp.valueOf("1970-01-01 12:30:00"));
+        order1.setMealTime(Time.valueOf("1970-01-01 11:30:00"));
+        order2.setMealTime(Time.valueOf("1970-01-01 12:00:00"));
+        order3.setMealTime(Time.valueOf("1970-01-01 12:30:00"));
 
         orderList.add(order1);
         orderList.add(order2);
