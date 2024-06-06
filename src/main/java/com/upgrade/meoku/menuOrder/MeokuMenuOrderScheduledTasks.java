@@ -17,7 +17,7 @@ public class MeokuMenuOrderScheduledTasks {
         this.orderService = orderService;
     }
 
-    @Scheduled(cron = "0 0 0 * * MON") // 매주 월요일 00시 00분 배식순서 변경
+    //@Scheduled(cron = "0 0 0 * * MON") // 매주 월요일 00시 00분 배식순서 변경
     public void executeWeeklyTask() throws MeokuException {
         orderService.saveWeeklyMealOrderDataByLatestData();
     }
