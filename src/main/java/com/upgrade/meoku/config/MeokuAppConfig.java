@@ -18,7 +18,7 @@ public class MeokuAppConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173", "https://front-kappa-lac.vercel.app")
+                .allowedOrigins("http://localhost:5173", "https://front-kappa-lac.vercel.app", "https://www.meoku.info")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
