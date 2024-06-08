@@ -20,7 +20,6 @@ public class MeokuMealOrderDao {
     }
 
     /* MeokuMealOrderGroup 관련 */
-
     public MeokuMealOrderGroup findMealOrderGroupsByDate(LocalDate date) {
         return meokuMealOrderGroupRepository.findByMealOrderStartDateLessThanEqualAndMealOrderEndDateGreaterThanEqual(date, date);
     }

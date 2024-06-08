@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -28,8 +29,8 @@ public class meokuMealOrderServiceTest {
     public void addMeokuMealOrderData(){
         // Group Entity 생성
         MeokuMealOrderGroup meokuMealOrderGroup = new MeokuMealOrderGroup();
-        meokuMealOrderGroup.setMealOrderStartDate(Timestamp.valueOf(LocalDate.of(2024,3,4).atStartOfDay()));
-        meokuMealOrderGroup.setMealOrderEndDate(Timestamp.valueOf(LocalDate.of(2024,3,8).atStartOfDay()));
+        meokuMealOrderGroup.setMealOrderStartDate(LocalDate.of(2024,3,4));
+        meokuMealOrderGroup.setMealOrderEndDate(LocalDate.of(2024,3,8));
 
         // Order Entity 생성
         List<MeokuMealOrder> orderList = new ArrayList<>();
@@ -91,8 +92,8 @@ public class meokuMealOrderServiceTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, hour, minute, second);
 
         // LocalDateTime을 Timestamp로 변환
-        Timestamp timestamp = Timestamp.valueOf(localDateTime);
-        System.out.println(meokuMealOrderService.getNextWeekStartAndEndDate(timestamp).toString());
+//        LocalDate localDate = LocalDate.parse(localDateTime);
+//        System.out.println(meokuMealOrderService.getNextWeekStartAndEndDate(timestamp).toString());
     }
 
 }

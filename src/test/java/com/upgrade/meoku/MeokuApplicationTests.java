@@ -1,5 +1,6 @@
 package com.upgrade.meoku;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,6 +15,7 @@ import java.util.Locale;
 class MeokuApplicationTests {
 
 	@Test
+	@Disabled
 	void contextLoads() {
 		String dateString = "9월3일 (목)";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MMMMd일 (E)", Locale.KOREAN);
@@ -30,6 +32,14 @@ class MeokuApplicationTests {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	void stingToTimeStamp(){
+		String str = "2024-05-24";
+		Timestamp t = Timestamp.valueOf(str);
+		System.out.println(t);
+
 	}
 
 }

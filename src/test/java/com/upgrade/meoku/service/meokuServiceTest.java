@@ -1,6 +1,7 @@
 package com.upgrade.meoku.service;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.util.MeokuUtil;
 import com.upgrade.meoku.util.RequestApiUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,7 @@ public class meokuServiceTest {
     public void weekendTest(){
         LocalDate currentDate = LocalDate.now();
 
-        List<LocalDate> weekdays = mainService.getWeekdaysInWeek(currentDate);
+        List<LocalDate> weekdays = MeokuUtil.getWeekdaysInWeek(currentDate);
         // 예상되는 결과와 비교
         assertEquals(5, weekdays.size()); // 예상되는 평일 수는 5
 

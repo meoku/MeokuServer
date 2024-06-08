@@ -120,15 +120,14 @@ public class MeokuMealOrderService {
         return savedMealOrderDTOList;
     }
 
+    // **** Util
+
     public List<LocalDate> getNextWeekStartAndEndDate(LocalDate givenDate){
-        // Timestamp를 LocalDate로 변환
-//        Instant instant = givendate.toInstant();
-//        LocalDate givenDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
 
         LocalDate startOfWeek = givenDate.with(DayOfWeek.MONDAY);       // 주의 시작일 (월요일)
         LocalDate startOfNextWeek = startOfWeek.plusWeeks(1);// 다음 주의 시작일 (월요일)
-        LocalDate endOfWeek = startOfWeek.with(DayOfWeek.FRIDAY);       // 해당 주의 금요일
-        LocalDate endOfNextWeek = startOfNextWeek.with(DayOfWeek.FRIDAY);// 다음 주의 금요일
+        LocalDate endOfWeek = startOfWeek.with(DayOfWeek.SUNDAY);       // 해당 주의 일요일
+        LocalDate endOfNextWeek = startOfNextWeek.with(DayOfWeek.SUNDAY);// 다음 주의 일요일
 
         List<LocalDate> resultLocalDateList = new ArrayList<>();
         resultLocalDateList.add(startOfNextWeek);

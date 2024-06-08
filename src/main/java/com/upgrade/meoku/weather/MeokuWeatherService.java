@@ -14,7 +14,6 @@ public class MeokuWeatherService {
     }
 
     public WeatherData insertWeatherDataFromApi() throws Exception {
-        System.out.println("스케줄러가 실행되었습니다: " + java.time.LocalDateTime.now());
         // 날씨 데이터 가져오기
         WeatherDataDTO weatherDataDTO = requestApiUtil.getWeatherDataFromApi();
 
@@ -36,9 +35,11 @@ public class MeokuWeatherService {
         return weatherRepository.save(weatherData);
     }
 
-    public WeatherDataDTO getWeatherDataFromApi() throws Exception {
+    public WeatherDataDTO getWeatherDataFromDB() throws Exception {
 
         WeatherData weatherData = weatherRepository.findFirstByOrderByCreatedDateDesc();
+
+        if (weatherData == null) return null;
 
         //Entity To DTO
         WeatherDataDTO weatherDataDTO = new WeatherDataDTO();

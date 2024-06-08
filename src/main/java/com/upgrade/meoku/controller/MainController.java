@@ -1,11 +1,12 @@
 package com.upgrade.meoku.controller;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.menuOrder.MeokuMealOrder;
+import com.upgrade.meoku.menuOrder.MeokuMealOrderService;
 import com.upgrade.meoku.weather.MeokuWeatherService;
 import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.service.MainService;
-import com.upgrade.meoku.util.RequestApiUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,15 @@ import java.util.Map;
 public class MainController {
 
     private final MainService mainService;
-    private final RequestApiUtil requestApiUtil;
+    private final MeokuMealOrderService meokuMealOrderService;
     private final MeokuWeatherService meokuWeatherService;
 
     @Autowired
     public MainController(MainService mainService,
-                          RequestApiUtil requestApiUtil, MeokuWeatherService meokuWeatherService){
+                          MeokuMealOrderService meokuMealOrderService,
+                          MeokuWeatherService meokuWeatherService){
         this.mainService= mainService;
-        this.requestApiUtil = requestApiUtil;
+        this.meokuMealOrderService = meokuMealOrderService;
         this.meokuWeatherService = meokuWeatherService;
     }
 
@@ -40,6 +42,39 @@ public class MainController {
     @GetMapping(value = "helloworld")
     public String HelloWorld() {
         return "HelloWorld";
+    }
+
+    @Operation(summary = "메인 페이지 데이터 가져오기", description = "주간별 식단 메뉴, 배식 순서, 날씨 정보")
+    @PostMapping(value = "/getAllMainPageData")
+    public ResponseEntity<Map<String, Object>> getAllMainPageData(@RequestBody Map<String, Object> jsonData) throws Exception {
+        Map<String, Object> responseBody = new HashMap<>();
+
+        // -- 주간별 식단 메뉴 start
+        String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
+        String date = (String)jsonData.get("date");
+        LocalDate transDate = LocalDate.parse(date);
+
+        List<MeokuDailyMenuDTO> resultMealMenuList = new ArrayList<>();
+
+        if(isMonthOrWeek.equals("week")) {
+            resultMealMenuList = mainService.searchDailyMenuOfWeekDays(transDate);
+        }
+        // -- 주간별 식단 메뉴 end
+
+        // -- 배식 순서 start
+        LocalDate requestLocalDate = LocalDate.parse((String) jsonData.get("date"));
+        List<MeokuMealOrder> findedMeokuOrderList =  meokuMealOrderService.findThisWeekMealOrder(requestLocalDate);
+        // -- 배식 순서 end
+
+        // -- 날씨 정보 start
+        WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromDB();
+        // -- 날씨 정보 end
+
+        responseBody.put("mealMenu", resultMealMenuList);
+        responseBody.put("mealOrder", findedMeokuOrderList);
+        responseBody.put("weatherData", weatherDataDTO);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
     @Operation(summary = "주간별 식단메뉴 불러오기", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
@@ -69,7 +104,7 @@ public class MainController {
     public ResponseEntity<Map<String, Object>> getCurrentWeatherData() {
         Map<String, Object> responseBody = new HashMap<>();
         try{
-            WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromApi();
+            WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromDB();
             responseBody.put("responseBody", weatherDataDTO);
         }catch (Exception e) {
             responseBody.put("error", "Internal server error");
