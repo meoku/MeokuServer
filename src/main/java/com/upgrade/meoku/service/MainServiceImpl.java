@@ -28,7 +28,7 @@ public class MainServiceImpl implements MainService{
         this.meokuMenuDao = meokuMenuDao;
     }
 
-
+    // 해당 주간 days 구하기
     public List<LocalDate> getWeekdaysInWeek(LocalDate date) {
         List<LocalDate> weekdays = new ArrayList<>();
 

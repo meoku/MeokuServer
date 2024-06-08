@@ -7,6 +7,7 @@ import com.upgrade.meoku.data.dto.MeokuDetailedMenuDTO;
 import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
+import com.upgrade.meoku.util.MeokuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -151,6 +152,7 @@ public class AdminServiceImpl implements AdminService{
         List<Map<String, Object>> images = (List<Map<String, Object>>) map.get("images");
         List<Map<String, Object>> fieldsList = (List<Map<String, Object>>) images.get(0).get("fields");
 
+        //주간 식당 저장할 DTO 리스트(5일이니 총 5개 객체를 담은 배열)
         List<MeokuDailyMenuDTO> returnList = Stream.generate(MeokuDailyMenuDTO::new)
                 .limit(5)
                 .collect(Collectors.toList());
@@ -170,16 +172,23 @@ public class AdminServiceImpl implements AdminService{
                 String[] menuArray = inferText.split("\\r?\\n");//줄바꿈으로 구분되어있는 메뉴들 to 배열
                 int menuArraySize = menuArray.length;
 
+                //점심,저녁 * 5일 해서 총 10개의 데이터가 들어오는데 주간 데이터는 5개이므로 아래와 같이 인덱싱
                 MeokuDailyMenuDTO curMeokuDailyMenuDTO = returnList.get(idx/2);
 
+                //점심, 저녁 데이터가 아직 생성 안됐다면 생성
                 if(curMeokuDailyMenuDTO.getDetailedMenuDTOList() == null ||
                         curMeokuDailyMenuDTO.getDetailedMenuDTOList().isEmpty()) {
                     curMeokuDailyMenuDTO.setDetailedMenuDTOList(new ArrayList<MeokuDetailedMenuDTO>());
                 }
 
                 if (menuTypeParts[1].trim().equalsIgnoreCase("lunch")) {    //점심메뉴
-
                     curMeokuDailyMenuDTO.setDate(this.getDate(menuArray[0]));//첫번째는 날짜이므로 Date로 변환한 값 저장
+
+                    //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
+                    menuArray = Arrays.stream(menuArray)
+                            .map(MeokuUtil::removeCharacters)
+                            .toArray(String[]::new);
+
                     // 총 메뉴 길이가 최소 13개이상 일 때 메뉴정보 넣기
                     if(menuArraySize > 13){
                         curMeokuDailyMenuDTO.setHolidayFg("N");
@@ -226,6 +235,12 @@ public class AdminServiceImpl implements AdminService{
 
                 }else if(menuTypeParts[1].trim().equalsIgnoreCase("diner")){//저녁메뉴
                     if(menuArraySize >= 6){
+
+                        //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
+                        menuArray = Arrays.stream(menuArray)
+                                .map(MeokuUtil::removeCharacters)
+                                .toArray(String[]::new);
+
                         //석식 (6개씩)
                         MeokuDetailedMenuDTO dinerMenu = new MeokuDetailedMenuDTO();
                         dinerMenu.setDetailedMenuName("석식");
@@ -278,14 +293,4 @@ public class AdminServiceImpl implements AdminService{
         return timestamp;
     }
 
-    // --- Util ----
-
-    //식단에서 특수문자, 공백 제거
-    public static String removeCharacters(String input) {
-        if (input == null) {
-            return null;
-        }
-        // 한글과 '*'를 제외한 나머지 문자를 제거
-        return input.replaceAll("[^가-힣*]", "");
-    }
 }
