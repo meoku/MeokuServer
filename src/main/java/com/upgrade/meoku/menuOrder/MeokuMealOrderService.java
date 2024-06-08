@@ -30,7 +30,7 @@ public class MeokuMealOrderService {
     }
 
     //이번주 배식 순서
-    public List<MeokuMealOrder> findThisWeekMealOrder(Timestamp requestDate){
+    public List<MeokuMealOrder> findThisWeekMealOrder(LocalDate requestDate){
         MeokuMealOrderGroup finedOrderGroup = meokuMealOrderDao.findMealOrderGroupsByDate(requestDate);
         List<MeokuMealOrder> findedOrderList = meokuMealOrderDao.findMealOrdersByGroupId(finedOrderGroup.getMealOrderGroupId());
 
@@ -44,8 +44,8 @@ public class MeokuMealOrderService {
         String startDate = (String)jsonData.get("startDate");
         String endDate = (String)jsonData.get("endDate");
 
-        Timestamp startDateTimestamp = Timestamp.valueOf(startDate);
-        Timestamp endDateTimestamp = Timestamp.valueOf(endDate);
+        LocalDate startDateTimestamp = LocalDate.parse(startDate);
+        LocalDate endDateTimestamp = LocalDate.parse(startDate);
 
         MeokuMealOrderGroup newMealOrderGroup = new MeokuMealOrderGroup();
         newMealOrderGroup.setMealOrderStartDate(startDateTimestamp);
@@ -79,7 +79,7 @@ public class MeokuMealOrderService {
         /* 저장에 필요한 Data 준비 */
         MeokuMealOrderGroup latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
         int latestMealOrderGroupId = latestMealOrderGroup.getMealOrderGroupId();//최신 배식 순서 Id 가져오기
-        List<Timestamp> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.getMealOrderStartDate());// 다음 배식 순서 시작날짜, 종료날짜
+        List<LocalDate> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.getMealOrderStartDate());// 다음 배식 순서 시작날짜, 종료날짜
 
         List<MeokuMealOrder> latestOrderList = meokuMealOrderDao.findMealOrdersByGroupId(latestMealOrderGroupId);
 
@@ -120,24 +120,21 @@ public class MeokuMealOrderService {
         return savedMealOrderDTOList;
     }
 
-    public List<Timestamp> getNextWeekStartAndEndDate(Timestamp givendate){
+    public List<LocalDate> getNextWeekStartAndEndDate(LocalDate givenDate){
         // Timestamp를 LocalDate로 변환
-        Instant instant = givendate.toInstant();
-        LocalDate givenDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+//        Instant instant = givendate.toInstant();
+//        LocalDate givenDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
 
         LocalDate startOfWeek = givenDate.with(DayOfWeek.MONDAY);       // 주의 시작일 (월요일)
         LocalDate startOfNextWeek = startOfWeek.plusWeeks(1);// 다음 주의 시작일 (월요일)
         LocalDate endOfWeek = startOfWeek.with(DayOfWeek.FRIDAY);       // 해당 주의 금요일
         LocalDate endOfNextWeek = startOfNextWeek.with(DayOfWeek.FRIDAY);// 다음 주의 금요일
 
-        Timestamp startDay = Timestamp.valueOf(startOfNextWeek.atStartOfDay());
-        Timestamp endDay = Timestamp.valueOf(endOfNextWeek.atStartOfDay());
+        List<LocalDate> resultLocalDateList = new ArrayList<>();
+        resultLocalDateList.add(startOfNextWeek);
+        resultLocalDateList.add(endOfNextWeek);
 
-        List<Timestamp> resultTimeStampList = new ArrayList<>();
-        resultTimeStampList.add(startDay);
-        resultTimeStampList.add(endDay);
-
-        return resultTimeStampList;
+        return resultLocalDateList;
     }
 
 }

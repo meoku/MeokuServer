@@ -17,10 +17,10 @@ public class MeokuMealOrderGroup {
     private Integer mealOrderGroupId;
 
     @Column(name = "MEAL_ORDER_START_DATE")
-    private Timestamp mealOrderStartDate;
+    private LocalDate mealOrderStartDate;
 
     @Column(name = "MEAL_ORDER_END_DATE")
-    private Timestamp mealOrderEndDate;
+    private LocalDate mealOrderEndDate;
 
     @Column(name = "CREATED_DATE")
     private Timestamp createdDate;

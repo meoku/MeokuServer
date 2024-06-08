@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,14 +25,14 @@ public class MeokuMealOrderController {
         this.mealOrderService= mealOrderService;
     }
 
-    @Operation(summary = "현 날짜로 해당 주의 배식 순서 가져오기 요청 데이터 Format : ex) 2024-05-06 00:00:00")
+    @Operation(summary = "현 날짜로 해당 주의 배식 순서 가져오기 요청 데이터 Format : ex) 2024-05-06 -> 배식요청과 통일을위해 변경(20240608)")
     @PostMapping(value = "/findThisWeekMealOrder")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> findThisWeekMealOrder(@RequestBody Map<String, String> jsonData) {
         Map<String, Object> responseBody = new HashMap<>();
         // ISO 8601 형식의 문자열을 LocalDateTime으로 변환
-        Timestamp requestTimestamp = Timestamp.valueOf(jsonData.get("requestDate"));
-
+        //Timestamp requestTimestamp = Timestamp.valueOf(jsonData.get("requestDate"));
+        LocalDate requestTimestamp = LocalDate.parse(jsonData.get("requestDate"));
         try{
             List<MeokuMealOrder> findedMeokuOrderList =  mealOrderService.findThisWeekMealOrder(requestTimestamp);
             responseBody.put("responseBody", findedMeokuOrderList);
