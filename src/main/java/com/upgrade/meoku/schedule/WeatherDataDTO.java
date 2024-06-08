@@ -1,4 +1,4 @@
-package com.upgrade.meoku.data.dto;
+package com.upgrade.meoku.schedule;
 
 import lombok.Data;
 
