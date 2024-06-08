@@ -10,7 +10,7 @@ public class MeokuUtil {
         if (input == null) {
             return null;
         }
-        // 한글과 '*'를 제외한 나머지 문자를 제거
+        // 한글, 숫자 & * /'를 제외한 나머지 문자를 제거
         return input.replaceAll("[^가-힣0-9&*/]", "");
 
     }
