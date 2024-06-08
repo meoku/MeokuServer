@@ -1,6 +1,5 @@
-package com.upgrade.meoku.schedule;
+package com.upgrade.meoku.weather;
 
-import com.upgrade.meoku.data.entity.MeokuMenuTags;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WeatherRepository extends JpaRepository<WeatherData, Integer> {

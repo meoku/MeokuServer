@@ -1,10 +1,9 @@
 package com.upgrade.meoku.controller;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
-import com.upgrade.meoku.schedule.MeokuScheduledTasks;
-import com.upgrade.meoku.schedule.MeokuWeatherService;
-import com.upgrade.meoku.schedule.WeatherData;
-import com.upgrade.meoku.schedule.WeatherDataDTO;
+import com.upgrade.meoku.weather.MeokuWeatherService;
+import com.upgrade.meoku.weather.WeatherData;
+import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.service.MainService;
 import com.upgrade.meoku.util.RequestApiUtil;
 import io.swagger.v3.oas.annotations.Operation;

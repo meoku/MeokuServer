@@ -2,8 +2,7 @@ package com.upgrade.meoku.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
-import com.upgrade.meoku.schedule.MeokuScheduledTasks;
-import com.upgrade.meoku.schedule.WeatherDataDTO;
+import com.upgrade.meoku.weather.WeatherDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

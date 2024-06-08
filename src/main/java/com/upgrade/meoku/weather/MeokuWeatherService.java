@@ -1,4 +1,4 @@
-package com.upgrade.meoku.schedule;
+package com.upgrade.meoku.weather;
 
 import com.upgrade.meoku.util.RequestApiUtil;
 import org.springframework.stereotype.Component;

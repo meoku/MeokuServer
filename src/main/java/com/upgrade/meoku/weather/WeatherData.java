@@ -1,4 +1,4 @@
-package com.upgrade.meoku.schedule;
+package com.upgrade.meoku.weather;
 
 
 import jakarta.persistence.*;
