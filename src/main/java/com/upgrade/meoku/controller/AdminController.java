@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> healthCheck() throws Exception {
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("responseBody", LocalDate.now().toString());
+        responseBody.put("responseBody", LocalDateTime.now().toString());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
