@@ -73,7 +73,7 @@ public class MeokuWeatherAPIService {
         // 현재 날짜 가져오기
         String todayDate = RequestApiUtil.getTodayDate();
         // 현재 시간 가져오기
-        String hourOnlyTime = RequestApiUtil.getRequestTimeForShortTermForecastRequest();
+        String hourOnlyTime = "0200"; //최고기온은 15시, 최저기온은 06시부터 이기 때문에
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(SHORT_TERM_FORECAST_API_URL)
                 .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
@@ -91,7 +91,6 @@ public class MeokuWeatherAPIService {
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uriString, String.class);
 
-        System.out.println(response.getBody());
         //성공 아니면 에러 뱉기
         if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
 

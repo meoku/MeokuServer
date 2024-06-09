@@ -2,6 +2,7 @@ package com.upgrade.meoku.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
+import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -159,5 +160,36 @@ public class RequestApiUtil {
         }
 
         return weatherDataDTO;
+    }
+    //Entity To DTO
+    public static WeatherDataDTO WeatherDataToWeatherDateDTO(WeatherData weatherData){
+        WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
+        // 단기 예보
+        // 초단기 실황
+        weatherDataDTO.setPrecipitationType(weatherData.getPrecipitationType());
+        weatherDataDTO.setHumidity(weatherData.getHumidity());
+        weatherDataDTO.setHourlyPrecipitation(weatherData.getHourlyPrecipitation());
+        weatherDataDTO.setUComponentWind(weatherData.getUComponentWind());
+        weatherDataDTO.setWindDirection(weatherData.getWindDirection());
+        weatherDataDTO.setVComponentWind(weatherData.getVComponentWind());
+        weatherDataDTO.setWindSpeed(weatherData.getWindSpeed());
+        weatherDataDTO.setTemperature(weatherData.getTemperature());
+
+        return weatherDataDTO;
+    }
+    //DTO to Entity
+    public static WeatherData WeatherDataDTOToWeatherData(WeatherDataDTO weatherDataDTO){
+        WeatherData weatherData = new WeatherData();
+        // 단기 예보
+        // 초단기 실황
+        weatherData.setPrecipitationType(weatherDataDTO.getPrecipitationType());
+        weatherData.setHumidity(weatherDataDTO.getHumidity());
+        weatherData.setHourlyPrecipitation(weatherDataDTO.getHourlyPrecipitation());
+        weatherData.setUComponentWind(weatherDataDTO.getUComponentWind());
+        weatherData.setWindDirection(weatherDataDTO.getWindDirection());
+        weatherData.setVComponentWind(weatherDataDTO.getUComponentWind());
+        weatherData.setWindSpeed(weatherDataDTO.getWindSpeed());
+        weatherData.setTemperature(weatherDataDTO.getTemperature());
+        return weatherData;
     }
 }

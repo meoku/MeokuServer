@@ -2,8 +2,12 @@ package com.upgrade.meoku.weather;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class WeatherDataDTO {
+    private int weatherId;
+    private LocalDate weatherDate;  //날씨 데이터 기준이 되는 날짜
     /* 단기 예보 */
     private String precipitationProbability;    // 강수확률
     private String oneHourSnowfall;             // 1시간 신적설(쌓인 눈 양)

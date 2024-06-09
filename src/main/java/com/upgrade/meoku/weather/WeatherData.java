@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -15,8 +16,10 @@ public class WeatherData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "WEATHER_ID")
-    /* 단기 예보 */
     private Integer weatherId;
+    @Column(name = "WEATHER_DATE", unique = true, nullable = false)
+    private LocalDate weatherDate;
+    /* 단기 예보 */
     @Column(name = "PRECIPITATION_PROBABILITY")
     private String precipitationProbability;    // 강수확률
     @Column(name = "HOURLY_SNOWFALL")
