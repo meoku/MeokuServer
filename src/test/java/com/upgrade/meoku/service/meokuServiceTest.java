@@ -2,7 +2,7 @@ package com.upgrade.meoku.service;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.util.MeokuUtil;
-import com.upgrade.meoku.util.RequestApiUtil;
+import com.upgrade.meoku.weather.MeokuWeatherAPIService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class meokuServiceTest {
     MainServiceImpl mainService;
 
     @Autowired
-    RequestApiUtil requestApiUtil;
+    MeokuWeatherAPIService meokuWeatherAPIService;
 
     @Test
     @DisplayName("날짜 입력받으면 해당 주간 평일 목록 반환 Service Method Test")
@@ -63,6 +63,6 @@ public class meokuServiceTest {
     @Test
     @DisplayName("날씨 API 테스트")
     public void getWhetherDataFromApi() throws Exception {
-        System.out.println(requestApiUtil.getWeatherDataFromApi().toString());
+        System.out.println(meokuWeatherAPIService.getUltraShortTermCurrentConditions().toString());
     }
 }

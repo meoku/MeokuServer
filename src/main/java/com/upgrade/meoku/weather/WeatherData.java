@@ -12,11 +12,24 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "MEOKU_WEATHER")
 public class WeatherData {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "WEATHER_ID")
+    /* 단기 예보 */
     private Integer weatherId;
+    @Column(name = "PRECIPITATION_PROBABILITY")
+    private String precipitationProbability;    // 강수확률
+    @Column(name = "HOURLY_SNOWFALL")
+    private String oneHourSnowfall;             // 1시간 신적설(쌓인 눈 양)
+    @Column(name = "SKY_CONDITION")
+    private String skyCondition;                // 하늘상태
+    @Column(name = "HOURLY_TEMPERATURE")
+    private String oneHourTemperature;          // 1시간 기온
+    @Column(name = "DAILY_MIN_TEMPERATURE")
+    private String dailyMinimumTemperature;     // 일 최저기온
+    @Column(name = "DAILY_MAX_TEMPERATURE")
+    private String dailyMaximumTemperature;     // 일 최고기온
+    /* 초단기 실황 */
     @Column(name = "PRECIPITATION_TYPE")
     private String precipitationType;   // 강수형태
     @Column(name = "HUMIDITY")
@@ -33,6 +46,7 @@ public class WeatherData {
     private String windSpeed;           // 풍속
     @Column(name = "TEMPERATURE")
     private String temperature;         // 기온
+
     @CreationTimestamp
     @Column(name = "CREATED_DATE")
     private Timestamp createdDate;
