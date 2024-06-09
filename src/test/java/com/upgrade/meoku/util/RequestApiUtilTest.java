@@ -16,4 +16,11 @@ public class RequestApiUtilTest {
         System.out.println(curDate);
         System.out.println(curTime);
     }
+
+    @Test
+    @DisplayName("단기 예보를 위해 지정된 시간 가져오는 함수 잘 작동하는지 테스트")
+    public void getRequestTimeForShortTermForecastRequest(){
+        String requestTime = RequestApiUtil.getRequestTimeForShortTermForecastRequest();
+        System.out.println(requestTime);
+    }
 }
