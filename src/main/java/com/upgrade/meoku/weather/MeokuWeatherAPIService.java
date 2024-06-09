@@ -2,6 +2,7 @@ package com.upgrade.meoku.weather;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
+import com.upgrade.meoku.util.RequestApiUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,19 +41,9 @@ public class MeokuWeatherAPIService {
     // 초단기실황조회
     public WeatherDataDTO getUltraShortTermCurrentConditions() throws Exception {
         // 현재 날짜 가져오기
-        LocalDate currentDate = LocalDate.now();
-        LocalDateTime currentDateForTime = LocalDateTime.now();
-
-        // 날짜를 %Y%m%d 형식으로 포맷팅하기
-        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String todayDate = currentDate.format(formatter1);
-
-        // 시간을 "HH" 형식의 문자열로 포맷
-        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("HH");
-        String formattedTime = currentDateForTime.format(formatter2);
-
-        // 시간을 시간단위로만 표현
-        String hourOnlyTime = formattedTime + "00";
+        String todayDate = RequestApiUtil.getTodayDate();
+        // 현재 시간 가져오기
+        String hourOnlyTime = RequestApiUtil.getCurrentTime();
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ULTRA_SHORT_TERM_CURRENT_CONDITIONS_API_URL)
                 .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
