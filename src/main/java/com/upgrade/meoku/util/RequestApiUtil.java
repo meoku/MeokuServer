@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
+import com.upgrade.meoku.weather.api.KMAApiShortTermResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class RequestApiUtil {
@@ -161,6 +164,39 @@ public class RequestApiUtil {
 
         return weatherDataDTO;
     }
+
+    //기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기
+    public static WeatherDataDTO APIResponseToWeatherDataDTOForShortTermAPI(List<KMAApiShortTermResponseDTO> responseDTOList){
+        WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
+
+        for (KMAApiShortTermResponseDTO item : responseDTOList) {
+            String category = item.getCategory();
+
+            switch (category){
+                //단기 예보 부분
+                case "POP": //강수확률
+                    weatherDataDTO.setPrecipitationProbability(item.getFcstValue());
+                    break;
+                case "SNO": //신적설
+                    weatherDataDTO.setOneHourSnowfall(item.getFcstValue());
+                    break;
+                case "SKY": //하늘상태 1-맑음 3-구름많음 4-흐림
+                    weatherDataDTO.setSkyCondition(item.getFcstValue());
+                    break;
+                case "TMP": //한시간기온
+                    weatherDataDTO.setOneHourTemperature(item.getFcstValue());
+                    break;
+                case "TMN": //최저기온
+                    weatherDataDTO.setDailyMinimumTemperature(item.getFcstValue());
+                    break;
+                case "TMX": //최고기온
+                    weatherDataDTO.setDailyMaximumTemperature(item.getFcstValue());
+                    break;
+            }
+        }
+        return weatherDataDTO;
+    }
+
     //Entity To DTO
     public static WeatherDataDTO WeatherDataToWeatherDateDTO(WeatherData weatherData){
         WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
