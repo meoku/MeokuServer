@@ -1,6 +1,5 @@
 package com.upgrade.meoku.weather;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-
 @Service
-public class MeokuWeatherAPIService {
+public class MeokuWeatherAPIService{
 
     // 단기예보조회
     private String SHORT_TERM_FORECAST_API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";

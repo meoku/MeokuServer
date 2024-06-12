@@ -1,9 +1,12 @@
 package com.upgrade.meoku.weather.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -14,7 +17,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // 단기 예보
+@Component
 public class KMAAPIShortTerm implements KMAApiService {
+
+    private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
+
+    @Autowired
+    public KMAAPIShortTerm(RequestApiConfig requestApiConfig) {
+        this.requestApiConfig = requestApiConfig;
+    }
 
     @Override
     public WeatherDataDTO requestWeatherApi(String requestDate, String reqeustTime) throws Exception {
@@ -24,7 +35,7 @@ public class KMAAPIShortTerm implements KMAApiService {
 //        String hourOnlyTime = "2000"; //최고기온은 15시, 최저기온은 06시부터 이기 때문에
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(KMAApiConstants.SHORT_TERM_FORECAST_API_URL)
-                .queryParam("serviceKey", KMAApiConstants.weatherApiEncodingKey)
+                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
                 .queryParam("pageNo", 1)
                 .queryParam("numOfRows", 300) //하루 예보는 이론상 최대 96개
                 .queryParam("dataType", "JSON")

@@ -16,7 +16,15 @@ import java.util.stream.Collectors;
 
 
 //초단기 실황
+@Component
 public class KMAAPIUltraShortTerm implements KMAApiService {
+
+    private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
+
+    @Autowired
+    public KMAAPIUltraShortTerm(RequestApiConfig requestApiConfig) {
+        this.requestApiConfig = requestApiConfig;
+    }
 
     @Override
     public WeatherDataDTO requestWeatherApi(String requestDate, String reqeustTime) throws Exception {
@@ -26,7 +34,7 @@ public class KMAAPIUltraShortTerm implements KMAApiService {
 //        String hourOnlyTime = RequestApiUtil.getCurrentTime();
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(KMAApiConstants.ULTRA_SHORT_TERM_CURRENT_CONDITIONS_API_URL)
-                .queryParam("serviceKey", KMAApiConstants.weatherApiEncodingKey)
+                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
                 .queryParam("pageNo", 1)
                 .queryParam("numOfRows", 1000)
                 .queryParam("dataType", "JSON")
