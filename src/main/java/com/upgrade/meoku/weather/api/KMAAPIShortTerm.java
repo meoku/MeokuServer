@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -35,7 +36,7 @@ public class KMAAPIShortTerm implements KMAApiService {
 //        String hourOnlyTime = "2000"; //최고기온은 15시, 최저기온은 06시부터 이기 때문에
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(KMAApiConstants.SHORT_TERM_FORECAST_API_URL)
-                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
+//                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
                 .queryParam("pageNo", 1)
                 .queryParam("numOfRows", 300) //하루 예보는 이론상 최대 96개
                 .queryParam("dataType", "JSON")
@@ -45,10 +46,16 @@ public class KMAAPIShortTerm implements KMAApiService {
                 .queryParam("ny", KMAApiConstants.MY_COMPANY_LOCATION_Y);
 
         String uriString = uriBuilder.toUriString();
-        RestTemplate restTemplate = new RestTemplate();
+        // 이미 인코딩된 serviceKey 추가 (UriComponentsBuilder 에서 인코딩 가능성이 있음)
+        uriString += "&serviceKey=" + requestApiConfig.getWeatherApiEncodingKey();
 
+        RestTemplate restTemplate = new RestTemplate();
+        // serviceKey가 이미 인코딩 돼있기 때문에 추가 인코딩 방지
+        URI uri = URI.create(uriString);
+        System.out.println(uriString);
+        System.out.println(uri);
         //API 호출!
-        ResponseEntity<String> response = restTemplate.getForEntity(uriString, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
         System.out.println(response.getBody());
 

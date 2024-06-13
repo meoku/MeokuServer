@@ -2,8 +2,11 @@ package com.upgrade.meoku.weather;
 
 import com.upgrade.meoku.util.RequestApiUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,6 +24,7 @@ public class MeokuWeatherService {
 
 
     //날씨 데이터 최신화
+    @Transactional
     public WeatherData updateWeatherDataFromApi(LocalDate weatherDateForSearch, WeatherDataDTO updateWeatherDataDTO) throws Exception {
         // 입력된 날짜로 날씨 데이터 가져오기
         Optional<WeatherData> searchedWeatherData = weatherRepository.findByWeatherDate(weatherDateForSearch);
@@ -40,51 +44,44 @@ public class MeokuWeatherService {
 
         return weatherRepository.save(updatedweatherData);
     }
+    /**
+     * 기존 저장된 (or 새로만든)weatherData Entity 객체의 필드를 API로 받아온 날씨dto 객체의 필드 값으로 업데이트합니다.
+     * 날씨dto 필드값이 nulldㅣ 아닐떄나 필드값이 다를때 업데이트
+     *
+     * @param weatherData 업데이트할 WeatherData 객체
+     * @param dto 새로운 값을 담고 있는 WeatherDataDTO 객체
+     */
+    public static void updateWeatherDataIfDifferent(WeatherData weatherData, WeatherDataDTO dto) {
+        // WeatherData 클래스의 모든 필드
+        Field[] fields = WeatherData.class.getDeclaredFields();
+        // WeatherDataDTO 클래스의 모든 필드
+        Field[] dtoFields = WeatherDataDTO.class.getDeclaredFields();
 
-    private void updateWeatherDataIfDifferent(WeatherData weatherData, WeatherDataDTO dto) {
-        if (!weatherData.getPrecipitationProbability().equals(dto.getPrecipitationProbability())) {
-            weatherData.setPrecipitationProbability(dto.getPrecipitationProbability());
-        }
-        if (!weatherData.getOneHourSnowfall().equals(dto.getOneHourSnowfall())) {
-            weatherData.setOneHourSnowfall(dto.getOneHourSnowfall());
-        }
-        if (!weatherData.getSkyCondition().equals(dto.getSkyCondition())) {
-            weatherData.setSkyCondition(dto.getSkyCondition());
-        }
-        if (!weatherData.getOneHourTemperature().equals(dto.getOneHourTemperature())) {
-            weatherData.setOneHourTemperature(dto.getOneHourTemperature());
-        }
-        if (!weatherData.getDailyMinimumTemperature().equals(dto.getDailyMinimumTemperature())) {
-            weatherData.setDailyMinimumTemperature(dto.getDailyMinimumTemperature());
-        }
-        if (!weatherData.getDailyMaximumTemperature().equals(dto.getDailyMaximumTemperature())) {
-            weatherData.setDailyMaximumTemperature(dto.getDailyMaximumTemperature());
-        }
-        if (!weatherData.getPrecipitationType().equals(dto.getPrecipitationType())) {
-            weatherData.setPrecipitationType(dto.getPrecipitationType());
-        }
-        if (!weatherData.getHumidity().equals(dto.getHumidity())) {
-            weatherData.setHumidity(dto.getHumidity());
-        }
-        if (!weatherData.getHourlyPrecipitation().equals(dto.getHourlyPrecipitation())) {
-            weatherData.setHourlyPrecipitation(dto.getHourlyPrecipitation());
-        }
-        if (!weatherData.getUComponentWind().equals(dto.getUComponentWind())) {
-            weatherData.setUComponentWind(dto.getUComponentWind());
-        }
-        if (!weatherData.getWindDirection().equals(dto.getWindDirection())) {
-            weatherData.setWindDirection(dto.getWindDirection());
-        }
-        if (!weatherData.getVComponentWind().equals(dto.getVComponentWind())) {
-            weatherData.setVComponentWind(dto.getVComponentWind());
-        }
-        if (!weatherData.getWindSpeed().equals(dto.getWindSpeed())) {
-            weatherData.setWindSpeed(dto.getWindSpeed());
-        }
-        if (!weatherData.getTemperature().equals(dto.getTemperature())) {
-            weatherData.setTemperature(dto.getTemperature());
+        for (Field field : fields) {
+            try {
+                if ("weatherId".equals(field.getName())) continue;  // Id는 영속성의 문제로 당연히 건나뛰기
+
+                field.setAccessible(true);                          // private 필드에 접근할 수 있도록 설정
+                Object weatherDataValue = field.get(weatherData);   // weatherData 객체에서 현재 필드의 값을 가져옴
+
+                for (Field dtoField : dtoFields) {
+                    // 필드 이름이 같은 경우에만 처리
+                    if (field.getName().equals(dtoField.getName())) {
+                        dtoField.setAccessible(true);       // private 필드에 접근할 수 있도록 설정
+                        Object dtoValue = dtoField.get(dto);// dto 객체에서 현재 필드의 값을 가져옴
+
+                        // dto의 값이 null이 아니고 weatherData의 값과 다를 경우 업데이트
+                        if (dtoValue != null && !Objects.equals(weatherDataValue, dtoValue)) {
+                            field.set(weatherData, dtoValue);
+                        }
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     // 안씀
     public WeatherData insertWeatherDataFromApi() throws Exception {

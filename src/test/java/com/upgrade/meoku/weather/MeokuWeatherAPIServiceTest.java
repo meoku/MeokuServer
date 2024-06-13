@@ -43,11 +43,15 @@ public class MeokuWeatherAPIServiceTest {
         String requestDate = RequestApiUtil.getTodayDate();
         // 현재 시간 가져오기
         String requestTime = RequestApiUtil.getCurrentTime();
-        String requestTimeForShortTerm = RequestApiUtil.getRequestTimeForShortTermForecastRequest();
+        String requestTimeForShortTerm = "0200";
         LocalDate targetDate = LocalDate.now();
 
-        WeatherDataDTO newWeatherDataDTO =  kmaAPIUltraShortTerm.requestWeatherApi(requestDate, requestTime);
-//        WeatherDataDTO newWeatherDataDTO =  kmaAPIShortTerm.requestWeatherApi(requestDate, requestTimeForShortTerm);
-        meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO);
+        WeatherDataDTO newWeatherDataDTO1 =  kmaAPIUltraShortTerm.requestWeatherApi(requestDate, requestTime);
+        WeatherDataDTO newWeatherDataDTO2 =  kmaAPIShortTerm.requestWeatherApi(requestDate, requestTimeForShortTerm);
+
+        WeatherData ultraShortTermResult =  meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO1);
+        System.out.println(ultraShortTermResult.toString());
+        WeatherData ShortTermResult =  meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO2);
+        System.out.println(ShortTermResult.toString());
     }
 }
