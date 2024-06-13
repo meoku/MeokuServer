@@ -1,29 +1,49 @@
 package com.upgrade.meoku.weather;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.time.LocalDate;
 
+@ComponentScan
+@Schema(description = "Weather Data DTO")
 @Data
 public class WeatherDataDTO {
+    @Schema(description = "날씨 ID")
     private int weatherId;
-    private LocalDate weatherDate;  //날씨 데이터 기준이 되는 날짜
+    @Schema(description = "날씨 날짜 - 날씨 데이터의 기준 날짜")
+    private LocalDate weatherDate;
     /* 단기 예보 */
-    private String precipitationProbability;    // 강수확률
-    private String oneHourSnowfall;             // 1시간 신적설(쌓인 눈 양)
-    private String skyCondition;                // 하늘상태
-    private String oneHourTemperature;          // 1시간 기온
-    private String dailyMinimumTemperature;     // 일 최저기온
-    private String dailyMaximumTemperature;     // 일 최고기온
+    @Schema(description = "강수확률")
+    private String precipitationProbability;
+    @Schema(description = "1시간 신적설(쌓인 눈 양)")
+    private String oneHourSnowfall;
+    @Schema(description = "하늘 상태 / 코드 : 맑음(1), 구름많음(3), 흐림(4)")
+    private String skyCondition;
+    @Schema(description = "1시간 기온")
+    private String oneHourTemperature;
+    @Schema(description = "일 최저 기온")
+    private String dailyMinimumTemperature;
+    @Schema(description = "일 최고 기온")
+    private String dailyMaximumTemperature;
     /* 초단기 실황 */
-    private String precipitationType;   // 강수형태
-    private String humidity;            // 습도
-    private String hourlyPrecipitation; // 1시간강수량
-    private String uComponentWind;      // 동서바람성분
-    private String windDirection;       // 풍향
-    private String vComponentWind;      // 남북바람성분
-    private String windSpeed;           // 풍속
-    private String temperature;         // 기온
+    @Schema(description = "강수 형태 / 없음(0), 비(1), 비/눈(2), 눈(3), 소나기(4)")
+    private String precipitationType;
+    @Schema(description = "습도")
+    private String humidity;
+    @Schema(description = "1시간 강수량 / -, null, 0값은 ‘강수없음’")
+    private String hourlyPrecipitation;
+    @Schema(description = "동서 바람 성분")
+    private String uComponentWind;
+    @Schema(description = "풍향")
+    private String windDirection;
+    @Schema(description = "남북 바람 성분")
+    private String vComponentWind;
+    @Schema(description = "풍속")
+    private String windSpeed;
+    @Schema(description = "기온")
+    private String temperature;
     /* 초단기 예보 */
     // 당장은 필요 없어보임
 }

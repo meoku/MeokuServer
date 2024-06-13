@@ -201,6 +201,14 @@ public class RequestApiUtil {
     public static WeatherDataDTO WeatherDataToWeatherDateDTO(WeatherData weatherData){
         WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
         // 단기 예보
+//        weatherDataDTO.setWeatherId(weatherData.getWeatherId());
+        weatherDataDTO.setWeatherDate(weatherData.getWeatherDate());
+        weatherDataDTO.setPrecipitationProbability(weatherData.getPrecipitationProbability());
+        weatherDataDTO.setOneHourSnowfall(weatherData.getOneHourSnowfall());
+        weatherDataDTO.setSkyCondition(weatherData.getSkyCondition());
+        weatherDataDTO.setOneHourTemperature(weatherData.getOneHourTemperature());
+        weatherDataDTO.setDailyMinimumTemperature(weatherData.getDailyMinimumTemperature());
+        weatherDataDTO.setDailyMaximumTemperature(weatherData.getDailyMaximumTemperature());
         // 초단기 실황
         weatherDataDTO.setPrecipitationType(weatherData.getPrecipitationType());
         weatherDataDTO.setHumidity(weatherData.getHumidity());
@@ -209,7 +217,6 @@ public class RequestApiUtil {
         weatherDataDTO.setWindDirection(weatherData.getWindDirection());
         weatherDataDTO.setVComponentWind(weatherData.getVComponentWind());
         weatherDataDTO.setWindSpeed(weatherData.getWindSpeed());
-        weatherDataDTO.setTemperature(weatherData.getTemperature());
 
         return weatherDataDTO;
     }
@@ -217,15 +224,22 @@ public class RequestApiUtil {
     public static WeatherData WeatherDataDTOToWeatherData(WeatherDataDTO weatherDataDTO){
         WeatherData weatherData = new WeatherData();
         // 단기 예보
+//        weatherData.setWeatherId(weatherDataDTO.getWeatherId());
+        weatherData.setWeatherDate(weatherDataDTO.getWeatherDate());
+        weatherData.setPrecipitationProbability(weatherDataDTO.getPrecipitationProbability());
+        weatherData.setOneHourSnowfall(weatherDataDTO.getOneHourSnowfall());
+        weatherData.setSkyCondition(weatherDataDTO.getSkyCondition());
+        weatherData.setOneHourTemperature(weatherDataDTO.getOneHourTemperature());
+        weatherData.setDailyMinimumTemperature(weatherDataDTO.getDailyMinimumTemperature());
+        weatherData.setDailyMaximumTemperature(weatherDataDTO.getDailyMaximumTemperature());
         // 초단기 실황
         weatherData.setPrecipitationType(weatherDataDTO.getPrecipitationType());
         weatherData.setHumidity(weatherDataDTO.getHumidity());
         weatherData.setHourlyPrecipitation(weatherDataDTO.getHourlyPrecipitation());
         weatherData.setUComponentWind(weatherDataDTO.getUComponentWind());
         weatherData.setWindDirection(weatherDataDTO.getWindDirection());
-        weatherData.setVComponentWind(weatherDataDTO.getUComponentWind());
+        weatherData.setVComponentWind(weatherDataDTO.getVComponentWind());
         weatherData.setWindSpeed(weatherDataDTO.getWindSpeed());
-        weatherData.setTemperature(weatherDataDTO.getTemperature());
         return weatherData;
     }
 }

@@ -82,7 +82,16 @@ public class MeokuWeatherService {
         }
     }
 
+    public WeatherDataDTO getWeatherDataFromDB(LocalDate weatherDateForSearch) throws Exception {
+        // 입력된 날짜로 날씨 데이터 가져오기
+        Optional<WeatherData> searchedWeatherDataOpt = weatherRepository.findByWeatherDate(weatherDateForSearch);
+        if(!searchedWeatherDataOpt.isPresent()) return null;
 
+        WeatherData searchedWeatherData = searchedWeatherDataOpt.get();
+        WeatherDataDTO searchedWeatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(searchedWeatherData);
+
+        return searchedWeatherDataDTO;
+    }
     // 안씀
     public WeatherData insertWeatherDataFromApi() throws Exception {
         // 날씨 데이터 가져오기
@@ -96,15 +105,15 @@ public class MeokuWeatherService {
     }
 
     // 안씀
-    public WeatherDataDTO getWeatherDataFromDB() throws Exception {
-        WeatherData weatherData = weatherRepository.findFirstByOrderByCreatedDateDesc();
-
-        if (weatherData == null) return null;
-        //Entity To DTO
-        WeatherDataDTO weatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(weatherData);
-
-        return weatherDataDTO;
-    }
+//    public WeatherDataDTO getWeatherDataFromDB() throws Exception {
+//        WeatherData weatherData = weatherRepository.findFirstByOrderByCreatedDateDesc();
+//
+//        if (weatherData == null) return null;
+//        //Entity To DTO
+//        WeatherDataDTO weatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(weatherData);
+//
+//        return weatherDataDTO;
+//    }
 
 
 }
