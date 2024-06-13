@@ -67,7 +67,8 @@ public class MainController {
         // -- 배식 순서 end
 
         // -- 날씨 정보 start
-        WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromDB();
+        LocalDate weatherDateForSearch = LocalDate.now();
+        WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromDB(weatherDateForSearch);
         // -- 날씨 정보 end
 
         responseBody.put("mealMenu", resultMealMenuList);
@@ -80,9 +81,6 @@ public class MainController {
     @Operation(summary = "주간별 식단메뉴 불러오기", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
     @PostMapping(value = "weekdaysmenu")
     public List<MeokuDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
-//    @RequestParam("isMonthOrWeek")String isMonthOrWeekend,
-//    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date //@DateTimeFormat는 일반적으로 yyyy-MM-dd형태
-
         String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
         String date = (String)jsonData.get("date");
         LocalDate transDate = LocalDate.parse(date);
@@ -104,7 +102,8 @@ public class MainController {
     public ResponseEntity<Map<String, Object>> getCurrentWeatherData() {
         Map<String, Object> responseBody = new HashMap<>();
         try{
-            WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromDB();
+            LocalDate weatherDateForSearch = LocalDate.now();
+            WeatherDataDTO weatherDataDTO = meokuWeatherService.getWeatherDataFromDB(weatherDateForSearch);
             responseBody.put("responseBody", weatherDataDTO);
         }catch (Exception e) {
             responseBody.put("error", "Internal server error");
