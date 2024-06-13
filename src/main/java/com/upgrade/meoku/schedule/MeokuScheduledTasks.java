@@ -1,5 +1,7 @@
 package com.upgrade.meoku.schedule;
 
+import com.upgrade.meoku.menuOrder.MeokuMealOrderDTO;
+import com.upgrade.meoku.menuOrder.MeokuMealOrderService;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.MeokuWeatherService;
 import com.upgrade.meoku.weather.WeatherData;
@@ -12,22 +14,26 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.upgrade.meoku.util.RequestApiUtil.getRequestTimeForShortTermForecastRequest;
 
 @Component
 public class MeokuScheduledTasks {
-
+    //날씨 관련
     private final MeokuWeatherService meokuWeatherService;
     private final KMAAPIShortTerm kmaapiShortTerm;
     private final KMAAPIUltraShortTerm kmaapiUltraShortTerm;
+    //배식순서 관련
+    private final MeokuMealOrderService mealOrderService;
 
     public MeokuScheduledTasks(MeokuWeatherService meokuWeatherService,
                                KMAAPIShortTerm kmaapiShortTerm,
-                               KMAAPIUltraShortTerm kmaapiUltraShortTerm) {
+                               KMAAPIUltraShortTerm kmaapiUltraShortTerm, MeokuMealOrderService mealOrderService) {
         this.meokuWeatherService = meokuWeatherService;
         this.kmaapiShortTerm = kmaapiShortTerm;
         this.kmaapiUltraShortTerm = kmaapiUltraShortTerm;
+        this.mealOrderService = mealOrderService;
     }
     //기상청 API - 초단기 실황 정보 가져오기실행
     @Scheduled(cron = "0 41 * * * *") // API 정보 업데이트는 매시간 40분 부터이므로 41분 API 호출
@@ -56,6 +62,12 @@ public class MeokuScheduledTasks {
 
         System.out.println("스케줄러가 종료되었습니다: " + java.time.LocalDateTime.now());
         System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData.toString());
+    }
+
+    @Scheduled(cron = "0 0 0 * * SAT") // 매주 토요일 00시
+    public void runScheduledTask() {
+        System.out.println("매주 토요일 00시에 배식순서 데이터 추가");
+        List<MeokuMealOrderDTO> savedOrderDTOList = mealOrderService.saveWeeklyMealOrderDataByLatestData();
     }
 
 }
