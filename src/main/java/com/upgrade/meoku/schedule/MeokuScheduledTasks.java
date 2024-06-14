@@ -50,7 +50,7 @@ public class MeokuScheduledTasks {
         System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData.toString());
     }
     //기상청 API - 단기예보 실행
-    @Scheduled(cron = "0 2,5,8,11,14,17,20,23 11 * * *")
+    @Scheduled(cron = "0 11 2,5,8,11,14,17,20,23 * * *")
     public void insertShortTermForecast() throws Exception {
         System.out.println("스케줄러가 실행되었습니다: " + java.time.LocalDateTime.now());
         LocalDate targetDate = LocalDate.now();
