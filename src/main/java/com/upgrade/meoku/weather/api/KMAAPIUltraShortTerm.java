@@ -29,10 +29,6 @@ public class KMAAPIUltraShortTerm implements KMAApiService {
 
     @Override
     public WeatherDataDTO requestWeatherApi(String requestDate, String reqeustTime) throws Exception {
-//        // 현재 날짜 가져오기
-//        String reuqestDate = RequestApiUtil.getTodayDate();
-//        // 현재 시간 가져오기
-//        String hourOnlyTime = RequestApiUtil.getCurrentTime();
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(KMAApiConstants.ULTRA_SHORT_TERM_CURRENT_CONDITIONS_API_URL)
 //                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
@@ -55,7 +51,6 @@ public class KMAAPIUltraShortTerm implements KMAApiService {
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
-        System.out.println(response.getBody());
         //성공 아니면 에러 뱉기
         if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
 
