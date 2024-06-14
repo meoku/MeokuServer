@@ -52,12 +52,8 @@ public class KMAAPIShortTerm implements KMAApiService {
         RestTemplate restTemplate = new RestTemplate();
         // serviceKey가 이미 인코딩 돼있기 때문에 추가 인코딩 방지
         URI uri = URI.create(uriString);
-        System.out.println(uriString);
-        System.out.println(uri);
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
-
-        System.out.println(response.getBody());
 
         //성공 아니면 에러 뱉기
         if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
