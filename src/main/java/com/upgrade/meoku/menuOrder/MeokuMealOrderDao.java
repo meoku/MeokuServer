@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MeokuMealOrderDao {
@@ -20,13 +21,13 @@ public class MeokuMealOrderDao {
     }
 
     /* MeokuMealOrderGroup 관련 */
-    public MeokuMealOrderGroup findMealOrderGroupsByDate(LocalDate date) {
+    public Optional<MeokuMealOrderGroup> findMealOrderGroupsByDate(LocalDate date) {
         return meokuMealOrderGroupRepository.findByMealOrderStartDateLessThanEqualAndMealOrderEndDateGreaterThanEqual(date, date);
     }
 
     //가장 최신 배식그룹 Data 가져오기
-    public MeokuMealOrderGroup findLatestMealOrderGroup(){
-        MeokuMealOrderGroup latestGroup = meokuMealOrderGroupRepository.findTopByOrderByMealOrderGroupIdDesc();
+    public Optional<MeokuMealOrderGroup> findLatestMealOrderGroup(){
+        Optional<MeokuMealOrderGroup> latestGroup = meokuMealOrderGroupRepository.findTopByOrderByMealOrderGroupIdDesc();
         return latestGroup;
     }
 

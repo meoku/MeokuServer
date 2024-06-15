@@ -8,15 +8,11 @@ import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.weather.api.KMAAPIShortTerm;
 import com.upgrade.meoku.weather.api.KMAAPIUltraShortTerm;
-import com.upgrade.meoku.weather.api.KMAApiShortTermResponseDTO;
-import org.apache.coyote.Request;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static com.upgrade.meoku.util.RequestApiUtil.getRequestTimeForShortTermForecastRequest;
 
 @Component
 public class MeokuScheduledTasks {
@@ -67,7 +63,14 @@ public class MeokuScheduledTasks {
     @Scheduled(cron = "0 0 0 * * SAT") // 매주 토요일 00시
     public void runScheduledTask() {
         System.out.println("매주 토요일 00시에 배식순서 데이터 추가");
-        List<MeokuMealOrderDTO> savedOrderDTOList = mealOrderService.saveWeeklyMealOrderDataByLatestData();
+        List<MeokuMealOrderDTO> savedOrderDTOList = null;
+        try {
+            savedOrderDTOList = mealOrderService.saveWeeklyMealOrderDataByLatestData();
+        } catch (Exception e) {
+            System.out.println("저장에 사용할 기존 데이터가 없습니다.");
+            throw new RuntimeException(e);
+        }
+        System.out.println("저장된 배식 순서" + savedOrderDTOList.toArray());
     }
 
 }

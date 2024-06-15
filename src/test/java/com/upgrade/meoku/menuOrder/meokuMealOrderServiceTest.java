@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class meokuMealOrderServiceTest {
@@ -24,7 +25,7 @@ public class meokuMealOrderServiceTest {
     private MeokuMealOrderDao meokuMealOrderDao;
 
     @Test
-    @DisplayName("초기 데이터 저장")
+    @DisplayName("초기 데이터 저장 -> 서비스 시작 이후로는 사용할 일 없음;")
     @Disabled
     public void addMeokuMealOrderData(){
         // Group Entity 생성
@@ -64,17 +65,11 @@ public class meokuMealOrderServiceTest {
         meokuMealOrderDao.saveMealOrders(orderList);
 
         // 확인
-        MeokuMealOrderGroup orderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
-        int groupId = orderGroup.getMealOrderGroupId();
+        Optional<MeokuMealOrderGroup> orderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
+        int groupId = orderGroup.get().getMealOrderGroupId();
         List<MeokuMealOrder> savedOrderData = meokuMealOrderDao.findMealOrdersByGroupId(groupId);
         System.out.println(groupId + "");
         System.out.println(savedOrderData.toString());
-    }
-
-    @Test
-    @DisplayName("최근 배식순서로 새로운 배식순서 Data 저장")
-    public void confirmOrderDate(){
-        meokuMealOrderService.saveWeeklyMealOrderDataByLatestData();
     }
 
     @Test

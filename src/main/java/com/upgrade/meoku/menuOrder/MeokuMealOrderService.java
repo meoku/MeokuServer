@@ -11,6 +11,7 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
@@ -31,9 +32,11 @@ public class MeokuMealOrderService {
 
     //이번주 배식 순서
     public List<MeokuMealOrder> findThisWeekMealOrder(LocalDate requestDate){
-        MeokuMealOrderGroup finedOrderGroup = meokuMealOrderDao.findMealOrderGroupsByDate(requestDate);
-        List<MeokuMealOrder> findedOrderList = meokuMealOrderDao.findMealOrdersByGroupId(finedOrderGroup.getMealOrderGroupId());
+        Optional<MeokuMealOrderGroup> finedOrderGroup = meokuMealOrderDao.findMealOrderGroupsByDate(requestDate);
+        // 해당날짜로 데이터가 배식순서 데이터가 존재하지 않으면 null값 반환
+        if(!finedOrderGroup.isPresent()) return null;
 
+        List<MeokuMealOrder> findedOrderList = meokuMealOrderDao.findMealOrdersByGroupId(finedOrderGroup.get().getMealOrderGroupId());
         return findedOrderList;
     }
 
@@ -74,12 +77,15 @@ public class MeokuMealOrderService {
     }
     // 이전 데이터를 이용한 새로운 배식 순서 Data 저장
     @Transactional
-    public List<MeokuMealOrderDTO> saveWeeklyMealOrderDataByLatestData(){
+    public List<MeokuMealOrderDTO> saveWeeklyMealOrderDataByLatestData() throws Exception {
 
         /* 저장에 필요한 Data 준비 */
-        MeokuMealOrderGroup latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
-        int latestMealOrderGroupId = latestMealOrderGroup.getMealOrderGroupId();//최신 배식 순서 Id 가져오기
-        List<LocalDate> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.getMealOrderStartDate());// 다음 배식 순서 시작날짜, 종료날짜
+        Optional<MeokuMealOrderGroup> latestMealOrderGroup = meokuMealOrderDao.findLatestMealOrderGroup();
+        //혹시라도 기존 배식 데이터가 없다면 오류 발생
+        if(!latestMealOrderGroup.isPresent()) throw new Exception();
+
+        int latestMealOrderGroupId = latestMealOrderGroup.get().getMealOrderGroupId();//최신 배식 순서 Id 가져오기
+        List<LocalDate> nextWeeekStartAndEndDay = this.getNextWeekStartAndEndDate(latestMealOrderGroup.get().getMealOrderStartDate());// 다음 배식 순서 시작날짜, 종료날짜
 
         List<MeokuMealOrder> latestOrderList = meokuMealOrderDao.findMealOrdersByGroupId(latestMealOrderGroupId);
 
