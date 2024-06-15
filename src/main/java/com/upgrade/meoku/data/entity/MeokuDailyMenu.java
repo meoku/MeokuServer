@@ -5,7 +5,6 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -19,8 +18,8 @@ public class MeokuDailyMenu {
     @Column(name = "DAILY_MENU_ID")
     private Integer dailyMenuId;
 
-    @Column(name = "DATE", nullable = false)
-    private Timestamp date;
+    @Column(name = "MENU_DATE", nullable = false)
+    private Timestamp menuDate;
 
     @Column(name = "HOLIDAY_FG")
     private String holidayFg;

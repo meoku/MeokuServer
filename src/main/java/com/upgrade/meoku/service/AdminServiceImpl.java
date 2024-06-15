@@ -99,7 +99,7 @@ public class AdminServiceImpl implements AdminService{
         //DailyMenu
         for(MeokuDailyMenuDTO dailyMenuDTO : weekMenu){
             MeokuDailyMenu savedDailyMenu = new MeokuDailyMenu();
-            savedDailyMenu.setDate(dailyMenuDTO.getDate());
+            savedDailyMenu.setMenuDate(dailyMenuDTO.getMenuDate());
             savedDailyMenu.setHolidayFg(dailyMenuDTO.getHolidayFg());
             savedDailyMenu.setRestaurantOpenFg(dailyMenuDTO.getRestaurantOpenFg());
 
@@ -182,7 +182,7 @@ public class AdminServiceImpl implements AdminService{
                 }
 
                 if (menuTypeParts[1].trim().equalsIgnoreCase("lunch")) {    //점심메뉴
-                    curMeokuDailyMenuDTO.setDate(this.getDate(menuArray[0]));//첫번째는 날짜이므로 Date로 변환한 값 저장
+                    curMeokuDailyMenuDTO.setMenuDate(this.getDate(menuArray[0]));//첫번째는 날짜이므로 Date로 변환한 값 저장
 
                     //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
                     menuArray = Arrays.stream(menuArray)

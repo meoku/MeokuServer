@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,14 +71,14 @@ public class MeokuMenuDaoImpl implements MeokuMenuDao{
 
     //startDate ~  endDate 입력받고 해당 주간 DailyMenu가져오기
     public List<MeokuDailyMenuDTO> searchDailyMenuOfWeekDays(Timestamp startDate, Timestamp endDate){
-        List<MeokuDailyMenu> dailyMenuList = dailyMenuRepository.findByDateBetween(startDate, endDate);
+        List<MeokuDailyMenu> dailyMenuList = dailyMenuRepository.findByMenuDateBetween(startDate, endDate);
 
         List<MeokuDailyMenuDTO> dailyMenuDTOList = new ArrayList<>();
         //Entity to DTO
         for(MeokuDailyMenu dailyMenuEntity : dailyMenuList){
             MeokuDailyMenuDTO dailyMenuDTO = new MeokuDailyMenuDTO();
 
-            dailyMenuDTO.setDate(dailyMenuEntity.getDate());
+            dailyMenuDTO.setMenuDate(dailyMenuEntity.getMenuDate());
             dailyMenuDTO.setHolidayFg(dailyMenuEntity.getHolidayFg());
             dailyMenuDTO.setRestaurantOpenFg(dailyMenuEntity.getRestaurantOpenFg());
 

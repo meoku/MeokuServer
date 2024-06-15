@@ -7,5 +7,5 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface MeokuDailyMenuRepository extends JpaRepository<MeokuDailyMenu, Integer> {
-    List<MeokuDailyMenu> findByDateBetween(Timestamp startDate, Timestamp endDate);
+    List<MeokuDailyMenu> findByMenuDateBetween(Timestamp startDate, Timestamp endDate);
 }
