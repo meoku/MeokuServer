@@ -95,7 +95,7 @@ public class RequestApiUtil {
         return requestTime;
     }
 
-    //기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기
+    //기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기(안씀이제)
     public static WeatherDataDTO APIResponseToWeatherDataDTO(ResponseEntity<String> response){
         WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
 
@@ -165,7 +165,45 @@ public class RequestApiUtil {
         return weatherDataDTO;
     }
 
-    //기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기
+    //초단기실황 기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기
+    public static WeatherDataDTO APIResponseToWeatherDataDTOForUltraShortTermAPI(List<Map<String, Object>> itemList){
+        WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
+
+        for (Map<String, Object> item : itemList) {
+            String category = (String) item.get("category");
+
+            switch (category){
+                // 초단기 실황 부분
+                case "PTY":
+                    weatherDataDTO.setPrecipitationType((String) item.get("obsrValue"));
+                    break;
+                case "REH":
+                    weatherDataDTO.setHumidity((String) item.get("obsrValue"));
+                    break;
+                case "RN1":
+                    weatherDataDTO.setHourlyPrecipitation((String) item.get("obsrValue"));
+                    break;
+                case "UUU":
+                    weatherDataDTO.setUComponentWind((String) item.get("obsrValue"));
+                    break;
+                case "VEC":
+                    weatherDataDTO.setWindDirection((String) item.get("obsrValue"));
+                    break;
+                case "VVV":
+                    weatherDataDTO.setVComponentWind((String) item.get("obsrValue"));
+                    break;
+                case "WSD":
+                    weatherDataDTO.setWindSpeed((String) item.get("obsrValue"));
+                    break;
+                case "T1H":
+                    weatherDataDTO.setTemperature((String) item.get("obsrValue"));
+                    break;
+            }
+        }
+        return weatherDataDTO;
+    }
+
+    //단기예보 기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기
     public static WeatherDataDTO APIResponseToWeatherDataDTOForShortTermAPI(List<KMAApiShortTermResponseDTO> responseDTOList){
         WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
 

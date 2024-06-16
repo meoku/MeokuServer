@@ -51,9 +51,27 @@ public class KMAAPIUltraShortTerm implements KMAApiService {
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
-        //성공 아니면 에러 뱉기
-        if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
+        //성공 아니면 에러 뱉기 (에러일때는 JSON으로 명시해도 xml로 값이 넘어옴)
+        if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")) throw new Exception();
+        //if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
 
-        return RequestApiUtil.APIResponseToWeatherDataDTO(response);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> responseMap = objectMapper.readValue(response.getBody(), Map.class);
+
+            Map<String, Object> responseContent = (Map<String, Object>) responseMap.get("response");
+            Map<String, Object> body = (Map<String, Object>) responseContent.get("body");
+            Map<String, Object> items = (Map<String, Object>) body.get("items");
+            List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
+
+            //
+            WeatherDataDTO meokuWeather = RequestApiUtil.APIResponseToWeatherDataDTOForUltraShortTermAPI(itemList);
+
+            return meokuWeather;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

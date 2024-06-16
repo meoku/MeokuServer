@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-public class MeokuWeatherAPIService{
+public class MeokuWeatherAPIService{ // 이거 이제 안씀
 
     // 단기예보조회
     private String SHORT_TERM_FORECAST_API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
@@ -31,7 +31,7 @@ public class MeokuWeatherAPIService{
         this.requestApiConfig = requestApiConfig;
     }
 
-    // 초단기실황조회
+    // 초단기실황조회 (안씀)
     public WeatherDataDTO getUltraShortTermCurrentConditions() throws Exception {
         // 현재 날짜 가져오기
         String todayDate = RequestApiUtil.getTodayDate();
@@ -61,7 +61,7 @@ public class MeokuWeatherAPIService{
         return RequestApiUtil.APIResponseToWeatherDataDTO(response);
 
     }
-    // 단기예보조회 로직
+    // 단기예보조회 로직 (안씀)
     public WeatherDataDTO getShortTermForecast() throws Exception {
         // 현재 날짜 가져오기
         String todayDate = RequestApiUtil.getTodayDate();

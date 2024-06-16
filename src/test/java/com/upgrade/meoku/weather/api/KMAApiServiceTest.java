@@ -13,18 +13,25 @@ import java.util.List;
 public class KMAApiServiceTest {
 
     @Autowired
+    KMAAPIUltraShortTerm kmaapiUltraShortTerm;
+
+    @Autowired
     KMAAPIShortTerm kmaApiShortTermServices;
 
     @Test
     @DisplayName("위임 구조로 만든 초단기 실황 API 호출 테스트")
     public void KMAApiUltraShortTermTest() throws Exception {
 
-//        KMAApiService kmaApiService = new KMAAPIUltraShortTerm();
+        // 현재 날짜
+        String requestDate = RequestApiUtil.getTodayDate();
+        // 단기예보 호출을 위한 알맞은 시간 가져오기
+        String requestTime = RequestApiUtil.getCurrentTime();
 
-//        WeatherDataDTO requestedWeatherDTO = kmaApiService.requestWeatherApi();
-//        System.out.println(requestedWeatherDTO.toString());
+        WeatherDataDTO requestedWeatherDTO = kmaapiUltraShortTerm.requestWeatherApi(requestDate, requestTime);
+        System.out.println(requestedWeatherDTO.toString());
 
     }
+
 
     @Test
     @DisplayName("위임 구조로 만든 단기 예보 API 호출 테스트")

@@ -55,8 +55,8 @@ public class KMAAPIShortTerm implements KMAApiService {
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
-        //성공 아니면 에러 뱉기
-        if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
+        //성공 아니면 에러 뱉기 (에러일때는 JSON으로 명시해도 xml로 값이 넘어옴)
+        if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")) throw new Exception();
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
