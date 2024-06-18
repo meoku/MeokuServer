@@ -248,6 +248,7 @@ public class RequestApiUtil {
         weatherDataDTO.setDailyMinimumTemperature(weatherData.getDailyMinimumTemperature());
         weatherDataDTO.setDailyMaximumTemperature(weatherData.getDailyMaximumTemperature());
         // 초단기 실황
+        weatherDataDTO.setTemperature(weatherData.getTemperature());
         weatherDataDTO.setPrecipitationType(weatherData.getPrecipitationType());
         weatherDataDTO.setHumidity(weatherData.getHumidity());
         weatherDataDTO.setHourlyPrecipitation(weatherData.getHourlyPrecipitation());
@@ -271,6 +272,7 @@ public class RequestApiUtil {
         weatherData.setDailyMinimumTemperature(weatherDataDTO.getDailyMinimumTemperature());
         weatherData.setDailyMaximumTemperature(weatherDataDTO.getDailyMaximumTemperature());
         // 초단기 실황
+        weatherData.setTemperature(weatherDataDTO.getTemperature());
         weatherData.setPrecipitationType(weatherDataDTO.getPrecipitationType());
         weatherData.setHumidity(weatherDataDTO.getHumidity());
         weatherData.setHourlyPrecipitation(weatherDataDTO.getHourlyPrecipitation());
