@@ -64,8 +64,12 @@ public class KMAAPIUltraShortTerm implements KMAApiService {
             Map<String, Object> items = (Map<String, Object>) body.get("items");
             List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
-            //
-            WeatherDataDTO meokuWeather = RequestApiUtil.APIResponseToWeatherDataDTOForUltraShortTermAPI(itemList);
+            // Map<String, Object> 형태의 객체를 -> KMAApiResponseDTO 변환
+            List<KMAApiResponseDTO> weatherForecastList = itemList.stream()
+                    .map(item -> objectMapper.convertValue(item, KMAApiResponseDTO.class))
+                    .collect(Collectors.toList());
+
+            WeatherDataDTO meokuWeather = RequestApiUtil.APIResponseToWeatherDataDTOForUltraShortTermAPI(weatherForecastList);
 
             return meokuWeather;
         } catch (Exception e) {

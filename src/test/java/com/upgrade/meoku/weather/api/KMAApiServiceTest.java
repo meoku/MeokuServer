@@ -29,7 +29,6 @@ public class KMAApiServiceTest {
 
         WeatherDataDTO requestedWeatherDTO = kmaapiUltraShortTerm.requestWeatherApi(requestDate, requestTime);
         System.out.println(requestedWeatherDTO.toString());
-
     }
 
 

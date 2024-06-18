@@ -40,9 +40,12 @@ public class MeokuWeatherAPIServiceTest {
     }
 
     @Test
-    @DisplayName("초단기실황 API 테스트")
-    public void requestUltraShortTermCurrentConditions() throws Exception {
-        meokuWeatherAPIService.getUltraShortTermCurrentConditions();
+    @DisplayName("날씨 데이터 가져오기")
+    public void requestWeatherData() throws Exception {
+
+        LocalDate weatherDateForSearch = LocalDate.now();
+        WeatherDataDTO searchedWeatherDataDTO = meokuWeatherService.getWeatherDataFromDB(weatherDateForSearch);
+        System.out.println(searchedWeatherDataDTO);
     }
 
     @Test
@@ -117,7 +120,7 @@ public class MeokuWeatherAPIServiceTest {
         }
     }
     @Test
-    @DisplayName("단기예보 API 테스트")
+    @DisplayName("단기예보 API 테스트 - 안씀")
     public void reuqestShortTermForecast() throws Exception {
         WeatherDataDTO weatherDataDTO = meokuWeatherAPIService.getShortTermForecast();
         System.out.println(weatherDataDTO.toString());
@@ -140,5 +143,10 @@ public class MeokuWeatherAPIServiceTest {
         System.out.println(ultraShortTermResult.toString());
         WeatherData ShortTermResult =  meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO2);
         System.out.println(ShortTermResult.toString());
+
+        //초단기 실황 데이터 저장
+        WeatherData newUpdatedWeatherData = meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO1);
+
+
     }
 }

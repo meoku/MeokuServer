@@ -1,5 +1,6 @@
 package com.upgrade.meoku.weather;
 
+import com.upgrade.meoku.mapper.WatherDataMapper;
 import com.upgrade.meoku.util.RequestApiUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ public class MeokuWeatherService {
     private final MeokuWeatherAPIService meokuWeatherAPIService;
     private final WeatherRepository weatherRepository;
 
+    private final WatherDataMapper watherDataMapper = WatherDataMapper.INSTANCE;
 
     public MeokuWeatherService(MeokuWeatherAPIService meokuWeatherAPIService,
                                WeatherRepository weatherRepository) {
@@ -85,12 +87,12 @@ public class MeokuWeatherService {
     public WeatherDataDTO getWeatherDataFromDB(LocalDate weatherDateForSearch) throws Exception {
         // 입력된 날짜로 날씨 데이터 가져오기
         Optional<WeatherData> searchedWeatherDataOpt = weatherRepository.findByWeatherDate(weatherDateForSearch);
+
         if(!searchedWeatherDataOpt.isPresent()) return null;
 
         WeatherData searchedWeatherData = searchedWeatherDataOpt.get();
-        WeatherDataDTO searchedWeatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(searchedWeatherData);
-
-        return searchedWeatherDataDTO;
+        //WeatherDataDTO searchedWeatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(searchedWeatherData);
+        return WatherDataMapper.INSTANCE.weatherDataToWeatherDataDTO(searchedWeatherData);
     }
     // 안씀
     public WeatherData insertWeatherDataFromApi() throws Exception {

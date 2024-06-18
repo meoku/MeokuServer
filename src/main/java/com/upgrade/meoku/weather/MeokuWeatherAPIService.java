@@ -53,7 +53,7 @@ public class MeokuWeatherAPIService{ // 이거 이제 안씀
 
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uriString, String.class);
-
+        System.out.println(response.getHeaders());
         System.out.println(response.getBody());
         //성공 아니면 에러 뱉기
         if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
