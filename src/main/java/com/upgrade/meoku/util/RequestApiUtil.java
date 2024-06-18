@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
+import com.upgrade.meoku.weather.api.KMAApiResponseDTO;
 import com.upgrade.meoku.weather.api.KMAApiShortTermResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -166,37 +167,37 @@ public class RequestApiUtil {
     }
 
     //초단기실황 기상청 API 호출 후 받은 데이터로 원하는 데이터 파싱하기
-    public static WeatherDataDTO APIResponseToWeatherDataDTOForUltraShortTermAPI(List<Map<String, Object>> itemList){
+    public static WeatherDataDTO APIResponseToWeatherDataDTOForUltraShortTermAPI(List<KMAApiResponseDTO> itemList){
         WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
 
-        for (Map<String, Object> item : itemList) {
-            String category = (String) item.get("category");
+        for (KMAApiResponseDTO item : itemList) {
+            String category = item.getCategory();
 
             switch (category){
                 // 초단기 실황 부분
                 case "PTY":
-                    weatherDataDTO.setPrecipitationType((String) item.get("obsrValue"));
+                    weatherDataDTO.setPrecipitationType(item.getObsrValue());
                     break;
                 case "REH":
-                    weatherDataDTO.setHumidity((String) item.get("obsrValue"));
+                    weatherDataDTO.setHumidity(item.getObsrValue());
                     break;
                 case "RN1":
-                    weatherDataDTO.setHourlyPrecipitation((String) item.get("obsrValue"));
+                    weatherDataDTO.setHourlyPrecipitation(item.getObsrValue());
                     break;
                 case "UUU":
-                    weatherDataDTO.setUComponentWind((String) item.get("obsrValue"));
+                    weatherDataDTO.setUComponentWind(item.getObsrValue());
                     break;
                 case "VEC":
-                    weatherDataDTO.setWindDirection((String) item.get("obsrValue"));
+                    weatherDataDTO.setWindDirection(item.getObsrValue());
                     break;
                 case "VVV":
-                    weatherDataDTO.setVComponentWind((String) item.get("obsrValue"));
+                    weatherDataDTO.setVComponentWind(item.getObsrValue());
                     break;
                 case "WSD":
-                    weatherDataDTO.setWindSpeed((String) item.get("obsrValue"));
+                    weatherDataDTO.setWindSpeed(item.getObsrValue());
                     break;
                 case "T1H":
-                    weatherDataDTO.setTemperature((String) item.get("obsrValue"));
+                    weatherDataDTO.setTemperature(item.getObsrValue());
                     break;
             }
         }
