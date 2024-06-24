@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,9 +38,11 @@ public class AdminController {
     }
 
     @Operation(summary = "식단 이미지 OCR", description = "업로드된 이미지 or 파일을 받아 API를 이용해 식단 데이터를 반환한다")
-    @PostMapping(value = "/MenuImageUploadAndReturnMenuData")
+    @PostMapping(value = "/MenuImageUploadAndReturnMenuData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public List<MeokuDailyMenuDTO> MenuImageUploadAndReturnMenuData(@RequestParam("menuFile") MultipartFile menuFile) throws Exception {
+        // 업로드된 파일 없으면 임시로 null 값
+        if (menuFile.isEmpty()) {return null;}
         //이미지 -> 식단 데이터 로직
         List<MeokuDailyMenuDTO> menuData = adminService.MenuImageUploadAndReturnMenuData(menuFile);
         return menuData;
