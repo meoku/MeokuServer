@@ -19,5 +19,5 @@ public class MeokuDailyMenuDTO {
     private Timestamp updatedDate;
     private String updatedBy;
 
-    private List<MeokuDetailedMenuDTO> detailedMenuDTOList;
+    private List<MeokuDetailedMenuDTO> detailedMenuList;
 }

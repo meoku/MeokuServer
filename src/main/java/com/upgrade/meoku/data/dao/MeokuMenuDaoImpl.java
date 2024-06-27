@@ -112,8 +112,7 @@ public class MeokuMenuDaoImpl implements MeokuMenuDao{
                 detailedMenuDTOList.add(detailedMenuDTO);
             }
             //식단 상세목록 날별메뉴 DTO에 넣기
-            dailyMenuDTO.setDetailedMenuDTOList(detailedMenuDTOList);
-
+            dailyMenuDTO.setDetailedMenuList(detailedMenuDTOList);
             dailyMenuDTOList.add(dailyMenuDTO);
         }
 

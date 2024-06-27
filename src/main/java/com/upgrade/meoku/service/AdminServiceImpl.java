@@ -113,7 +113,7 @@ public class AdminServiceImpl implements AdminService{
 
             //상세 식단
             //param(only menuName)
-            for(MeokuDetailedMenuDTO detailedMenuDTO : dailyMenuDTO.getDetailedMenuDTOList()){
+            for(MeokuDetailedMenuDTO detailedMenuDTO : dailyMenuDTO.getDetailedMenuList()){
                 MeokuDetailedMenu savedDetailedMenu = new MeokuDetailedMenu();
                 savedDetailedMenu.setMeokuDailyMenu(savedDailyMenu);
                 savedDetailedMenu.setDailyMenuDate(detailedMenuDTO.getDailyMenuDate());
@@ -176,9 +176,9 @@ public class AdminServiceImpl implements AdminService{
                 MeokuDailyMenuDTO curMeokuDailyMenuDTO = returnList.get(idx/2);
 
                 //점심, 저녁 데이터가 아직 생성 안됐다면 생성
-                if(curMeokuDailyMenuDTO.getDetailedMenuDTOList() == null ||
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().isEmpty()) {
-                    curMeokuDailyMenuDTO.setDetailedMenuDTOList(new ArrayList<MeokuDetailedMenuDTO>());
+                if(curMeokuDailyMenuDTO.getDetailedMenuList() == null ||
+                        curMeokuDailyMenuDTO.getDetailedMenuList().isEmpty()) {
+                    curMeokuDailyMenuDTO.setDetailedMenuList(new ArrayList<MeokuDetailedMenuDTO>());
                 }
 
                 if (menuTypeParts[1].trim().equalsIgnoreCase("lunch")) {    //점심메뉴
@@ -203,7 +203,7 @@ public class AdminServiceImpl implements AdminService{
                         menu1.setMenu3Name(menuArray[4]);
                         menu1.setMenu4Name(menuArray[5]);
                         menu1.setMenu5Name(menuArray[6]);
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu1);
+                        curMeokuDailyMenuDTO.getDetailedMenuList().add(menu1);
                         //일품 (5개씩)
                         MeokuDetailedMenuDTO menu2 = new MeokuDetailedMenuDTO();
                         menu2.setDetailedMenuName("일품");
@@ -213,20 +213,20 @@ public class AdminServiceImpl implements AdminService{
                         menu2.setMenu2Name(menuArray[9]);
                         menu2.setMenu3Name(menuArray[10]);
                         menu2.setMenu4Name(menuArray[11]);
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu2);
+                        curMeokuDailyMenuDTO.getDetailedMenuList().add(menu2);
                         //Plus (뒤에서 3번째, 2번째)
                         MeokuDetailedMenuDTO menu3 = new MeokuDetailedMenuDTO();
                         menu3.setDetailedMenuName("점심Plus");
                         menu3.setMainMenuYn("N");
                         menu3.setMenu1Name(menuArray[menuArraySize-3]);
                         menu3.setMenu2Name(menuArray[menuArraySize-2]);
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu3);
+                        curMeokuDailyMenuDTO.getDetailedMenuList().add(menu3);
                         //샐러드팩 (뒤에서 첫번째)
                         MeokuDetailedMenuDTO menu4 = new MeokuDetailedMenuDTO();
                         menu4.setDetailedMenuName("샐러드팩");
                         menu4.setMainMenuYn("N");
                         menu4.setMainMenuName(menuArray[menuArraySize-1]);
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(menu4);
+                        curMeokuDailyMenuDTO.getDetailedMenuList().add(menu4);
 
                     }else{// 5개 이하일 때는 식당 오픈 X
                         curMeokuDailyMenuDTO.setHolidayFg("Y");
@@ -251,14 +251,14 @@ public class AdminServiceImpl implements AdminService{
                         dinerMenu.setMenu3Name(menuArray[3]);
                         dinerMenu.setMenu4Name(menuArray[4]);
                         //dinerMenu.setMenu5Name(menuArray[5]);
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(dinerMenu);
+                        curMeokuDailyMenuDTO.getDetailedMenuList().add(dinerMenu);
                         //Plus 뒤에 두개
                         MeokuDetailedMenuDTO dinerPlus = new MeokuDetailedMenuDTO();
                         dinerPlus.setDetailedMenuName("석식Plus");
                         dinerPlus.setMainMenuYn("N");
                         dinerPlus.setMenu1Name(menuArray[menuArraySize-2]);
                         dinerPlus.setMenu2Name(menuArray[menuArraySize-1]);
-                        curMeokuDailyMenuDTO.getDetailedMenuDTOList().add(dinerPlus);
+                        curMeokuDailyMenuDTO.getDetailedMenuList().add(dinerPlus);
                     }
                 }
 
