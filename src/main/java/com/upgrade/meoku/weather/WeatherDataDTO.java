@@ -44,6 +44,7 @@ public class WeatherDataDTO {
     private String windSpeed;
     @Schema(description = "기온")
     private String temperature;
-    /* 초단기 예보 */
-    // 당장은 필요 없어보임
+    /*자외선지수*/
+    @Schema(description = "0~2:낮음/3~5:보통/6~7:높음/8~10:매우높음/11이상:위험")
+    private String uvIndex;
 }

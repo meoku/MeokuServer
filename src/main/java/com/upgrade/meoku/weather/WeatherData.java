@@ -49,6 +49,9 @@ public class WeatherData {
     private String windSpeed;           // 풍속
     @Column(name = "TEMPERATURE")
     private String temperature;         // 기온
+    /*자외선지수*/
+    @Column(name = "UV_INDEX")
+    private String uvIndex;             //자외선지수
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE")

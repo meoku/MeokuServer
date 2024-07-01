@@ -5,6 +5,7 @@ import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.api.KMAAPIShortTerm;
 import com.upgrade.meoku.weather.api.KMAAPIUltraShortTerm;
 import com.upgrade.meoku.weather.api.KMAApiConstants;
+import com.upgrade.meoku.weather.api.KMAApiUVIndex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class MeokuWeatherAPIServiceTest {
     private KMAAPIUltraShortTerm kmaAPIUltraShortTerm;
     @Autowired
     private KMAAPIShortTerm kmaAPIShortTerm;
+    @Autowired
+    private KMAApiUVIndex kmaApiUVIndex;
 
 
     private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
@@ -124,6 +127,16 @@ public class MeokuWeatherAPIServiceTest {
     public void reuqestShortTermForecast() throws Exception {
         WeatherDataDTO weatherDataDTO = meokuWeatherAPIService.getShortTermForecast();
         System.out.println(weatherDataDTO.toString());
+    }
+
+    @Test
+    @DisplayName("자외선지수 API 테스트")
+    public void requestUVIndex() throws Exception {
+        String requestDate = RequestApiUtil.getTodayDate();
+        String requestTime = RequestApiUtil.getCurrentTimeToShort();
+
+        WeatherDataDTO weatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
+        System.out.println(weatherDataDTO);
     }
 
     @Test

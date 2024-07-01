@@ -74,6 +74,17 @@ public class RequestApiUtil {
 
         return hourOnlyTime;
     }
+    // 기상청 API 호출을 위한 현재 시간 가져오기2 ex) 05
+    public static String getCurrentTimeToShort(){
+        // 현재 (날짜) + 시간 가져오기
+        LocalDateTime currentDateForTime = LocalDateTime.now();
+
+        // 시간을 "HH" 형식의 문자열로 포맷
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("HH");
+        String formattedTime = currentDateForTime.format(formatter2);
+
+        return formattedTime;
+    }
     // 단기에보 호출을 위한 정해진 시간 가져오기 - 기상청 API
     public static String getRequestTimeForShortTermForecastRequest(){
         // 현재 시간
