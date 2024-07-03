@@ -21,7 +21,7 @@ public class MeokuScheduledTasks {
     private final MeokuWeatherService meokuWeatherService;
     private final KMAAPIShortTerm kmaapiShortTerm;
     private final KMAAPIUltraShortTerm kmaapiUltraShortTerm;
-    private final KMAApiUVIndex kmaApiUVIndex
+    private final KMAApiUVIndex kmaApiUVIndex;
     //배식순서 관련
     private final MeokuMealOrderService mealOrderService;
 
