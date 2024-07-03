@@ -77,15 +77,30 @@ public class MeokuScheduledTasks {
         String requestDate = RequestApiUtil.getTodayDate();
         String requestTime = RequestApiUtil.getCurrentTime();
 
-        System.out.println("자외선 API 실행");
-        WeatherDataDTO UVIndexDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
-        WeatherData newUpdatedWeatherData1 = meokuWeatherService.updateWeatherDataFromApi(targetDate, UVIndexDataDTO);
-        System.out.println("체감온도 API 실행");
-        WeatherDataDTO percivedTempDataDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
-        WeatherData newUpdatedWeatherData2 = meokuWeatherService.updateWeatherDataFromApi(targetDate, percivedTempDataDTO);
+        int errorResult = 0;
+        try {
+            System.out.println("자외선 API 실행");
+            WeatherDataDTO UVIndexDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
+            WeatherData newUpdatedWeatherData1 = meokuWeatherService.updateWeatherDataFromApi(targetDate, UVIndexDataDTO);
+        }catch (Exception e){
+            errorResult++;
+            e.printStackTrace();
+        }
+
+        WeatherData newUpdatedWeatherData2 = new WeatherData();
+        try {
+            System.out.println("체감온도 API 실행");
+            WeatherDataDTO percivedTempDataDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
+            newUpdatedWeatherData2 = meokuWeatherService.updateWeatherDataFromApi(targetDate, percivedTempDataDTO);
+        }catch (Exception e){
+            errorResult++;
+            e.printStackTrace();
+        }
 
         System.out.println("스케줄러가 종료되었습니다: " + java.time.LocalDateTime.now());
-        System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData2.toString());
+        if (errorResult == 0) {System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData2.toString());}
+        else{System.out.println("에러 발생했습니다.");}
+
     }
 
     @Scheduled(cron = "0 0 0 * * SAT") // 매주 토요일 00시
