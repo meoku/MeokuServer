@@ -56,7 +56,7 @@ public class KMAApiUVIndex implements  KMAApiService{
             List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
             WeatherDataDTO meokuWeather = new WeatherDataDTO();
-            String UVIndex = (String) itemList.get(0).get("h0");
+            String UVIndex = (String) itemList.get(0).get("h0");// 요청시간의 자외선 지수
 
             meokuWeather.setUvIndex(UVIndex);
             return meokuWeather;

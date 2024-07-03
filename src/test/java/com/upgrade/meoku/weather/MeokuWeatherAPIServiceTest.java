@@ -159,7 +159,17 @@ public class MeokuWeatherAPIServiceTest {
 
         //초단기 실황 데이터 저장
         WeatherData newUpdatedWeatherData = meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO1);
+    }
 
+    @Test
+    @DisplayName("스케쥴러에서 사용할 로직 그대로 사용해보기")
+    public void requestAndSaveUVIndex() throws Exception {
+        String requestDate = RequestApiUtil.getTodayDate();
+        String requestTime = RequestApiUtil.getCurrentTimeToShort();
+        LocalDate targetDate = LocalDate.now();
 
+        WeatherDataDTO newWeatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
+        //초단기 실황 데이터 저장
+        WeatherData newUpdatedWeatherData = meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO);
     }
 }
