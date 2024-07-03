@@ -47,4 +47,6 @@ public class WeatherDataDTO {
     /*자외선지수*/
     @Schema(description = "0~2:낮음/3~5:보통/6~7:높음/8~10:매우높음/11이상:위험")
     private String uvIndex;
+    @Schema(description = "- : 29 미만 / 관심 : 29 이상 31 미만소 / 주의 : 31 이상 34 미만 / 경고 : 34 이상 37 미만 /위험 : 37 이상")
+    private String percivedTemperature; //체감온도
 }

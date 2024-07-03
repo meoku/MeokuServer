@@ -1,9 +1,11 @@
-package com.upgrade.meoku.weather.api;
+package com.upgrade.meoku.weather.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
+import com.upgrade.meoku.weather.api.KMAApiConstants;
+import com.upgrade.meoku.weather.api.KMAApiResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -15,22 +17,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
+//초단기 실황
 @Component
-public class KMAApiUVIndex implements  KMAApiService{
+public class KMAAPIUltraShortTerm implements KMAApiService {
+
     private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
+
     @Autowired
-    public KMAApiUVIndex(RequestApiConfig requestApiConfig) {
+    public KMAAPIUltraShortTerm(RequestApiConfig requestApiConfig) {
         this.requestApiConfig = requestApiConfig;
     }
 
     @Override
     public WeatherDataDTO requestWeatherApi(String requestDate, String reqeustTime) throws Exception {
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(KMAApiConstants.UV_INDEX_API_URL)
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(KMAApiConstants.ULTRA_SHORT_TERM_CURRENT_CONDITIONS_API_URL)
+//                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
                 .queryParam("pageNo", 1)
-                .queryParam("numOfRows", 300) //하루 예보는 이론상 최대 96개
+                .queryParam("numOfRows", 1000)
                 .queryParam("dataType", "JSON")
-                .queryParam("areaNo", KMAApiConstants.MY_COMPANY_LOCATION_CODE)
-                .queryParam("time", requestDate + reqeustTime);
+                .queryParam("base_date", requestDate)
+                .queryParam("base_time", reqeustTime)
+                .queryParam("nx", KMAApiConstants.MY_COMPANY_LOCATION_X)
+                .queryParam("ny", KMAApiConstants.MY_COMPANY_LOCATION_Y);
 
         String uriString = uriBuilder.toUriString();
         // 이미 인코딩된 serviceKey 추가 (UriComponentsBuilder 에서 인코딩 가능성이 있음)
@@ -45,6 +55,7 @@ public class KMAApiUVIndex implements  KMAApiService{
 
         //성공 아니면 에러 뱉기 (에러일때는 JSON으로 명시해도 xml로 값이 넘어옴)
         if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")) throw new Exception();
+        //if (!response.getStatusCode().is2xxSuccessful()) throw new Exception();
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -55,10 +66,13 @@ public class KMAApiUVIndex implements  KMAApiService{
             Map<String, Object> items = (Map<String, Object>) body.get("items");
             List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
 
-            WeatherDataDTO meokuWeather = new WeatherDataDTO();
-            String UVIndex = (String) itemList.get(0).get("h0");// 요청시간의 자외선 지수
+            // Map<String, Object> 형태의 객체를 -> KMAApiResponseDTO 변환
+            List<KMAApiResponseDTO> weatherForecastList = itemList.stream()
+                    .map(item -> objectMapper.convertValue(item, KMAApiResponseDTO.class))
+                    .collect(Collectors.toList());
 
-            meokuWeather.setUvIndex(UVIndex);
+            WeatherDataDTO meokuWeather = RequestApiUtil.APIResponseToWeatherDataDTOForUltraShortTermAPI(weatherForecastList);
+
             return meokuWeather;
         } catch (Exception e) {
             e.printStackTrace();

@@ -52,6 +52,9 @@ public class WeatherData {
     /*자외선지수*/
     @Column(name = "UV_INDEX")
     private String uvIndex;             //자외선지수
+    /*체감온도*/
+    @Column(name = "PERCIVED_TEMPERATURE")
+    private String percivedTemperature; //체감온도
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE")

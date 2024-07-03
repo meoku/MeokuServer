@@ -2,10 +2,11 @@ package com.upgrade.meoku.weather;
 
 import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
-import com.upgrade.meoku.weather.api.KMAAPIShortTerm;
-import com.upgrade.meoku.weather.api.KMAAPIUltraShortTerm;
+import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
+import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
 import com.upgrade.meoku.weather.api.KMAApiConstants;
-import com.upgrade.meoku.weather.api.KMAApiUVIndex;
+import com.upgrade.meoku.weather.api.service.KMAApiPerTemp;
+import com.upgrade.meoku.weather.api.service.KMAApiUVIndex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class MeokuWeatherAPIServiceTest {
     private KMAAPIShortTerm kmaAPIShortTerm;
     @Autowired
     private KMAApiUVIndex kmaApiUVIndex;
+    @Autowired
+    private KMAApiPerTemp kmaApiPerTemp;
 
 
     private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
@@ -162,14 +165,25 @@ public class MeokuWeatherAPIServiceTest {
     }
 
     @Test
-    @DisplayName("스케쥴러에서 사용할 로직 그대로 사용해보기")
+    @DisplayName("스케쥴러에서 사용할 UVIndex 저장 로직 그대로 사용해보기")
     public void requestAndSaveUVIndex() throws Exception {
         String requestDate = RequestApiUtil.getTodayDate();
         String requestTime = RequestApiUtil.getCurrentTimeToShort();
         LocalDate targetDate = LocalDate.now();
 
         WeatherDataDTO newWeatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
-        //초단기 실황 데이터 저장
         WeatherData newUpdatedWeatherData = meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO);
     }
+
+    @Test
+    @DisplayName("스케쥴러에서 사용할 UVIndex 저장 로직 그대로 사용해보기")
+    public void requestAndSavePercivedTemp() throws Exception {
+        String requestDate = RequestApiUtil.getTodayDate();
+        String requestTime = RequestApiUtil.getCurrentTimeToShort();
+        LocalDate targetDate = LocalDate.now();
+
+        WeatherDataDTO newWeatherDataDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
+        WeatherData newUpdatedWeatherData = meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO);
+    }
+
 }

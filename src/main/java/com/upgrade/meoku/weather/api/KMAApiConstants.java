@@ -10,7 +10,8 @@ public class KMAApiConstants {
 
     //자외선지수
     public static final String UV_INDEX_API_URL = "http://apis.data.go.kr/1360000/LivingWthrIdxServiceV4/getUVIdxV4";
-
+    //체감온도
+    public static final String PERCIVED_TEMP_API_URL = "https://apis.data.go.kr/1360000/LivingWthrIdxServiceV4/getSenTaIdxV4";
     //도곡동 위치정보
     public static final int MY_COMPANY_LOCATION_X = 61;
     public static final int MY_COMPANY_LOCATION_Y = 125;

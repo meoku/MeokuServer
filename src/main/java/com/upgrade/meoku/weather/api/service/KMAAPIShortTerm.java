@@ -1,9 +1,11 @@
-package com.upgrade.meoku.weather.api;
+package com.upgrade.meoku.weather.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
+import com.upgrade.meoku.weather.api.KMAApiConstants;
+import com.upgrade.meoku.weather.api.KMAApiShortTermResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

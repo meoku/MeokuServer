@@ -6,9 +6,10 @@ import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.MeokuWeatherService;
 import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
-import com.upgrade.meoku.weather.api.KMAAPIShortTerm;
-import com.upgrade.meoku.weather.api.KMAAPIUltraShortTerm;
-import com.upgrade.meoku.weather.api.KMAApiUVIndex;
+import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
+import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
+import com.upgrade.meoku.weather.api.service.KMAApiPerTemp;
+import com.upgrade.meoku.weather.api.service.KMAApiUVIndex;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ public class MeokuScheduledTasks {
     private final KMAAPIShortTerm kmaapiShortTerm;
     private final KMAAPIUltraShortTerm kmaapiUltraShortTerm;
     private final KMAApiUVIndex kmaApiUVIndex;
+    private final KMAApiPerTemp kmaApiPerTemp;
     //배식순서 관련
     private final MeokuMealOrderService mealOrderService;
 
@@ -29,11 +31,13 @@ public class MeokuScheduledTasks {
                                KMAAPIShortTerm kmaapiShortTerm,
                                KMAAPIUltraShortTerm kmaapiUltraShortTerm,
                                KMAApiUVIndex kmaApiUVIndex,
+                               KMAApiPerTemp kmaApiPerTemp,
                                MeokuMealOrderService mealOrderService) {
         this.meokuWeatherService = meokuWeatherService;
         this.kmaapiShortTerm = kmaapiShortTerm;
         this.kmaapiUltraShortTerm = kmaapiUltraShortTerm;
         this.kmaApiUVIndex = kmaApiUVIndex;
+        this.kmaApiPerTemp = kmaApiPerTemp;
         this.mealOrderService = mealOrderService;
     }
     //기상청 API - 초단기 실황 정보 가져오기실행
@@ -64,7 +68,7 @@ public class MeokuScheduledTasks {
         System.out.println("스케줄러가 종료되었습니다: " + java.time.LocalDateTime.now());
         System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData.toString());
     }
-    //기상청 API - 자외선 지수 0시부터 3시간간격으로 데이터 나오는데 아침부터 밤까지 만 실행되게
+    //기상청 API - 자외선 지수 + 체감온도 0시부터 3시간간격으로 데이터 나오는데 아침부터 밤까지 만 실행되게
     @Scheduled(cron = "0 1 6,9,12,15,18,21 * * *")
     public void insertUVIndex() throws Exception {
         System.out.println("스케줄러가 실행되었습니다: " + java.time.LocalDateTime.now());
@@ -73,11 +77,15 @@ public class MeokuScheduledTasks {
         String requestDate = RequestApiUtil.getTodayDate();
         String requestTime = RequestApiUtil.getCurrentTime();
 
-        WeatherDataDTO newWeatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
-        WeatherData newUpdatedWeatherData = meokuWeatherService.updateWeatherDataFromApi(targetDate, newWeatherDataDTO);
+        System.out.println("자외선 API 실행");
+        WeatherDataDTO UVIndexDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
+        WeatherData newUpdatedWeatherData1 = meokuWeatherService.updateWeatherDataFromApi(targetDate, UVIndexDataDTO);
+        System.out.println("체감온도 API 실행");
+        WeatherDataDTO percivedTempDataDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
+        WeatherData newUpdatedWeatherData2 = meokuWeatherService.updateWeatherDataFromApi(targetDate, percivedTempDataDTO);
 
         System.out.println("스케줄러가 종료되었습니다: " + java.time.LocalDateTime.now());
-        System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData.toString());
+        System.out.println("저장된 날씨 데이터: \n" + newUpdatedWeatherData2.toString());
     }
 
     @Scheduled(cron = "0 0 0 * * SAT") // 매주 토요일 00시

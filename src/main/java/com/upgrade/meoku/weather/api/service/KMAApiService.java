@@ -1,4 +1,4 @@
-package com.upgrade.meoku.weather.api;
+package com.upgrade.meoku.weather.api.service;
 
 import com.upgrade.meoku.weather.WeatherDataDTO;
 

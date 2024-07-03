@@ -2,21 +2,26 @@ package com.upgrade.meoku.weather.api;
 
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
+import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
+import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
+import com.upgrade.meoku.weather.api.service.KMAApiPerTemp;
+import com.upgrade.meoku.weather.api.service.KMAApiUVIndex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 @SpringBootTest
 public class KMAApiServiceTest {
 
     @Autowired
     KMAAPIUltraShortTerm kmaapiUltraShortTerm;
-
     @Autowired
     KMAAPIShortTerm kmaApiShortTermServices;
+    @Autowired
+    KMAApiUVIndex kmaApiUVIndex;
+    @Autowired
+    KMAApiPerTemp kmaApiPerTemp;
 
     @Test
     @DisplayName("위임 구조로 만든 초단기 실황 API 호출 테스트")
@@ -45,4 +50,27 @@ public class KMAApiServiceTest {
         System.out.println(requestedWeatherDTO.toString());
 
     }
+
+    @Test
+    @DisplayName("위임 구조로 만든 자외선지수 API 테스트")
+    public void KMAApiUVIndexTest() throws Exception {
+        String requestDate = RequestApiUtil.getTodayDate();
+        String requestTime = RequestApiUtil.getCurrentTimeToShort();
+
+        WeatherDataDTO weatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
+        System.out.println(weatherDataDTO);
+    }
+
+    @Test
+    @DisplayName("위임 구조로 만든 체감온도 API 호출 테스트")
+    public void KMAApiPercivedTempTest() throws Exception {
+
+        // 현재 날짜
+        String requestDate = RequestApiUtil.getTodayDate();
+        String requestTime = RequestApiUtil.getCurrentTimeToShort();
+
+        WeatherDataDTO requestedWeatherDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
+        System.out.println(requestedWeatherDTO.toString());
+    }
+
 }
