@@ -19,6 +19,8 @@ public class SubMenuItem {
     private Integer recentMenuDetailsId;
     @Column(name = "RECENT_MENU_DETAILS_URL")
     private String recentMenuDetailsUrl;
+    @Column(name = "MAIN_MENU_YN")
+    private String mainMenuYn;
     @Column(name = "MENU_ITEM_NAME")
     private String menuItemName;
     @Column(name = "FREQUENCY_CNT")

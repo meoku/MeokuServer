@@ -18,6 +18,8 @@ public class SubMenuDetailsItemBridge {
     private Integer menuItemId;
     @Column(name = "MENU_ITEM_NAME")
     private String menuItemName;
+    @Column(name = "MAIN_MENU_YN")
+    private String mainMenuYn;
 
     @ManyToOne
     @JoinColumn(name = "MENU_DETAILS_ID")

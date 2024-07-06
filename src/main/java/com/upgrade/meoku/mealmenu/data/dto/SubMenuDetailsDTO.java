@@ -13,9 +13,9 @@ public class SubMenuDetailsDTO {
     private Integer dailyMenuId;
     private Timestamp dailyMenuDate;
     private String dailyMenuCategory;
-    private String mainMenuYn;
+    private String mainMealYn;
     private String menuDetailsName;
     private String menuDetailsImgUrl;
 
-    private List<SubMenuDetailsItemBridgeDTO> subMenuDetailsList = new ArrayList<>();
+    private List<SubMenuDetailsItemBridgeDTO> subBridgeList = new ArrayList<>();
 }

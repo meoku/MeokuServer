@@ -12,6 +12,7 @@ public class SubMenuItemDTO {
 
     private Integer recentMenuDetailsId;
     private String recentMenuDetailsUrl;
+    private String mainMenuYn;
     private String menuItemName;
     private Integer frequencyCnt;
     private Integer likesCnt;

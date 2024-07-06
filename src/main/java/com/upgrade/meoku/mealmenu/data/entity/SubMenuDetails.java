@@ -26,8 +26,8 @@ public class SubMenuDetails {
     private Timestamp dailyMenuDate;
     @Column(name = "DAILY_MENU_CATEGORY")
     private String dailyMenuCategory;
-    @Column(name = "MAIN_MENU_YN")
-    private String mainMenuYn;
+    @Column(name = "MAIN_MEAL_YN")
+    private String maiMealYn;
     @Column(name = "MENU_DETAILS_NAME")
     private String menuDetailsName;
     @Column(name = "MENU_DETAILS_IMG_URL")

@@ -9,6 +9,7 @@ public class SubMenuDetailsItemBridgeDTO {
     private Integer menuDetailsId;
     private Integer menuItemId;
     private String menuItemName;
+    private String mainMenuYn;
 
     private SubMenuDetailsDTO SubmenuDetails;
     private SubMenuItemDTO SubmenuItem;
