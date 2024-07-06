@@ -29,6 +29,6 @@ public class SubMenuDetails {
     @Column(name = "MENU_DETAILS_IMG_URL")
     private String menuDetailsImgUrl;
 
-    @OneToMany(mappedBy = "SubMenuDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SubMenuDetailsItemBridge> menuDetailsList = new ArrayList<>();
+    @OneToMany(mappedBy = "subMenuDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SubMenuDetailsItemBridge> subBridgeList = new ArrayList<>();
 }

@@ -12,18 +12,17 @@ public class SubMenuDetailsItemBridge {
     @Column(name = "BRIDGE_ID")
     private Integer bridgeId;
 
-    @Column(name = "MENU_DETAILS_ID")
-    private Integer menuDetailsId;
-    @Column(name = "MENU_ITEM_ID")
+//    @Column(name = "MENU_DETAILS_ID")
+//    private Integer menuDetailsId;
+//    @Column(name = "MENU_ITEM_ID")
     private Integer menuItemId;
     @Column(name = "MENU_ITEM_NAME")
     private String menuItemName;
 
     @ManyToOne
     @JoinColumn(name = "MENU_DETAILS_ID")
-    private SubMenuDetails menuDetails;
-
+    private SubMenuDetails subMenuDetails;
     @ManyToOne
     @JoinColumn(name = "MENU_ITEM_ID")
-    private SubMenuItem menuItem;
+    private SubMenuItem subMenuItem;
 }

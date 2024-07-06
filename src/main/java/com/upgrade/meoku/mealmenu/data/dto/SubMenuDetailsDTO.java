@@ -17,5 +17,5 @@ public class SubMenuDetailsDTO {
     private String menuDetailsName;
     private String menuDetailsImgUrl;
 
-    private List<SubMenuDetailsItemBridgeDTO> menuDetailsList = new ArrayList<>();
+    private List<SubMenuDetailsItemBridgeDTO> subMenuDetailsList = new ArrayList<>();
 }

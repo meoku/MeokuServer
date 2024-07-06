@@ -10,6 +10,6 @@ public class SubMenuDetailsItemBridgeDTO {
     private Integer menuItemId;
     private String menuItemName;
 
-    private SubMenuDetailsDTO menuDetails;
-    private SubMenuItemDTO menuItem;
+    private SubMenuDetailsDTO SubmenuDetails;
+    private SubMenuItemDTO SubmenuItem;
 }

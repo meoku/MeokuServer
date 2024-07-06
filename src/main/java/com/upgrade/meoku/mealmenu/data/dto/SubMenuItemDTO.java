@@ -17,5 +17,5 @@ public class SubMenuItemDTO {
     private Integer likesCnt;
     private Integer calories;
 
-    private List<SubMenuDetailsItemBridgeDTO> bridgeList = new ArrayList<>();
+    private List<SubMenuDetailsItemBridgeDTO> subBridgeList = new ArrayList<>();
 }

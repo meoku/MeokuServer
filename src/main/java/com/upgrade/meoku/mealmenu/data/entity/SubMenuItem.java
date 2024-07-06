@@ -28,6 +28,6 @@ public class SubMenuItem {
     @Column(name = "CALORIES")
     private Integer calories;
 
-    @OneToMany(mappedBy = "SubMenuItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SubMenuDetailsItemBridge> bridgeList = new ArrayList<>();
+    @OneToMany(mappedBy = "subMenuItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SubMenuDetailsItemBridge> subBridgeList = new ArrayList<>();
 }
