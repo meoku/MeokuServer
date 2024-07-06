@@ -16,7 +16,9 @@ import java.util.Map;
 
 @Component
 public class KMAApiUVIndex implements  KMAApiService{
+
     private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
+
     @Autowired
     public KMAApiUVIndex(RequestApiConfig requestApiConfig) {
         this.requestApiConfig = requestApiConfig;

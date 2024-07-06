@@ -55,8 +55,9 @@ public class KMAApiServiceTest {
     @DisplayName("위임 구조로 만든 자외선지수 API 테스트")
     public void KMAApiUVIndexTest() throws Exception {
         String requestDate = RequestApiUtil.getTodayDate();
-        String requestTime = RequestApiUtil.getCurrentTimeToShort();
-
+//        String requestTime = RequestApiUtil.getCurrentTimeToShort();
+        String requestTime = "15";
+        System.out.println(requestTime);
         WeatherDataDTO weatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
         System.out.println(weatherDataDTO);
     }

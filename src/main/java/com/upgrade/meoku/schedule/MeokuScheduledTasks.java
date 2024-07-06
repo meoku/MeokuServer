@@ -75,7 +75,7 @@ public class MeokuScheduledTasks {
         LocalDate targetDate = LocalDate.now();
 
         String requestDate = RequestApiUtil.getTodayDate();
-        String requestTime = RequestApiUtil.getCurrentTime();
+        String requestTime = RequestApiUtil.getCurrentTimeToShort();
 
         int errorResult = 0;
         try {
