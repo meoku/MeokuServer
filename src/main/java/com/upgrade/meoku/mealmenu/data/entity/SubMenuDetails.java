@@ -1,5 +1,6 @@
 package com.upgrade.meoku.mealmenu.data.entity;
 
+import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,8 +17,11 @@ public class SubMenuDetails {
     @Column(name = "MENU_DETAILS_ID")
     private Integer menuDetailsId;
 
-    @Column(name = "DAILY_MENU_ID")
-    private Integer dailyMenuId;
+    //MEOKU_DAILY_MENU와 관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DAILY_MENU_ID")
+    private SubDailyMenu subDailyMenu;
+
     @Column(name = "DAILY_MENU_DATE")
     private Timestamp dailyMenuDate;
     @Column(name = "DAILY_MENU_CATEGORY")
