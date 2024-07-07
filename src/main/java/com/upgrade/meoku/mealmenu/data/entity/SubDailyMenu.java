@@ -12,7 +12,7 @@ import java.util.List;
 //일자별 식단
 @Data
 @Entity
-@Table(name = "MEOKU_DAILY_MENU")
+@Table(name = "SUB_DAILY_MENU")
 public class SubDailyMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

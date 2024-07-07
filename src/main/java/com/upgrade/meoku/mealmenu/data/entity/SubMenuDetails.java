@@ -1,6 +1,5 @@
 package com.upgrade.meoku.mealmenu.data.entity;
 
-import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,7 +26,7 @@ public class SubMenuDetails {
     @Column(name = "DAILY_MENU_CATEGORY")
     private String dailyMenuCategory;
     @Column(name = "MAIN_MEAL_YN")
-    private String maiMealYn;
+    private String mainMealYn;
     @Column(name = "MENU_DETAILS_NAME")
     private String menuDetailsName;
     @Column(name = "MENU_DETAILS_IMG_URL")

@@ -14,8 +14,6 @@ public class SubMenuDetailsItemBridge {
 
 //    @Column(name = "MENU_DETAILS_ID")
 //    private Integer menuDetailsId;
-//    @Column(name = "MENU_ITEM_ID")
-    private Integer menuItemId;
     @Column(name = "MENU_ITEM_NAME")
     private String menuItemName;
     @Column(name = "MAIN_MENU_YN")
