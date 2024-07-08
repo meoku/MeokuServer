@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 //일자별 식단
@@ -42,7 +43,7 @@ public class SubDailyMenu {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     // 1 : N
-    @OneToMany(mappedBy = "subDailyMenu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<SubMenuDetails> menuDetailsList;
+    @OneToMany(mappedBy = "subDailyMenu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SubMenuDetails> menuDetailsList = new ArrayList<>();
 
 }

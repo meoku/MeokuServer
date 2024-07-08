@@ -5,6 +5,7 @@ import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
+import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
 import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetailsItemBridge;
@@ -13,12 +14,19 @@ import com.upgrade.meoku.mealmenu.data.repository.SubDailyMenuRepository;
 import com.upgrade.meoku.mealmenu.data.repository.SubMenuDetailsItemBridgeRepository;
 import com.upgrade.meoku.mealmenu.data.repository.SubMenuDetailsRepository;
 import com.upgrade.meoku.mealmenu.data.repository.SubMenuItemRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.upgrade.meoku.mealmenu.data.mapper.MenuMapper.MENU_MAPPER_INSTANCE;
 
 @Component
 public class SubMenuDaoImpl implements SubMenuDao{
@@ -95,8 +103,28 @@ public class SubMenuDaoImpl implements SubMenuDao{
         return optDailyMenu.get();
     }
 
+    //주간 메뉴데이터 가져오기
     @Override
-    public List<SubDailyMenu> searchDailyMenuOfWeekDays(Timestamp startDate, Timestamp endDate) {
-        return null;
+    public List<SubDailyMenuDTO> searchDailyMenuOfWeek(Timestamp startDate, Timestamp endDate) {
+        //일일 데이터 가져오기
+        List<SubDailyMenu> srchDailyMenuList = dailyMenuRepository.findByMenuDateBetween(startDate, endDate);
+
+        for(SubDailyMenu dm : srchDailyMenuList){
+            List<SubMenuDetails> srchMenuDetailsList = menuDetailsRepository.findBySubDailyMenu(dm);
+            dm.setMenuDetailsList(srchMenuDetailsList);
+
+            for(SubMenuDetails md : dm.getMenuDetailsList()){
+                List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
+                md.setSubBridgeList(srchBridgeList);
+            }
+        }
+
+
+        List<SubDailyMenuDTO> srchDailyMenuDTOList = new ArrayList<>();
+        for(SubDailyMenu srchDailyMenu : srchDailyMenuList){
+            srchDailyMenuDTOList.add(MENU_MAPPER_INSTANCE.dailyMenuEntityToDto(srchDailyMenu));
+        }
+
+        return srchDailyMenuDTOList;
     }
 }

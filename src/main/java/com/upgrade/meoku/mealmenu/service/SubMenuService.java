@@ -4,9 +4,11 @@ import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SubMenuService {
     public List<SubDailyMenuDTO> MenuImageUploadAndReturnMenuData(MultipartFile menuFile) throws Exception;
     public void WeekMenuUpload(List<SubDailyMenuDTO> weekMenu);
+    public List<SubDailyMenuDTO> searchDailyMenuOfWeek(LocalDate date);
 }

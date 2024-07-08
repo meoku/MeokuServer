@@ -16,10 +16,10 @@ public class SubDailyMenuDTO {
     private Timestamp menuDate;
     private String holidayFg;
     private String restaurantOpenFg;
-    private Timestamp createdDate;
-    private String createdBy;
-    private Timestamp updatedDate;
-    private String updatedBy;
+//    private Timestamp createdDate;
+//    private String createdBy;
+//    private Timestamp updatedDate;
+//    private String updatedBy;
 
     private List<SubMenuDetailsDTO> menuDetailsList = new ArrayList<>();;
 }

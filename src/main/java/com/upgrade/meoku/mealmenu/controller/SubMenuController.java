@@ -4,18 +4,21 @@ import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
 import com.upgrade.meoku.mealmenu.service.SubMenuService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-@Controller
+@Tag(name = "식단 컨트롤러", description = "식단과 관련된 모든 요청")
+@RestController
+@RequestMapping("/api/v1/meokumenu")
 public class SubMenuController {
 
     private final SubMenuService subMenuService;
@@ -44,6 +47,19 @@ public class SubMenuController {
         //식단 정보 저장
         subMenuService.WeekMenuUpload(weekMenu);
         return "Success";
+    }
+
+    @Operation(summary = "new 주간별 식단메뉴 불러오기 -  리팩터링", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
+    @PostMapping(value = "weekdaysmenu")
+    public List<SubDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
+        //String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
+        String date = (String)jsonData.get("date");
+        LocalDate transDate = LocalDate.parse(date);
+
+        List<SubDailyMenuDTO> resultMealMenuList = null;
+        resultMealMenuList = subMenuService.searchDailyMenuOfWeek(transDate);
+
+        return resultMealMenuList;
     }
 
 }
