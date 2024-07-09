@@ -109,17 +109,17 @@ public class SubMenuDaoImpl implements SubMenuDao{
         //일일 데이터 가져오기
         List<SubDailyMenu> srchDailyMenuList = dailyMenuRepository.findByMenuDateBetween(startDate, endDate);
 
+        //상세 식단 가져오기
         for(SubDailyMenu dm : srchDailyMenuList){
             List<SubMenuDetails> srchMenuDetailsList = menuDetailsRepository.findBySubDailyMenu(dm);
             dm.setMenuDetailsList(srchMenuDetailsList);
-
+            //Bridge 가져오기(반 정규화로 Bridge에 메뉴이름, 메인 여부 담아놓음)
             for(SubMenuDetails md : dm.getMenuDetailsList()){
                 List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
                 md.setSubBridgeList(srchBridgeList);
             }
         }
-
-
+        // mapStruct를 이용해 Entity -> DTO로 변환
         List<SubDailyMenuDTO> srchDailyMenuDTOList = new ArrayList<>();
         for(SubDailyMenu srchDailyMenu : srchDailyMenuList){
             srchDailyMenuDTOList.add(MENU_MAPPER_INSTANCE.dailyMenuEntityToDto(srchDailyMenu));

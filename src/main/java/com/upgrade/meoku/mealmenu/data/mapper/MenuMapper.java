@@ -1,9 +1,6 @@
 package com.upgrade.meoku.mealmenu.data.mapper;
 
-import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuDetailsDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuDetailsItemBridgeDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
+import com.upgrade.meoku.mealmenu.data.dto.*;
 import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetailsItemBridge;
@@ -30,4 +27,11 @@ public interface MenuMapper {
 
     SubMenuItem menuItemDtoToEntity(SubMenuItemDTO menuItemDTO);
     SubMenuItemDTO menuItemEntityToDto(SubMenuItem menuItem);
+
+//    SubMenuTag menuTagDtoToEntity(SubMenuTagDTO menuTagDTO);
+//    SubMenuTagDTO menuTagEntityToDto(SubMenuTag menuTag);
+
+//    SubMenuAllergies menuAllergiesDtoToEntity(SubMenuAllergiesDTO menuAllergiesDTO);
+//    SubMenuAllergiesDTO menuAllergiesEntityToDto(SubMenuAllergies menuAllergies);
+
 }

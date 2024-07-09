@@ -1,4 +1,4 @@
-package com.upgrade.meoku.newmealmenu;
+package com.upgrade.meoku.newmealmenu.dao;
 
 import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
@@ -24,7 +24,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @SpringBootTest
-public class newMealMenu {
+public class newMealMenuDaoTest {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -66,6 +66,7 @@ public class newMealMenu {
     }
 
     @Test
+    @Disabled
     @DisplayName("저장된 식단데이터 가져오기 - 파기")
     public void searchDailyMenuOfWeek(){
         LocalDate date = LocalDate.of(2024, 07, 8);
