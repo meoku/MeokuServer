@@ -1,6 +1,8 @@
 package com.upgrade.meoku.controller;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
+import com.upgrade.meoku.mealmenu.service.SubMenuService;
 import com.upgrade.meoku.menuOrder.MeokuMealOrder;
 import com.upgrade.meoku.menuOrder.MeokuMealOrderService;
 import com.upgrade.meoku.weather.MeokuWeatherService;
@@ -28,14 +30,16 @@ public class MainController {
     private final MainService mainService;
     private final MeokuMealOrderService meokuMealOrderService;
     private final MeokuWeatherService meokuWeatherService;
+    private final SubMenuService menuService;
 
     @Autowired
     public MainController(MainService mainService,
                           MeokuMealOrderService meokuMealOrderService,
-                          MeokuWeatherService meokuWeatherService){
+                          MeokuWeatherService meokuWeatherService, SubMenuService menuService){
         this.mainService= mainService;
         this.meokuMealOrderService = meokuMealOrderService;
         this.meokuWeatherService = meokuWeatherService;
+        this.menuService = menuService;
     }
 
     @Operation(summary = "서버동작 확인", description = "Just Print Hello World")
@@ -44,7 +48,7 @@ public class MainController {
         return "HelloWorld";
     }
 
-    @Operation(summary = "메인 페이지 데이터 가져오기", description = "주간별 식단 메뉴, 배식 순서, 날씨 정보")
+    @Operation(summary = "메인 페이지 데이터 가져오기- 메뉴는 새로운 형태로 가져옴20240714", description = "주간별 식단 메뉴, 배식 순서, 날씨 정보")
     @PostMapping(value = "/getAllMainPageData")
     public ResponseEntity<Map<String, Object>> getAllMainPageData(@RequestBody Map<String, Object> jsonData) throws Exception {
         Map<String, Object> responseBody = new HashMap<>();
@@ -54,11 +58,8 @@ public class MainController {
         String date = (String)jsonData.get("date");
         LocalDate transDate = LocalDate.parse(date);
 
-        List<MeokuDailyMenuDTO> resultMealMenuList = new ArrayList<>();
-
-        if(isMonthOrWeek.equals("week")) {
-            resultMealMenuList = mainService.searchDailyMenuOfWeekDays(transDate);
-        }
+        List<SubDailyMenuDTO> resultMealMenuList = null;
+        resultMealMenuList = menuService.searchDailyMenuOfWeek(transDate);
         // -- 주간별 식단 메뉴 end
 
         // -- 배식 순서 start
@@ -78,7 +79,7 @@ public class MainController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "주간별 식단메뉴 불러오기", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
+    @Operation(summary = "주간별 식단메뉴 불러오기[20240714폐기]", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
     @PostMapping(value = "weekdaysmenu")
     public List<MeokuDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
         String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
