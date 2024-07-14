@@ -58,8 +58,13 @@ public class MainController {
         String date = (String)jsonData.get("date");
         LocalDate transDate = LocalDate.parse(date);
 
-        List<SubDailyMenuDTO> resultMealMenuList = null;
-        resultMealMenuList = menuService.searchDailyMenuOfWeek(transDate);
+        // 김정서가 프론트 완성하면 그때 교체
+//        List<SubDailyMenuDTO> resultMealMenuList = null;
+//        resultMealMenuList = menuService.searchDailyMenuOfWeek(transDate);
+
+        List<MeokuDailyMenuDTO> resultMealMenuList = new ArrayList<>();
+        resultMealMenuList = mainService.searchDailyMenuOfWeekDays(transDate);
+
         // -- 주간별 식단 메뉴 end
 
         // -- 배식 순서 start

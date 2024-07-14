@@ -129,7 +129,7 @@ public class SubMenuServiceImpl implements SubMenuService{
 
                 for(SubMenuDetailsItemBridgeDTO bridgeDTO : menuDetailsDTO.getSubBridgeList()){
                     SubMenuItem savedMenuItem = subMenuDao.menuItemCountUpAndSave(bridgeDTO.getMenuItemName());
-                    // 만약 메뉴 이름이 ""라서 null이 반환됐다면 bridge를 포함항 menuItem데이터 저장 안하고 넘겨야함
+                    // 만약 메뉴 이름이 ""라서 null이 반환됐다면 bridge를 포함항 menuItem데이터 저장하지 않아야함
                     if(savedMenuItem == null) continue;
                     savedMenuItem.setMainMenuYn(bridgeDTO.getMainMenuYn()); //같은 영속성에 있기 떄문에 따로 추가 저장안해도 bridge 저장할때 같이 반영됨
                     savedMenuItem.setRecentMenuDetailsId(savedMenuDetails.getMenuDetailsId());
