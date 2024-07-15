@@ -1,12 +1,13 @@
 package com.upgrade.meoku.newmealmenu.dao;
 
 import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
-import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuDetailsDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuDetailsItemBridgeDTO;
+import com.upgrade.meoku.mealmenu.data.dto.*;
 import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
+import com.upgrade.meoku.mealmenu.data.entity.SubMenuTag;
+import com.upgrade.meoku.mealmenu.data.mapper.MenuMapper;
 import com.upgrade.meoku.mealmenu.data.repository.SubDailyMenuRepository;
+import com.upgrade.meoku.mealmenu.data.repository.SubMenuTagRepository;
 import com.upgrade.meoku.util.MeokuUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,6 +15,7 @@ import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,16 +23,20 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static com.upgrade.meoku.mealmenu.data.mapper.MenuMapper.MENU_MAPPER_INSTANCE;
 
 @SpringBootTest
 public class newMealMenuDaoTest {
-
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
     SubDailyMenuRepository dailyMenuRepository;
+    @Autowired
+    SubMenuTagRepository menuTagRepository;
     @Autowired
     SubMenuDao menuDao;
 
@@ -105,5 +111,33 @@ public class newMealMenuDaoTest {
                 System.out.println(md.getSubBridgeList());
             }
         }
+    }
+
+    @Test
+    @DisplayName("태그 DTO -> Entity 변환 후 저장")
+    public void insertMenuTagTest(){
+        String dateString = "2024-07-15";
+
+        // 문자열을 LocalDate로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(dateString, formatter);
+
+        // 한 달 뒤의 날짜 계산
+        LocalDate oneMonthLaterDate = localDate.plusMonths(1);
+
+        // LocalDate를 Timestamp로 변환
+        Timestamp oneMonthLaterTimestamp = Timestamp.valueOf(oneMonthLaterDate.atStartOfDay());
+
+
+
+        SubMenuTagDTO savedMenuTagDTO = new SubMenuTagDTO();
+        savedMenuTagDTO.setMenuItemId(32);
+        savedMenuTagDTO.setMenuTagName("NEW");
+        savedMenuTagDTO.setTagEndDate(oneMonthLaterTimestamp);
+
+        System.out.println(savedMenuTagDTO);
+        SubMenuTag savedSubMenuTag = MENU_MAPPER_INSTANCE.menuTagDtoToEntity(savedMenuTagDTO);
+        System.out.println(savedSubMenuTag);
+        menuTagRepository.save(savedSubMenuTag);
     }
 }

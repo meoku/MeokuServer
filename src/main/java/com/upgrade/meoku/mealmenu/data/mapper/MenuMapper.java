@@ -1,12 +1,7 @@
 package com.upgrade.meoku.mealmenu.data.mapper;
 
 import com.upgrade.meoku.mealmenu.data.dto.*;
-import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetailsItemBridge;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
-import jakarta.persistence.Column;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.upgrade.meoku.mealmenu.data.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -28,8 +23,10 @@ public interface MenuMapper {
     SubMenuItem menuItemDtoToEntity(SubMenuItemDTO menuItemDTO);
     SubMenuItemDTO menuItemEntityToDto(SubMenuItem menuItem);
 
-//    SubMenuTag menuTagDtoToEntity(SubMenuTagDTO menuTagDTO);
-//    SubMenuTagDTO menuTagEntityToDto(SubMenuTag menuTag);
+    @Mapping(source = "menuItemId", target = "subMenuItem.menuItemId") // menuItemId를 subMenuItem의 id에 매핑
+//    @Mapping(target = "subMenuItem.name", ignore = true) // 필요에 따라 다른 필드도 추가적으로 매핑 가능
+    SubMenuTag menuTagDtoToEntity(SubMenuTagDTO menuTagDTO);
+    SubMenuTagDTO menuTagEntityToDto(SubMenuTag menuTag);
 
 //    SubMenuAllergies menuAllergiesDtoToEntity(SubMenuAllergiesDTO menuAllergiesDTO);
 //    SubMenuAllergiesDTO menuAllergiesEntityToDto(SubMenuAllergies menuAllergies);

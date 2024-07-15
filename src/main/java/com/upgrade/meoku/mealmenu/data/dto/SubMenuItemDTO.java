@@ -19,4 +19,6 @@ public class SubMenuItemDTO {
     private Integer calories;
 
     private List<SubMenuDetailsItemBridgeDTO> subBridgeList = new ArrayList<>();
+    private List<SubMenuTagDTO> subMenuTagList = new ArrayList<>();
 }
+

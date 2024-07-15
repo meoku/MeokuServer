@@ -1,21 +1,12 @@
 package com.upgrade.meoku.mealmenu.data.dao;
 
-
-import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
-import com.upgrade.meoku.data.entity.MeokuDailyMenu;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
-import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetailsItemBridge;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
-import com.upgrade.meoku.mealmenu.data.repository.SubDailyMenuRepository;
-import com.upgrade.meoku.mealmenu.data.repository.SubMenuDetailsItemBridgeRepository;
-import com.upgrade.meoku.mealmenu.data.repository.SubMenuDetailsRepository;
-import com.upgrade.meoku.mealmenu.data.repository.SubMenuItemRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuTagDTO;
+import com.upgrade.meoku.mealmenu.data.entity.*;
+import com.upgrade.meoku.mealmenu.data.repository.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,15 +26,18 @@ public class SubMenuDaoImpl implements SubMenuDao{
     private final SubMenuDetailsRepository menuDetailsRepository;
     private final SubMenuItemRepository menuItemRepository;
     private final SubMenuDetailsItemBridgeRepository bridgeRepository;
+    private final SubMenuTagRepository menuTagRepository;
     @Autowired
     public SubMenuDaoImpl(SubDailyMenuRepository dailyMenuRepository,
                           SubMenuDetailsRepository menuDetailsRepository,
                           SubMenuItemRepository menuItemRepository,
-                          SubMenuDetailsItemBridgeRepository bridgeRepository) {
+                          SubMenuDetailsItemBridgeRepository bridgeRepository,
+                          SubMenuTagRepository menuTagRepository) {
         this.dailyMenuRepository = dailyMenuRepository;
         this.menuDetailsRepository = menuDetailsRepository;
         this.menuItemRepository = menuItemRepository;
         this.bridgeRepository = bridgeRepository;
+        this.menuTagRepository = menuTagRepository;
     }
 
     @Override
@@ -126,5 +120,11 @@ public class SubMenuDaoImpl implements SubMenuDao{
         }
 
         return srchDailyMenuDTOList;
+    }
+
+    //메뉴에 태그 저장
+    @Override
+    public SubMenuTag insertMenuTag(SubMenuTag subMenuTag) {
+        return menuTagRepository.save(subMenuTag);
     }
 }
