@@ -32,6 +32,7 @@ public class SubMenuDetails {
     @Column(name = "MENU_DETAILS_IMG_URL")
     private String menuDetailsImgUrl;
 
-    @OneToMany(mappedBy = "subMenuDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // orphanRemoval = true details가 삭제되면 bridge까지는 같이 삭제됨
+    @OneToMany(mappedBy = "subMenuDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SubMenuDetailsItemBridge> subBridgeList = new ArrayList<>();
 }

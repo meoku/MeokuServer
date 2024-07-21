@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
     public void insertMenuDetailList(List<SubMenuDetails> menuDetailsList) {
     }
 
+    // 메뉴를 찾고 있으면 cnt + 1
     @Override
     public SubMenuItem menuItemCountUpAndSave(String menuName) {
         //메뉴이름 이 없으면 null 반환
@@ -120,6 +122,73 @@ public class SubMenuDaoImpl implements SubMenuDao{
         }
 
         return srchDailyMenuDTOList;
+    }
+
+    // 특정 날짜 메뉴데이터 가져오기 (아직 필요없어서 제작 x )
+    @Override
+    public SubDailyMenuDTO searchDailyMenuOfDay(Timestamp searchDate){
+        Optional<SubDailyMenu> srchDailyMenuOpt = dailyMenuRepository.findByMenuDate(searchDate);
+
+        // 해당날짜에 데이터가 없을떄 null
+        if(!srchDailyMenuOpt.isPresent()) return null;
+
+        SubDailyMenu srchDailyMenu = srchDailyMenuOpt.get();
+        //상세 식단 가져오기
+
+        return null;
+    }
+
+    // 특정 날짜 메뉴데이터 삭제하기
+    /*
+    * 아래 순서로 삭제 진행
+    * 1. daily 삭제
+    * 2. item 삭제 or cnt - 1
+    * */
+    @Override
+    @Transactional
+    public boolean deleteMenuData(Timestamp deleteDate) {
+        boolean resultCode = false;
+
+        Optional<SubDailyMenu> deletedDailyMenuOpt = dailyMenuRepository.findByMenuDate(deleteDate);
+        // 해당날짜에 데이터가 없을떄 null
+        if(!deletedDailyMenuOpt.isPresent()) return resultCode;
+
+        //daily 가져오기
+        SubDailyMenu deletedDailyMenu = deletedDailyMenuOpt.get();
+        //details 가져오기
+        List<SubMenuDetails> deleteMenuDetailsList = menuDetailsRepository.findBySubDailyMenu(deletedDailyMenu);
+        deletedDailyMenu.setMenuDetailsList(deleteMenuDetailsList);
+        //Bridge 가져오기
+        for(SubMenuDetails md : deletedDailyMenu.getMenuDetailsList()){
+            List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
+            md.setSubBridgeList(srchBridgeList);
+        }
+
+        // bridge를 모두 돌며
+        //item은 cnt가 1인 경우만 삭제하고 2 이상일 경우는 cnt - 1
+        for(SubMenuDetails md : deletedDailyMenu.getMenuDetailsList()){
+            for(SubMenuDetailsItemBridge b : md.getSubBridgeList()){
+                Optional<SubMenuItem> srchMenuItemOpt = menuItemRepository.findByMenuItemId(b.getSubMenuItem().getMenuItemId());
+                //만약 item 이 안찾아지면 null반환 (debug가 어려울 꺼라 수정 필요)
+                if(!srchMenuItemOpt.isPresent()){ return resultCode; }
+                SubMenuItem srchMenuItem = srchMenuItemOpt.get();
+
+                // cnt 2 이상이면 -1
+                if(srchMenuItem.getFrequencyCnt() > 1){
+                    srchMenuItem.setFrequencyCnt(srchMenuItem.getFrequencyCnt() - 1);
+                }
+                // cnt 1이면 삭제
+                else{
+                    menuItemRepository.delete(srchMenuItem);
+                }
+            }
+        }
+
+        // daily만 지우면 orphanRemoval = true로 인해 해당 옵션이 있는 부모의 자식까지 삭제되므로 daily -> detail -> bridge 까지 삭제됨
+        dailyMenuRepository.delete(deletedDailyMenu);
+
+        resultCode = true;
+        return resultCode;
     }
 
     //메뉴에 태그 저장

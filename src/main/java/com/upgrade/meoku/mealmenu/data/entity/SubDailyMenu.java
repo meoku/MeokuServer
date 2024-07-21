@@ -43,7 +43,7 @@ public class SubDailyMenu {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     // 1 : N
-    @OneToMany(mappedBy = "subDailyMenu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "subDailyMenu", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SubMenuDetails> menuDetailsList = new ArrayList<>();
 
 }
