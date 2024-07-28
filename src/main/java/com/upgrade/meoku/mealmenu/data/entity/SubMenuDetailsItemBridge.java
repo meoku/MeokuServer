@@ -19,10 +19,10 @@ public class SubMenuDetailsItemBridge {
     @Column(name = "MAIN_MENU_YN")
     private String mainMenuYn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_DETAILS_ID")
     private SubMenuDetails subMenuDetails;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ITEM_ID")
     private SubMenuItem subMenuItem;
 }

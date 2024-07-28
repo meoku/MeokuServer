@@ -12,5 +12,5 @@ public interface SubMenuService {
     public List<SubDailyMenuDTO> MenuImageUploadAndReturnMenuData(MultipartFile menuFile) throws Exception;
     public void WeekMenuUpload(List<SubDailyMenuDTO> weekMenu);
     public List<SubDailyMenuDTO> searchDailyMenuOfWeek(LocalDate date);
-
+    public void deleteMenuData (LocalDate delDate);
 }

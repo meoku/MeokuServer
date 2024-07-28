@@ -62,4 +62,13 @@ public class SubMenuController {
         return resultMealMenuList;
     }
 
+    @Operation(summary = "특정 날짜식단정보 모두 삭제", description = "입력예시 2024-07-31")
+    @PostMapping(value = "deleteMenuData")
+    public void deleteMenuData(@RequestBody Map<String, Object> jsonData) {
+        String date = (String)jsonData.get("date");
+        LocalDate deleteDate = LocalDate.parse(date);
+
+        subMenuService.deleteMenuData(deleteDate);
+    }
+
 }

@@ -165,5 +165,12 @@ public class SubMenuServiceImpl implements SubMenuService{
         return subMenuDao.searchDailyMenuOfWeek(startTimestamp, endTimestamp);
     }
 
+    // 원하는 날짜 식단 데이터 전부 삭제
+    @Override
+    public void deleteMenuData(LocalDate delDate) {
+        Timestamp deleteDate = Timestamp.valueOf(delDate.atStartOfDay());
+        subMenuDao.deleteMenuData(deleteDate);
+    }
+
 
 }

@@ -132,10 +132,19 @@ public class SubMenuDaoImpl implements SubMenuDao{
         // 해당날짜에 데이터가 없을떄 null
         if(!srchDailyMenuOpt.isPresent()) return null;
 
+        //daily 가져오기
         SubDailyMenu srchDailyMenu = srchDailyMenuOpt.get();
-        //상세 식단 가져오기
+        //details 가져오기
+        List<SubMenuDetails> deleteMenuDetailsList = menuDetailsRepository.findBySubDailyMenu(srchDailyMenu);
+        srchDailyMenu.setMenuDetailsList(deleteMenuDetailsList);
+        //Bridge 가져오기
+        for(SubMenuDetails md : srchDailyMenu.getMenuDetailsList()){
+            List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
+            md.setSubBridgeList(srchBridgeList);
+        }
+        SubDailyMenuDTO srchDailyMenuDto = MENU_MAPPER_INSTANCE.dailyMenuEntityToDto(srchDailyMenu);
 
-        return null;
+        return srchDailyMenuDto;
     }
 
     // 특정 날짜 메뉴데이터 삭제하기
@@ -157,17 +166,13 @@ public class SubMenuDaoImpl implements SubMenuDao{
         SubDailyMenu deletedDailyMenu = deletedDailyMenuOpt.get();
         //details 가져오기
         List<SubMenuDetails> deleteMenuDetailsList = menuDetailsRepository.findBySubDailyMenu(deletedDailyMenu);
-        deletedDailyMenu.setMenuDetailsList(deleteMenuDetailsList);
-        //Bridge 가져오기
-        for(SubMenuDetails md : deletedDailyMenu.getMenuDetailsList()){
-            List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
-            md.setSubBridgeList(srchBridgeList);
-        }
 
         // bridge를 모두 돌며
         //item은 cnt가 1인 경우만 삭제하고 2 이상일 경우는 cnt - 1
-        for(SubMenuDetails md : deletedDailyMenu.getMenuDetailsList()){
-            for(SubMenuDetailsItemBridge b : md.getSubBridgeList()){
+        for(SubMenuDetails md : deleteMenuDetailsList){
+            //Bridge 가져오기
+            List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
+            for(SubMenuDetailsItemBridge b : srchBridgeList){
                 Optional<SubMenuItem> srchMenuItemOpt = menuItemRepository.findByMenuItemId(b.getSubMenuItem().getMenuItemId());
                 //만약 item 이 안찾아지면 null반환 (debug가 어려울 꺼라 수정 필요)
                 if(!srchMenuItemOpt.isPresent()){ return resultCode; }
@@ -176,6 +181,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
                 // cnt 2 이상이면 -1
                 if(srchMenuItem.getFrequencyCnt() > 1){
                     srchMenuItem.setFrequencyCnt(srchMenuItem.getFrequencyCnt() - 1);
+                    menuItemRepository.save(srchMenuItem); // 변경사항 반영
                 }
                 // cnt 1이면 삭제
                 else{

@@ -40,6 +40,47 @@ public class newMealMenuDaoTest {
     @Autowired
     SubMenuDao menuDao;
 
+    @Test
+    @DisplayName("특정 날짜 데이터 삭제")
+    public void deleteMenudata(){
+        // 원하는 날짜 입력 (예: 2024년 7월 28일)
+        LocalDate localDate = LocalDate.of(2024, 8, 2);
+        // LocalDate를 LocalDateTime으로 변환 (하루의 시작 시각으로 설정)
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        // LocalDateTime을 Timestamp로 변환
+        Timestamp deleteDate = Timestamp.valueOf(localDateTime);
+
+        SubDailyMenuDTO dailyMenuDtoBeforDeleting = menuDao.searchDailyMenuOfDay(deleteDate);
+        System.out.println(dailyMenuDtoBeforDeleting);
+
+        boolean deleteYn = menuDao.deleteMenuData(deleteDate);
+        System.out.println(deleteYn);
+
+        SubDailyMenuDTO DailyMenuDtoAfterDeleting = menuDao.searchDailyMenuOfDay(deleteDate);
+        System.out.println(DailyMenuDtoAfterDeleting);
+    }
+
+    @Test
+    @DisplayName("원하는 날짜만 데이터 가져오기")
+    public void srchMenuDateOfDay(){
+        // 원하는 날짜 입력 (예: 2024년 7월 28일)
+        LocalDate localDate = LocalDate.of(2024, 8, 2);
+        // LocalDate를 LocalDateTime으로 변환 (하루의 시작 시각으로 설정)
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        // LocalDateTime을 Timestamp로 변환
+        Timestamp srchDate = Timestamp.valueOf(localDateTime);
+
+        SubDailyMenuDTO srchDailyMenuDto = menuDao.searchDailyMenuOfDay(srchDate);
+
+        System.out.println(srchDailyMenuDto.getMenuDate());
+        for(SubMenuDetailsDTO mdd : srchDailyMenuDto.getMenuDetailsList()){
+            System.out.println(mdd.getMenuDetailsName());
+            for(SubMenuDetailsItemBridgeDTO mdibd : mdd.getSubBridgeList()){
+                System.out.println(mdibd.getMenuItemName());
+            }
+            System.out.println(" ");
+        }
+    }
 
     @Test
     @DisplayName("주간 식단데이터 가져오기")
