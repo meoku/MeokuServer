@@ -99,8 +99,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
         return optDailyMenu.get();
     }
 
-    //주간 메뉴데이터 가져오기
-    @Override
+    //주간 메뉴데이터 가져오기 (태그 추가를 위해 기능 업데이트 필요)
     public List<SubDailyMenuDTO> searchDailyMenuOfWeek(Timestamp startDate, Timestamp endDate) {
         //일일 데이터 가져오기
         List<SubDailyMenu> srchDailyMenuList = dailyMenuRepository.findByMenuDateBetween(startDate, endDate);
@@ -150,8 +149,8 @@ public class SubMenuDaoImpl implements SubMenuDao{
     // 특정 날짜 메뉴데이터 삭제하기
     /*
     * 아래 순서로 삭제 진행
-    * 1. daily 삭제
-    * 2. item 삭제 or cnt - 1
+    * 1. daily 삭제 (orphanRemoval = true 조건으로 details, bridge까지 자동 삭제)
+    * 2. item 삭제 or cnt - 1 (tag는 따로 삭제 안해도 orphanRemoval = true 조건으로 자동 삭제됨)
     * */
     @Override
     @Transactional

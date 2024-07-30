@@ -94,6 +94,7 @@ public class SubMenuServiceImpl implements SubMenuService{
     }
 
 
+    // 일주일 일자별, 상세, 메뉴, 태그 정보 모두 저장
     @Override
     @Transactional
     public void WeekMenuUpload(List<SubDailyMenuDTO> weekMenu){
