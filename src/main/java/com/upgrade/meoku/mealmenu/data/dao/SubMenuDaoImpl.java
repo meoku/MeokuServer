@@ -28,17 +28,20 @@ public class SubMenuDaoImpl implements SubMenuDao{
     private final SubMenuItemRepository menuItemRepository;
     private final SubMenuDetailsItemBridgeRepository bridgeRepository;
     private final SubMenuTagRepository menuTagRepository;
+    private final SubMenuItemRepository subMenuItemRepository;
+
     @Autowired
     public SubMenuDaoImpl(SubDailyMenuRepository dailyMenuRepository,
                           SubMenuDetailsRepository menuDetailsRepository,
                           SubMenuItemRepository menuItemRepository,
                           SubMenuDetailsItemBridgeRepository bridgeRepository,
-                          SubMenuTagRepository menuTagRepository) {
+                          SubMenuTagRepository menuTagRepository, SubMenuItemRepository subMenuItemRepository) {
         this.dailyMenuRepository = dailyMenuRepository;
         this.menuDetailsRepository = menuDetailsRepository;
         this.menuItemRepository = menuItemRepository;
         this.bridgeRepository = bridgeRepository;
         this.menuTagRepository = menuTagRepository;
+        this.subMenuItemRepository = subMenuItemRepository;
     }
 
     @Override
@@ -185,6 +188,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
                 // cnt 1이면 삭제
                 else{
                     menuItemRepository.delete(srchMenuItem);
+                    //테그도 지우는 로직 필요할것 같은데 추후 작성
                 }
             }
         }
@@ -194,6 +198,12 @@ public class SubMenuDaoImpl implements SubMenuDao{
 
         resultCode = true;
         return resultCode;
+    }
+
+    //메뉴 이름으로 MenuItem Entity 찾기
+    @Override
+    public SubMenuItem searchMenuItem(String menuName) {
+        return subMenuItemRepository.findByMenuItemName(menuName);
     }
 
     //메뉴에 태그 저장

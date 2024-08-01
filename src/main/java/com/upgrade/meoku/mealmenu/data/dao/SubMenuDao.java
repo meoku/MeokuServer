@@ -24,6 +24,6 @@ public interface SubMenuDao {
     public List<SubDailyMenuDTO> searchDailyMenuOfWeek(Timestamp startDate, Timestamp endDate);//주간 식단메뉴 가져오기
     public SubDailyMenuDTO searchDailyMenuOfDay(Timestamp searchDate);// 특정 날짜 메뉴데이터 가져오기
     public boolean deleteMenuData(Timestamp deleteDate); // 특정 날짜 메뉴데이터 삭제
-
+    public SubMenuItem searchMenuItem(String menuName);
     public SubMenuTag insertMenuTag(SubMenuTag subMenuTag); //메뉴에 태그 저장
 }

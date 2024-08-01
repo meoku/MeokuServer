@@ -9,6 +9,9 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -190,5 +193,15 @@ public class MenuUtil {
 
         Timestamp timestamp = new Timestamp(date.getTime());
         return timestamp;
+    }
+    // N일 뒤 날짜 계산
+    public static Timestamp getTimestampAfterNdays(LocalDate startDate, int Nday) {
+        // N일 뒤의 날짜 계산하기
+        LocalDate dateAfterNDays = startDate.plusDays(Nday);
+        // LocalDate를 LocalDateTime으로 변환하고 시간을 00:00:00으로 설정
+        LocalDateTime dateTimeAfter15Days = dateAfterNDays.atStartOfDay();
+        // LocalDateTime을 Timestamp로 변환하기
+        Timestamp timestampAfterNday = Timestamp.valueOf(dateTimeAfter15Days);
+        return timestampAfterNday;
     }
 }

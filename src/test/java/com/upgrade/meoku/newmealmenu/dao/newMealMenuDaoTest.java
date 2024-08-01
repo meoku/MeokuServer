@@ -4,10 +4,12 @@ import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
 import com.upgrade.meoku.mealmenu.data.dto.*;
 import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
+import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuTag;
 import com.upgrade.meoku.mealmenu.data.mapper.MenuMapper;
 import com.upgrade.meoku.mealmenu.data.repository.SubDailyMenuRepository;
 import com.upgrade.meoku.mealmenu.data.repository.SubMenuTagRepository;
+import com.upgrade.meoku.mealmenu.util.MenuUtil;
 import com.upgrade.meoku.util.MeokuUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -39,6 +41,27 @@ public class newMealMenuDaoTest {
     SubMenuTagRepository menuTagRepository;
     @Autowired
     SubMenuDao menuDao;
+
+    @Test
+    @DisplayName("메뉴에 New 태그 붙이기")
+    public void insertMenuItemAndTag() throws Exception {
+        String menuName = "Test";
+
+        SubMenuItem savedMenuItem = menuDao.menuItemCountUpAndSave(menuName);
+        // 만약 메뉴 이름이 ""라서 null이 반환됐다면 bridge를 포함항 menuItem데이터 저장하지 않아야함
+        if(savedMenuItem == null) throw new Exception();
+
+        //새로운 메뉴라면 New 태그 저장 (횟수가 1번일때가 처음 저장된 메뉴)
+        if(savedMenuItem.getFrequencyCnt() == 1){
+            SubMenuTag newMenuTag = new SubMenuTag();
+            newMenuTag.setSubMenuItem(savedMenuItem);
+            newMenuTag.setMenuTagName("NEW");
+            // 15일뒤 날짜 가져오기
+            Timestamp tagEndDate = MenuUtil.getTimestampAfterNdays(LocalDate.now(), 15);
+            newMenuTag.setTagEndDate(tagEndDate);
+            SubMenuTag savedTag = menuDao.insertMenuTag(newMenuTag);
+        }
+    }
 
     @Test
     @DisplayName("특정 날짜 데이터 삭제")
