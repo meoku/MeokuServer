@@ -43,6 +43,17 @@ public class newMealMenuDaoTest {
     SubMenuDao menuDao;
 
     @Test
+    @DisplayName("메뉴 + 태그 가져오기")
+    public void srchMenuItemAndTag(){
+        String menuName = "Test";
+
+        SubMenuItem srchMenuItem = menuDao.searchMenuItem(menuName);
+
+        System.out.println(srchMenuItem.getSubMenuTagList().get(0).getMenuTagName());
+        System.out.println(srchMenuItem.getSubMenuTagList().get(0).getTagEndDate());
+    }
+
+    @Test
     @DisplayName("메뉴에 New 태그 붙이기")
     public void insertMenuItemAndTag() throws Exception {
         String menuName = "Test";
