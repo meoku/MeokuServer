@@ -6,13 +6,16 @@ import com.upgrade.meoku.mealmenu.service.SubMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +43,21 @@ public class SubMenuController {
         return menuData;
     }
 
-    @Operation(summary = "new 주간 식단데이터 업로드 - 리팩터링", description = "업로드된 이미지에서 추출한 식단데이터를 확인 후 서버DB로 저장")
+    @Operation(summary = "new 주간 식단데이터 업로드 - 리팩터링", description = "업로드된 이미지에서 추출한 식단데이터를 확인 후 서버DB로 저장 후 저장 날짜 반환")
     @PostMapping(value = "/WeekMenuUpload")
     @ResponseBody
-    public String WeekMenuUpload(@RequestBody List<SubDailyMenuDTO> weekMenu){
-        //식단 정보 저장
-        subMenuService.WeekMenuUpload(weekMenu);
-        return "Success";
+    public ResponseEntity<Map<String, Object>> WeekMenuUpload(@RequestBody List<SubDailyMenuDTO> weekMenu){
+        Map<String, Object> responseBody = new HashMap<>();
+        try{
+            //식단 정보 저장
+            List<String> isSavedDateList= subMenuService.WeekMenuUpload(weekMenu);
+            responseBody.put("SavedDateList", isSavedDateList);
+        }catch (Exception e) {
+            responseBody.put("error", "Internal server error");
+            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
     @Operation(summary = "new 주간별 식단메뉴 불러오기 -  리팩터링", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")

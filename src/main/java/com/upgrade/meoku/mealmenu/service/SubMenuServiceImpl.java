@@ -94,7 +94,8 @@ public class SubMenuServiceImpl implements SubMenuService{
     // 일주일 일자별, 상세, 메뉴, 태그 정보 모두 저장
     @Override
     @Transactional
-    public void WeekMenuUpload(List<SubDailyMenuDTO> weekMenu){
+    public List<String> WeekMenuUpload(List<SubDailyMenuDTO> weekMenu){
+        List<String> isSavedDateList = new ArrayList<>();
         //일일메뉴
         for(SubDailyMenuDTO dailyMenuDTO : weekMenu){
 
@@ -106,6 +107,9 @@ public class SubMenuServiceImpl implements SubMenuService{
             //해당 날짜로 이미 존재하는 데이터 있다면 취소
             SubDailyMenu dm = subMenuDao.searchDailyMenu(dailyMenuDTO.getMenuDate());
             if(dm != null) continue;
+
+            // 저장되면 저장날짜 반환하기
+            isSavedDateList.add(dailyMenuDTO.getMenuDate().toString());
 
             // 하위 Details Entity들의 참조를 위해 일일메뉴 저장
             savedDailyMenu = subMenuDao.insertDailyMenu(savedDailyMenu);
@@ -158,6 +162,8 @@ public class SubMenuServiceImpl implements SubMenuService{
                 subMenuDao.insertBridgeList(savedBridgeList);
             }
         }
+
+        return isSavedDateList;
     }
 
     @Override

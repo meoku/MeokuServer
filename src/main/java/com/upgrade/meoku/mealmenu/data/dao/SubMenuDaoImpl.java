@@ -188,7 +188,6 @@ public class SubMenuDaoImpl implements SubMenuDao{
                 // cnt 1이면 삭제
                 else{
                     menuItemRepository.delete(srchMenuItem);
-                    //테그도 지우는 로직 필요할것 같은데 추후 작성
                 }
             }
         }
