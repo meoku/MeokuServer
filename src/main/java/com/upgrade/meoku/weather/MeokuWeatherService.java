@@ -88,10 +88,17 @@ public class MeokuWeatherService {
         // 입력된 날짜로 날씨 데이터 가져오기
         Optional<WeatherData> searchedWeatherDataOpt = weatherRepository.findByWeatherDate(weatherDateForSearch);
 
-        if(!searchedWeatherDataOpt.isPresent()) return null;
+        WeatherData searchedWeatherData = null;
 
-        WeatherData searchedWeatherData = searchedWeatherDataOpt.get();
-        //WeatherDataDTO searchedWeatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(searchedWeatherData);
+        //날짜가 바뀐 00시에는 아직 다음날 데이터가 없기때문에 나는 오류가 생겨서 최신날짜 (어제) 가져오는 로직 추가
+        if(!searchedWeatherDataOpt.isPresent()){
+            searchedWeatherData = weatherRepository.findFirstByOrderByCreatedDateDesc().get();
+        }else{
+            searchedWeatherData = searchedWeatherDataOpt.get();
+        }
+
+        if(searchedWeatherData == null) return null;
+
         return WatherDataMapper.INSTANCE.weatherDataToWeatherDataDTO(searchedWeatherData);
     }
     // 안씀
