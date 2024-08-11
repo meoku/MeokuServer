@@ -3,6 +3,7 @@ package com.upgrade.meoku.mealmenu.data.dao;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
 import com.upgrade.meoku.mealmenu.data.dto.SubMenuTagDTO;
 import com.upgrade.meoku.mealmenu.data.entity.*;
 import com.upgrade.meoku.mealmenu.data.repository.*;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.swing.text.html.Option;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +104,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
         return optDailyMenu.get();
     }
 
-    //주간 메뉴데이터 가져오기 (태그 추가를 위해 기능 업데이트 필요)
+    //주간 메뉴데이터 가져오기
     public List<SubDailyMenuDTO> searchDailyMenuOfWeek(Timestamp startDate, Timestamp endDate) {
         //일일 데이터 가져오기
         List<SubDailyMenu> srchDailyMenuList = dailyMenuRepository.findByMenuDateBetween(startDate, endDate);
@@ -114,6 +116,8 @@ public class SubMenuDaoImpl implements SubMenuDao{
             //Bridge 가져오기(반 정규화로 Bridge에 메뉴이름, 메인 여부 담아놓음)
             for(SubMenuDetails md : dm.getMenuDetailsList()){
                 List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(md);
+                // tag도 가져오기 item entity는 생략
+
                 md.setSubBridgeList(srchBridgeList);
             }
         }
@@ -209,5 +213,23 @@ public class SubMenuDaoImpl implements SubMenuDao{
     @Override
     public SubMenuTag insertMenuTag(SubMenuTag subMenuTag) {
         return menuTagRepository.save(subMenuTag);
+    }
+    //메뉴 태그 가져오기
+    @Override
+    public List<SubMenuItemDTO> searchMenuTag(List<Integer> menuIdList) {
+        // 현재 날짜와 시간을 가져옴
+        LocalDateTime now = LocalDateTime.now();
+        // LocalDateTime을 Timestamp로 변환
+        Timestamp curTimestamp = Timestamp.valueOf(now);
+        List<SubMenuItem> searchedTagList = menuItemRepository.findAllByMenuItemIdsAndTagEndDateAfter(menuIdList, curTimestamp);
+
+        List<SubMenuItemDTO> searchedItemDTOList = new ArrayList<>();
+
+        for(SubMenuItem mt : searchedTagList){
+            SubMenuItemDTO mtDTO = MENU_MAPPER_INSTANCE.menuItemEntityToDtoNoBridge(mt);
+            searchedItemDTOList.add(mtDTO);
+        }
+
+        return searchedItemDTOList;
     }
 }

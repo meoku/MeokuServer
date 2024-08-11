@@ -2,6 +2,8 @@ package com.upgrade.meoku.mealmenu.controller;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
+import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
 import com.upgrade.meoku.mealmenu.service.SubMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -80,6 +82,14 @@ public class SubMenuController {
         LocalDate deleteDate = LocalDate.parse(date);
 
         subMenuService.deleteMenuData(deleteDate);
+    }
+
+    @Operation(summary = "메뉴id List로 해당 메뉴 태그정보 가져오기", description = "List형태로 MenuId를 \"menuIdList\" 변수에 넣어 전달")
+    @PostMapping(value = "searchMenuTag")
+    public List<SubMenuItemDTO> searchMenuTag(@RequestBody Map<String, Object> jsonData) {
+        List<Integer> menuIdList = (List<Integer>)jsonData.get("menuIdList");
+
+        return subMenuService.searchMenuTag(menuIdList);
     }
 
 }

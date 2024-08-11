@@ -21,6 +21,7 @@ public class SubMenuTag {
     @ManyToOne
     @JoinColumn(name = "MENU_ITEM_ID")
     private SubMenuItem subMenuItem;
+
     @Column(name = "MENU_TAG_NAME")
     private String menuTagName;
     @Column(name = "TAG_END_DATE")

@@ -3,6 +3,8 @@ package com.upgrade.meoku.mealmenu.data.dao;
 import com.upgrade.meoku.data.entity.MeokuDetailedMenu;
 import com.upgrade.meoku.data.entity.MeokuMenuDetail;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuTagDTO;
 import com.upgrade.meoku.mealmenu.data.entity.*;
 
 import java.sql.Timestamp;
@@ -26,4 +28,5 @@ public interface SubMenuDao {
     public boolean deleteMenuData(Timestamp deleteDate); // 특정 날짜 메뉴데이터 삭제
     public SubMenuItem searchMenuItem(String menuName);
     public SubMenuTag insertMenuTag(SubMenuTag subMenuTag); //메뉴에 태그 저장
+    public List<SubMenuItemDTO> searchMenuTag(List<Integer> menuIdList);
 }

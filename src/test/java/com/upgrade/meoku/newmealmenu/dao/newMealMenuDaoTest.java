@@ -8,6 +8,7 @@ import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuTag;
 import com.upgrade.meoku.mealmenu.data.mapper.MenuMapper;
 import com.upgrade.meoku.mealmenu.data.repository.SubDailyMenuRepository;
+import com.upgrade.meoku.mealmenu.data.repository.SubMenuItemRepository;
 import com.upgrade.meoku.mealmenu.data.repository.SubMenuTagRepository;
 import com.upgrade.meoku.mealmenu.util.MenuUtil;
 import com.upgrade.meoku.util.MeokuUtil;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.upgrade.meoku.mealmenu.data.mapper.MenuMapper.MENU_MAPPER_INSTANCE;
@@ -38,9 +40,34 @@ public class newMealMenuDaoTest {
     @Autowired
     SubDailyMenuRepository dailyMenuRepository;
     @Autowired
+    SubMenuItemRepository menuItemRepository;
+    @Autowired
     SubMenuTagRepository menuTagRepository;
     @Autowired
     SubMenuDao menuDao;
+
+    @Test
+    @DisplayName("메뉴태그 가져오기")
+    public void searchMenuTag(){
+        // menuItem id 준비
+        List<Integer> menuIdList = new ArrayList<>();
+        menuIdList.add(32);
+        menuIdList.add(88);
+        menuIdList.add(89);
+        menuIdList.add(90);
+
+        // 현재 날짜와 시간을 가져옴
+        LocalDateTime now = LocalDateTime.now();
+        // LocalDateTime을 Timestamp로 변환
+        Timestamp curTimestamp = Timestamp.valueOf(now);
+
+
+        List<SubMenuItemDTO> searchedMenuTagDTOList = menuDao.searchMenuTag(menuIdList);
+
+        for(SubMenuItemDTO mtDTO : searchedMenuTagDTOList){
+            System.out.println(mtDTO.toString());
+        }
+    }
 
     @Test
     @DisplayName("메뉴에 New 태그 붙이기")

@@ -2,6 +2,8 @@ package com.upgrade.meoku.mealmenu.service;
 
 import com.upgrade.meoku.data.dto.MeokuDailyMenuDTO;
 import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
+import com.upgrade.meoku.mealmenu.data.dto.SubMenuTagDTO;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuTag;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,4 +15,7 @@ public interface SubMenuService {
     public List<String> WeekMenuUpload(List<SubDailyMenuDTO> weekMenu);
     public List<SubDailyMenuDTO> searchDailyMenuOfWeek(LocalDate date);
     public void deleteMenuData (LocalDate delDate);
+
+    public List<SubMenuItemDTO> searchMenuTag(List<Integer> menuIdList);
+
 }

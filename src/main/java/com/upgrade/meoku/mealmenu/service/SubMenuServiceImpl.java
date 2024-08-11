@@ -2,10 +2,7 @@ package com.upgrade.meoku.mealmenu.service;
 
 import com.upgrade.meoku.config.NaverCloudConfig;
 import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
-import com.upgrade.meoku.mealmenu.data.dto.SubDailyMenuDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuDetailsDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuDetailsItemBridgeDTO;
-import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
+import com.upgrade.meoku.mealmenu.data.dto.*;
 import com.upgrade.meoku.mealmenu.data.entity.*;
 import com.upgrade.meoku.mealmenu.util.MenuUtil;
 import com.upgrade.meoku.util.MeokuUtil;
@@ -24,8 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class SubMenuServiceImpl implements SubMenuService{
@@ -134,8 +129,8 @@ public class SubMenuServiceImpl implements SubMenuService{
                     // 만약 메뉴 이름이 ""라서 null이 반환됐다면 bridge를 포함항 menuItem데이터 저장하지 않아야함
                     if(savedMenuItem == null) continue;
 
-                    //새로운 메뉴라면 New 태그 저장 (횟수가 1번일때가 처음 저장된 메뉴)
-                    if(savedMenuItem.getFrequencyCnt() == 1){
+                    //메인 메뉴에 속한 새로운 메뉴라면 New 태그 저장 (횟수가 1번일때가 처음 저장된 메뉴)
+                    if(menuDetailsDTO.getMainMealYn().equals("Y") && savedMenuItem.getFrequencyCnt() == 1){
                         SubMenuTag newMenuTag = new SubMenuTag();
                         newMenuTag.setSubMenuItem(savedMenuItem);
                         newMenuTag.setMenuTagName("NEW");
@@ -186,6 +181,12 @@ public class SubMenuServiceImpl implements SubMenuService{
     public void deleteMenuData(LocalDate delDate) {
         Timestamp deleteDate = Timestamp.valueOf(delDate.atStartOfDay());
         subMenuDao.deleteMenuData(deleteDate);
+    }
+
+    // menuItem Id로 tag 가져오기
+    @Override
+    public List<SubMenuItemDTO> searchMenuTag(List<Integer> menuIdList) {
+        return subMenuDao.searchMenuTag(menuIdList);
     }
 
 
