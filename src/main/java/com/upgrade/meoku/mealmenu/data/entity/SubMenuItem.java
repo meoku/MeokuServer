@@ -32,6 +32,6 @@ public class SubMenuItem {
 
     @OneToMany(mappedBy = "subMenuItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SubMenuDetailsItemBridge> subBridgeList = new ArrayList<>();
-    @OneToMany(mappedBy = "subMenuItem", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "subMenuItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SubMenuTag> subMenuTagList = new ArrayList<>();
 }

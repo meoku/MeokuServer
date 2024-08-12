@@ -22,7 +22,7 @@ public class SubMenuDetailsItemBridge {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_DETAILS_ID")
     private SubMenuDetails subMenuDetails;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MENU_ITEM_ID")
     private SubMenuItem subMenuItem;
 }

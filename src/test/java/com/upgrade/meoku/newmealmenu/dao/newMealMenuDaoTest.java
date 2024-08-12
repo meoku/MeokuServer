@@ -2,14 +2,9 @@ package com.upgrade.meoku.newmealmenu.dao;
 
 import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
 import com.upgrade.meoku.mealmenu.data.dto.*;
-import com.upgrade.meoku.mealmenu.data.entity.SubDailyMenu;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuDetails;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
-import com.upgrade.meoku.mealmenu.data.entity.SubMenuTag;
+import com.upgrade.meoku.mealmenu.data.entity.*;
 import com.upgrade.meoku.mealmenu.data.mapper.MenuMapper;
-import com.upgrade.meoku.mealmenu.data.repository.SubDailyMenuRepository;
-import com.upgrade.meoku.mealmenu.data.repository.SubMenuItemRepository;
-import com.upgrade.meoku.mealmenu.data.repository.SubMenuTagRepository;
+import com.upgrade.meoku.mealmenu.data.repository.*;
 import com.upgrade.meoku.mealmenu.util.MenuUtil;
 import com.upgrade.meoku.util.MeokuUtil;
 import jakarta.persistence.EntityManager;
@@ -40,6 +35,10 @@ public class newMealMenuDaoTest {
     @Autowired
     SubDailyMenuRepository dailyMenuRepository;
     @Autowired
+    SubMenuDetailsRepository detailsRepository;
+    @Autowired
+    SubMenuDetailsItemBridgeRepository bridgeRepository;
+    @Autowired
     SubMenuItemRepository menuItemRepository;
     @Autowired
     SubMenuTagRepository menuTagRepository;
@@ -47,14 +46,31 @@ public class newMealMenuDaoTest {
     SubMenuDao menuDao;
 
     @Test
+    public void tempTest(){
+        SubDailyMenu subDailyMenu = new SubDailyMenu();
+        subDailyMenu.setDailyMenuId(37);
+
+        List<SubMenuDetails> d = detailsRepository.findBySubDailyMenu(subDailyMenu);
+
+        List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(d.get(0));
+
+        for(SubMenuDetailsItemBridge srchBridge : srchBridgeList){
+            System.out.println(srchBridge.getSubMenuItem().getMenuItemId());
+            List<SubMenuTag> t = srchBridge.getSubMenuItem().getSubMenuTagList();
+
+            for(SubMenuTag srchTag : t){
+                System.out.print(srchTag.getMenuTagId() + " " + srchTag.getMenuTagName() + " " );
+            }
+        }
+    }
+    @Test
     @DisplayName("메뉴태그 가져오기")
     public void searchMenuTag(){
         // menuItem id 준비
         List<Integer> menuIdList = new ArrayList<>();
-        menuIdList.add(32);
-        menuIdList.add(88);
-        menuIdList.add(89);
-        menuIdList.add(90);
+        menuIdList.add(303);
+        menuIdList.add(304);
+        menuIdList.add(305);
 
         // 현재 날짜와 시간을 가져옴
         LocalDateTime now = LocalDateTime.now();

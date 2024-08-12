@@ -18,6 +18,7 @@ public interface MenuMapper {
     SubMenuDetailsDTO menuDetailsEntityToDto(SubMenuDetails menuDetails);
 
     SubMenuDetailsItemBridge bridgeDtoToEntity(SubMenuDetailsItemBridgeDTO bridgeDTO);
+    @Mapping(source = "subMenuItem.menuItemId", target = "menuItemId")
     SubMenuDetailsItemBridgeDTO bridgeEntityToDto(SubMenuDetailsItemBridge bridge);
 
     SubMenuItem menuItemDtoToEntity(SubMenuItemDTO menuItemDTO);

@@ -203,7 +203,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
         return resultCode;
     }
 
-    //메뉴 이름으로 MenuItem Entity 찾기
+    //메뉴 이름으로 MenuItem Entity 찾기 (폐기 - 변경된 버전은 Item을 가져올떄 자동으로 tag를 가져오지 않음)
     @Override
     public SubMenuItem searchMenuItem(String menuName) {
         return subMenuItemRepository.findByMenuItemName(menuName);
