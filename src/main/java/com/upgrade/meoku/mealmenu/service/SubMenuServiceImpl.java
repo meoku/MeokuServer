@@ -160,7 +160,7 @@ public class SubMenuServiceImpl implements SubMenuService{
 
         return isSavedDateList;
     }
-
+    //주간 식단메뉴 가져오기
     @Override
     public List<SubDailyMenuDTO> searchDailyMenuOfWeek(LocalDate date) {
         List<LocalDate> weekDays =  MeokuUtil.getWeekdaysInWeek(date);
