@@ -46,21 +46,20 @@ public class newMealMenuDaoTest {
     SubMenuDao menuDao;
 
     @Test
-    public void tempTest(){
-        SubDailyMenu subDailyMenu = new SubDailyMenu();
-        subDailyMenu.setDailyMenuId(37);
+    @DisplayName("만료된 태그 삭제하기")
+    public void deleteExpiredTagTest(){
+        Timestamp now = MenuUtil.getCurrentTimestamp();
+        Long deleteCnt = menuDao.deleteExpiredMenuTag(now);
+        System.out.println(deleteCnt);
+    }
+    @Test
+    @DisplayName("만료된 테그 가져오기")
+    public void srchExpiredTagTest(){
+        Timestamp now = MenuUtil.getCurrentTimestamp();
+        List<SubMenuTagDTO> srchTags = menuDao.searchExpiredMenuTag(now);
 
-        List<SubMenuDetails> d = detailsRepository.findBySubDailyMenu(subDailyMenu);
-
-        List<SubMenuDetailsItemBridge> srchBridgeList = bridgeRepository.findBySubMenuDetails(d.get(0));
-
-        for(SubMenuDetailsItemBridge srchBridge : srchBridgeList){
-            System.out.println(srchBridge.getSubMenuItem().getMenuItemId());
-            List<SubMenuTag> t = srchBridge.getSubMenuItem().getSubMenuTagList();
-
-            for(SubMenuTag srchTag : t){
-                System.out.print(srchTag.getMenuTagId() + " " + srchTag.getMenuTagName() + " " );
-            }
+        for(SubMenuTagDTO srchTag : srchTags){
+            System.out.println(srchTag);
         }
     }
     @Test

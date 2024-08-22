@@ -11,5 +11,6 @@ import java.util.List;
 
 public interface SubMenuTagRepository extends JpaRepository<SubMenuTag, Integer> {
     List<SubMenuTag> findBySubMenuItem(SubMenuItem subMenuItem);
-
+    List<SubMenuTag> findByTagEndDateBefore(Timestamp curDate);
+    Long deleteByTagEndDateBefore(Timestamp curDate);
 }

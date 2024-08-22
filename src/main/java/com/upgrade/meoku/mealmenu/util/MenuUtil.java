@@ -204,4 +204,18 @@ public class MenuUtil {
         Timestamp timestampAfterNday = Timestamp.valueOf(dateTimeAfter15Days);
         return timestampAfterNday;
     }
+    //지금 현재 날짜 가져오기
+    public static Timestamp getCurrentTimestamp() {
+        // 오늘 날짜 가져오기
+        LocalDate today = LocalDate.now();
+
+        // 원하는 형식으로 날짜 포맷팅
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = today.format(formatter);
+
+        // 문자열을 Timestamp로 변환
+        Timestamp curTimestamp = Timestamp.valueOf(formattedDate + " 00:00:00");
+        return curTimestamp;
+    }
+
 }

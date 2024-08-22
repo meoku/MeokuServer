@@ -1,5 +1,7 @@
 package com.upgrade.meoku.schedule;
 
+import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
+import com.upgrade.meoku.mealmenu.util.MenuUtil;
 import com.upgrade.meoku.menuOrder.MeokuMealOrderDTO;
 import com.upgrade.meoku.menuOrder.MeokuMealOrderService;
 import com.upgrade.meoku.util.RequestApiUtil;
@@ -13,6 +15,7 @@ import com.upgrade.meoku.weather.api.service.KMAApiUVIndex;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,18 +30,28 @@ public class MeokuScheduledTasks {
     //배식순서 관련
     private final MeokuMealOrderService mealOrderService;
 
+    private final SubMenuDao subMenuDao;
+
     public MeokuScheduledTasks(MeokuWeatherService meokuWeatherService,
                                KMAAPIShortTerm kmaapiShortTerm,
                                KMAAPIUltraShortTerm kmaapiUltraShortTerm,
                                KMAApiUVIndex kmaApiUVIndex,
                                KMAApiPerTemp kmaApiPerTemp,
-                               MeokuMealOrderService mealOrderService) {
+                               MeokuMealOrderService mealOrderService, SubMenuDao subMenuDao) {
         this.meokuWeatherService = meokuWeatherService;
         this.kmaapiShortTerm = kmaapiShortTerm;
         this.kmaapiUltraShortTerm = kmaapiUltraShortTerm;
         this.kmaApiUVIndex = kmaApiUVIndex;
         this.kmaApiPerTemp = kmaApiPerTemp;
         this.mealOrderService = mealOrderService;
+        this.subMenuDao = subMenuDao;
+    }
+    //매일 00:01 만료된 태그 삭제
+    @Scheduled(cron = "0 1 0 * * *")
+    public void deleteExpiredTag() throws Exception{
+        Timestamp curDate = MenuUtil.getCurrentTimestamp();
+        Long deleteCnt = subMenuDao.deleteExpiredMenuTag(curDate);
+        System.out.println(deleteCnt);
     }
     //기상청 API - 초단기 실황 정보 가져오기실행
     @Scheduled(cron = "0 41 * * * *") // API 정보 업데이트는 매시간 40분 부터이므로 41분 API 호출

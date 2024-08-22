@@ -226,4 +226,21 @@ public class SubMenuDaoImpl implements SubMenuDao{
 
         return searchedItemDTOList;
     }
+    // 만료된 태그 찾기
+    @Override
+    public List<SubMenuTagDTO> searchExpiredMenuTag(Timestamp curDate) {
+        List<SubMenuTagDTO> srchTagDTOList = new ArrayList<>();
+        List<SubMenuTag> srchTagList = menuTagRepository.findByTagEndDateBefore(curDate);
+        for(SubMenuTag srchTag : srchTagList){
+            srchTagDTOList.add(MENU_MAPPER_INSTANCE.menuTagEntityToDto(srchTag));
+        }
+
+        return srchTagDTOList;
+    }
+    // 만료된 태그 삭제
+    @Transactional
+    @Override
+    public Long deleteExpiredMenuTag(Timestamp deleteDate) {
+        return menuTagRepository.deleteByTagEndDateBefore(deleteDate);
+    }
 }
