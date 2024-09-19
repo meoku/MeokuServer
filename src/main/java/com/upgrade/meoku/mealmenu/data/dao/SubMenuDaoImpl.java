@@ -79,7 +79,7 @@ public class SubMenuDaoImpl implements SubMenuDao{
     @Override
     public SubMenuItem menuItemCountUpAndSave(String menuName) {
         //메뉴이름 이 없으면 null 반환
-        if(menuName == null || menuName.equals("")) return null;
+        if(menuName == null || menuName.isEmpty()) return null;
 
         SubMenuItem searchedMenuItem = menuItemRepository.findByMenuItemName(menuName);
         if (searchedMenuItem == null) {
