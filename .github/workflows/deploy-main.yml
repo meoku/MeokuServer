@@ -29,7 +29,7 @@ jobs:
                 - name: TZ
                   value: Asia/Seoul
                 - name: WEATHER_API_KEY   # 런타임 환경 변수로 WEATHER_API_KEY를 설정
-                  value: ${{ secrets.WEATHER_API_KEY }}  # GitHub Secrets에서 가져온 값 사용
+                  value: ${{ secrets.WEATHER_API_KEY }}  # GitHub Secrets에서 가져온 값 사용!
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
