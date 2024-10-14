@@ -1,12 +1,11 @@
 package com.upgrade.meoku.weather.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.weather.api.KMAApiConstants;
 import com.upgrade.meoku.weather.api.KMAApiResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -22,12 +21,8 @@ import java.util.stream.Collectors;
 @Component
 public class KMAAPIUltraShortTerm implements KMAApiService {
 
-    private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
-
-    @Autowired
-    public KMAAPIUltraShortTerm(RequestApiConfig requestApiConfig) {
-        this.requestApiConfig = requestApiConfig;
-    }
+    @Value("${WEATHER_API_KEY}")
+    private String weatherApiKey;
 
     @Override
     public WeatherDataDTO requestWeatherApi(String requestDate, String reqeustTime) throws Exception {
@@ -44,7 +39,7 @@ public class KMAAPIUltraShortTerm implements KMAApiService {
 
         String uriString = uriBuilder.toUriString();
         // 이미 인코딩된 serviceKey 추가 (UriComponentsBuilder 에서 인코딩 가능성이 있음)
-        uriString += "&serviceKey=" + requestApiConfig.getWeatherApiEncodingKey();
+        uriString += "&serviceKey=" + weatherApiKey;
 
         RestTemplate restTemplate = new RestTemplate();
 

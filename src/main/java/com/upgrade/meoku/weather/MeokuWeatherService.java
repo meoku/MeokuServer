@@ -13,14 +13,11 @@ import java.util.Optional;
 @Service
 public class MeokuWeatherService {
 
-    private final MeokuWeatherAPIService meokuWeatherAPIService;
     private final WeatherRepository weatherRepository;
 
     private final WatherDataMapper watherDataMapper = WatherDataMapper.INSTANCE;
 
-    public MeokuWeatherService(MeokuWeatherAPIService meokuWeatherAPIService,
-                               WeatherRepository weatherRepository) {
-        this.meokuWeatherAPIService = meokuWeatherAPIService;
+    public MeokuWeatherService(WeatherRepository weatherRepository) {
         this.weatherRepository = weatherRepository;
     }
 
@@ -101,28 +98,5 @@ public class MeokuWeatherService {
 
         return WatherDataMapper.INSTANCE.weatherDataToWeatherDataDTO(searchedWeatherData);
     }
-    // 안씀
-    public WeatherData insertWeatherDataFromApi() throws Exception {
-        // 날씨 데이터 가져오기
-        WeatherDataDTO weatherDataDTO = meokuWeatherAPIService.getUltraShortTermCurrentConditions();
-        // API 실행 후 가져온 데이터가 없으면 에러발생 (기상청 API 자체 문제로 가끔 빈 데이터가 올 떄가 있음)
-        if(weatherDataDTO.getHumidity() == null) throw new Exception();
-        //DTO to Entity
-        WeatherData weatherData = RequestApiUtil.WeatherDataDTOToWeatherData(weatherDataDTO);
-        // 날씨 데이터 저장
-        return weatherRepository.save(weatherData);
-    }
-
-    // 안씀
-//    public WeatherDataDTO getWeatherDataFromDB() throws Exception {
-//        WeatherData weatherData = weatherRepository.findFirstByOrderByCreatedDateDesc();
-//
-//        if (weatherData == null) return null;
-//        //Entity To DTO
-//        WeatherDataDTO weatherDataDTO = RequestApiUtil.WeatherDataToWeatherDateDTO(weatherData);
-//
-//        return weatherDataDTO;
-//    }
-
 
 }

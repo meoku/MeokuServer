@@ -118,13 +118,13 @@ public class MainController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "날씨 데이터 가져와 저장", description = "수동으로 직접 날씨 데이터 저장")
+    @Operation(summary = "날씨 데이터 가져와 저장 - 일단 안씀", description = "수동으로 직접 날씨 데이터 저장")
     @GetMapping(value = "/insertCurrentWeatherData")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> insertCurrentWeatherData() {
         Map<String, Object> responseBody = new HashMap<>();
         try{
-            WeatherData weatherData = meokuWeatherService.insertWeatherDataFromApi();
+            WeatherData weatherData = null;
             responseBody.put("responseBody", weatherData);
         }catch (Exception e) {
             responseBody.put("error", "API 재대로 실행 안됨");
@@ -132,6 +132,7 @@ public class MainController {
         }
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
+
 
 
 }

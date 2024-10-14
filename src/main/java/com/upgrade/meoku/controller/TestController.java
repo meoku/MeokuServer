@@ -5,6 +5,7 @@ import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.weather.api.KMAApiConstants;
 import com.upgrade.meoku.weather.api.KMAApiResponseDTO;
+import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
 import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,32 @@ public class TestController {
 
     @Value("${WEATHER_API_KEY}")
     private String testApiKey;
+
+    private final KMAAPIShortTerm kmaapiShortTerm;
+
+    public TestController(KMAAPIShortTerm kmaapiShortTerm) {
+        this.kmaapiShortTerm = kmaapiShortTerm;
+    }
+
+    //환경 변수 API로 실시간 단기현황 날씨 가져오기
+    @GetMapping("/getCurWeatherData")
+    public ResponseEntity<Map<String, Object>> callCurWeatherDataByEV() throws Exception {
+        Map<String, Object> responseBody = new HashMap<>();
+        // 현재 날짜, 시간 API 원하는 도메인 대로 가져오기
+        String requestDate = RequestApiUtil.getTodayDate();
+        String requestTimeForShortTerm = RequestApiUtil.getRequestTimeForShortTermForecastRequest();
+
+        try {
+            WeatherDataDTO curWeatherData = kmaapiShortTerm.requestWeatherApi(requestDate, requestTimeForShortTerm);
+            responseBody.put("data", curWeatherData);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
 
     //환경 변수 API_KEY로 호출 해보기
     @GetMapping(value = "/getWeatherData")

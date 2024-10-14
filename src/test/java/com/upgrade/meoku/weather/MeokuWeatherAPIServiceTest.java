@@ -1,6 +1,5 @@
 package com.upgrade.meoku.weather;
 
-import com.upgrade.meoku.config.RequestApiConfig;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
 import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
@@ -10,6 +9,7 @@ import com.upgrade.meoku.weather.api.service.KMAApiUVIndex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -24,8 +24,6 @@ import static com.upgrade.meoku.weather.api.KMAApiConstants.*;
 public class MeokuWeatherAPIServiceTest {
 
     @Autowired
-    private MeokuWeatherAPIService meokuWeatherAPIService;
-    @Autowired
     private MeokuWeatherService meokuWeatherService;
 
     @Autowired
@@ -37,13 +35,8 @@ public class MeokuWeatherAPIServiceTest {
     @Autowired
     private KMAApiPerTemp kmaApiPerTemp;
 
-
-    private final RequestApiConfig requestApiConfig; //날씨 외부 API 호출을 위한 정보
-
-    @Autowired
-    public MeokuWeatherAPIServiceTest(RequestApiConfig requestApiConfig) {
-        this.requestApiConfig = requestApiConfig;
-    }
+    @Value("${WEATHER_API_KEY}")
+    private String weatherApiKey;
 
     @Test
     @DisplayName("날씨 데이터 가져오기")
@@ -63,7 +56,7 @@ public class MeokuWeatherAPIServiceTest {
         String hourOnlyTime = RequestApiUtil.getCurrentTime();
         //에러일때
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(ULTRA_SHORT_TERM_CURRENT_CONDITIONS_API_URL)
-                .queryParam("serviceKey", requestApiConfig.getWeatherApiEncodingKey())
+                .queryParam("serviceKey", weatherApiKey)
                 .queryParam("pageNo", 1)
                 .queryParam("numOfRows", 1000)
                 .queryParam("dataType", "JSON")
@@ -108,7 +101,7 @@ public class MeokuWeatherAPIServiceTest {
 
         String uriString2 = uriBuilder2.toUriString();
         // 이미 인코딩된 serviceKey 추가 (UriComponentsBuilder 에서 인코딩 가능성이 있음)
-        uriString2 += "&serviceKey=" + requestApiConfig.getWeatherApiEncodingKey();
+        uriString2 += "&serviceKey=" + weatherApiKey;
 
         RestTemplate restTemplate2 = new RestTemplate();
 
@@ -124,12 +117,6 @@ public class MeokuWeatherAPIServiceTest {
         if(response2.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")){
             System.out.println("에러입니다");
         }
-    }
-    @Test
-    @DisplayName("단기예보 API 테스트 - 안씀")
-    public void reuqestShortTermForecast() throws Exception {
-        WeatherDataDTO weatherDataDTO = meokuWeatherAPIService.getShortTermForecast();
-        System.out.println(weatherDataDTO.toString());
     }
 
     @Test
