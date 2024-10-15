@@ -7,6 +7,7 @@ import com.upgrade.meoku.weather.api.KMAApiConstants;
 import com.upgrade.meoku.weather.api.KMAApiResponseDTO;
 import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
 import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Tag(name = "컨트롤러 테스트", description = "API 정상작동 확인 등등")
 @RestController
 @RequestMapping("/api/v1/test")
 public class TestController {
