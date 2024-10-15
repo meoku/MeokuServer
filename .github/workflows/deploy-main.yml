@@ -31,11 +31,11 @@ jobs:
                 - name: WEATHER_API_KEY   # 런타임 환경 변수로 WEATHER_API_KEY를 설정
                   value: ${{ secrets.WEATHER_API_KEY }}  # GitHub Secrets에서 가져온 값 사용!
                 - name: naver_ocr_url   
-                      value: ${{ secrets.naver_ocr_url }}
+                  value: ${{ secrets.naver_ocr_url }}
                 - name: naver_api_secret_key   
-                          value: ${{ secrets.naver_api_secret_key }}
+                  value: ${{ secrets.naver_api_secret_key }}
                 - name: TEMPLATEIDS   
-                          value: ${{ secrets.TEMPLATEIDS }}
+                  value: "${{ secrets.TEMPLATEIDS }}"  # 숫자값을 문자열로 감싸서 전달
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
