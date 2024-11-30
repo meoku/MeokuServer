@@ -41,9 +41,9 @@ public class KMAApiPerTemp implements KMAApiService{
         //API 호출!
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
-        //성공 아니면 에러 뱉기 (에러일때는 JSON으로 명시해도 xml로 값이 넘어옴)
-        if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")) throw new Exception();
-
+        //성공 아니면 return (에러일때는 JSON으로 명시해도 xml로 값이 넘어옴)
+        // 겨울철(11~3)은 체감온도 정보 제공을 안하므로 겨울때 요청하면 resultCode = 99
+        if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8") || response.getBody().contains("\"resultCode\":\"99\"")) return null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> responseMap = objectMapper.readValue(response.getBody(), Map.class);

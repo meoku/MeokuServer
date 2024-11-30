@@ -104,7 +104,12 @@ public class MeokuScheduledTasks {
         try {
             System.out.println("체감온도 API 실행");
             WeatherDataDTO percivedTempDataDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
-            newUpdatedWeatherData2 = meokuWeatherService.updateWeatherDataFromApi(targetDate, percivedTempDataDTO);
+            if (percivedTempDataDTO != null) {
+                newUpdatedWeatherData2 = meokuWeatherService.updateWeatherDataFromApi(targetDate, percivedTempDataDTO);
+            }else{
+                System.out.println("체감온도를 가져올 수 없습니다. (겨울철은 체감온도 제공X)");
+            }
+
         }catch (Exception e){
             errorResult++;
             e.printStackTrace();

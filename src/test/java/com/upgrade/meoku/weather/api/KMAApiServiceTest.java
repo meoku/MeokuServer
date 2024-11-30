@@ -71,7 +71,13 @@ public class KMAApiServiceTest {
         String requestTime = RequestApiUtil.getCurrentTimeToShort();
 
         WeatherDataDTO requestedWeatherDTO = kmaApiPerTemp.requestWeatherApi(requestDate, requestTime);
-        System.out.println(requestedWeatherDTO.toString());
+        if (requestedWeatherDTO == null) {
+            System.out.println("요청 되지 않았어요!");
+        }
+        else{
+            System.out.println(requestedWeatherDTO.toString());
+        }
+
     }
 
 }
