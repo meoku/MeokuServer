@@ -1,6 +1,7 @@
 package com.upgrade.meoku.weather.api;
 
 import com.upgrade.meoku.util.RequestApiUtil;
+import com.upgrade.meoku.weather.WeatherData;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.weather.api.service.KMAAPIShortTerm;
 import com.upgrade.meoku.weather.api.service.KMAAPIUltraShortTerm;
@@ -59,7 +60,11 @@ public class KMAApiServiceTest {
         String requestTime = "15";
         System.out.println(requestTime);
         WeatherDataDTO weatherDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
-        System.out.println(weatherDataDTO);
+        if (weatherDataDTO != null) {
+            System.out.println("weatherDataDTO");
+        }else{
+            System.out.println("일시적으로 자외선 지수를 가져올 수 없습니다. - API에서 데이터 제공 X");
+        }
     }
 
     @Test

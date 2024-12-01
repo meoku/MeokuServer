@@ -40,7 +40,8 @@ public class KMAApiUVIndex implements  KMAApiService{
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
         //성공 아니면 에러 뱉기 (에러일때는 JSON으로 명시해도 xml로 값이 넘어옴)
-        if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")) throw new Exception();
+        // resultMsg에 NO_DATA가 있으면 데이터 없는것으로 간주
+        if(response.getHeaders().get("Content-Type").contains("text/xml;charset=UTF-8")|| response.getBody().contains("\"resultMsg\":\"NO_DATA\"")) return null;
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();

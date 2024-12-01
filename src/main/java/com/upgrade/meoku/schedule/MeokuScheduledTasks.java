@@ -94,7 +94,12 @@ public class MeokuScheduledTasks {
         try {
             System.out.println("자외선 API 실행");
             WeatherDataDTO UVIndexDataDTO = kmaApiUVIndex.requestWeatherApi(requestDate, requestTime);
-            WeatherData newUpdatedWeatherData1 = meokuWeatherService.updateWeatherDataFromApi(targetDate, UVIndexDataDTO);
+
+            if (UVIndexDataDTO != null) {
+                WeatherData newUpdatedWeatherData1 = meokuWeatherService.updateWeatherDataFromApi(targetDate, UVIndexDataDTO);
+            }else{
+                System.out.println("일시적으로 자외선 지수를 가져올 수 없습니다. - API에서 데이터 제공 X");
+            }
         }catch (Exception e){
             errorResult++;
             e.printStackTrace();
