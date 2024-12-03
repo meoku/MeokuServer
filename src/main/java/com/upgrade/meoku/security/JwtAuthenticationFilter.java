@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             // 토큰 유효성 검증
             String username = jwtUtil.validateToken(token);
-            // SecurityContext에 인증 정보 저장
+            // SecurityContext에 인증 정보 저장 (SecurityContext는 세션과 다르게 현재 요청 범위에서만 존재하며 이는 요청이 끝나면 사라짐)
             SecurityContextHolder.getContext().setAuthentication(
                     new PreAuthenticatedAuthenticationToken(username, null, null));
         } catch (RuntimeException e) {
