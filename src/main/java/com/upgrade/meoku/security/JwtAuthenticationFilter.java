@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+// Security Config에서 설정한 대로 동작함!
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
