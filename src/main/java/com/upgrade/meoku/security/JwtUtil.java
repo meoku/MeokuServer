@@ -13,14 +13,14 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private static final String SECRET_KEY = "cRZkgSHTE+QbBe6FKaYKZGLKJKBJhPtLHooiXt1sUCI="; // 임시로 해놓음
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간 임시로 해놓음
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     // JWT 토큰 생성 (로그인 시)
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();

@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class MeokuLoginRequestDto {
+public class MeokuLoginRequestDTO {
 
-    @NotNull(message = "이메일은 필수입니다.")
+    @NotNull(message = "id는 필수입니다.")
     @Email
-    private String email;
+    private String id;
 
     @NotNull(message = "패스워드 필수입니다.")
     private String password;

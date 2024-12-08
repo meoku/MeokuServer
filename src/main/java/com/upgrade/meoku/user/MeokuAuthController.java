@@ -20,7 +20,7 @@ public class MeokuAuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> getMemberProfile(@Valid @RequestBody MeokuLoginRequestDto request) {
+    public ResponseEntity<String> getMemberProfile(@Valid @RequestBody MeokuLoginRequestDTO request) {
         String token = meokuAuthService.login(request);
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
