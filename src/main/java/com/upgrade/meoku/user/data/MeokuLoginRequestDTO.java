@@ -1,4 +1,4 @@
-package com.upgrade.meoku.user;
+package com.upgrade.meoku.user.data;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

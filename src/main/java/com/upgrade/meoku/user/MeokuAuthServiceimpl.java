@@ -1,19 +1,33 @@
 package com.upgrade.meoku.user;
 
 import com.upgrade.meoku.security.JwtUtil;
+import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
+import com.upgrade.meoku.user.data.MeokuUser;
+import com.upgrade.meoku.user.data.MeokuUserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
+
 @Service
-@RequiredArgsConstructor
 public class MeokuAuthServiceimpl implements MeokuAuthService{
 
-    private JwtUtil jwtUtil;
-    private  PasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder encoder;
     private final MeokuUserRepository meokuUserRepository;
+
+    @Autowired
+    public MeokuAuthServiceimpl(JwtUtil jwtUtil,
+                                PasswordEncoder encoder,
+                                MeokuUserRepository meokuUserRepository){
+        this.jwtUtil = jwtUtil;
+        this.encoder = encoder;
+        this.meokuUserRepository = meokuUserRepository;
+    }
 
     @Override
     public String login(MeokuLoginRequestDTO loginRequestDto) {
@@ -27,8 +41,11 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
             throw new BadCredentialsException("비밀번호가 틀립니다.");
         }
 
+        MeokuUserDTO userDTO = USER_MAPPER_INSTANCE.userEntityToDto(user);
 
-        return null;
+        String accessToken = jwtUtil.generateToken(userDTO);
+
+        return accessToken;
     }
 
 }

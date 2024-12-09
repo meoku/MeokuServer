@@ -1,4 +1,4 @@
-package com.upgrade.meoku.user;
+package com.upgrade.meoku.user.data;
 
 
 import jakarta.persistence.*;
@@ -7,8 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -36,8 +37,8 @@ public class MeokuUser {
     @Column(name = "SEX")
     private String sex;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<MeokuUserRole> roles = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<MeokuUserRole> userRoleList = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE", updatable = false)

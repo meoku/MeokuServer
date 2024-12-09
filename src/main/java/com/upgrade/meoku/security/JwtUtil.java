@@ -1,5 +1,6 @@
 package com.upgrade.meoku.security;
 
+import com.upgrade.meoku.user.data.MeokuUserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -17,14 +20,23 @@ public class JwtUtil {
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     // JWT 토큰 생성 (로그인 시)
-    public String generateToken(String username) {
+    public String generateToken(MeokuUserDTO userDTO) {
+        // 권한 리스트 추출 : UserDTO의 권한List에서 권한 이름만 모아 따로 리스트로 추출
+        List<String> roles = userDTO.getUserRoleDTOList().stream()
+                .map(role -> role.getRoleName())
+                .collect(Collectors.toList());
+        //Claims 생성 :
+        Claims claims = Jwts.claims().setSubject(userDTO.getId());
+        claims.put("roles", roles); // 권한 필드 추가
+
         return Jwts.builder()
-                .setSubject(username)
+                .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
     // JWT 토큰 검증 (요청으로 온 헤더에서 담긴 JWT로 인증)
     public String validateToken(String token) {
         try {

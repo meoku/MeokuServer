@@ -1,5 +1,6 @@
 package com.upgrade.meoku.user;
 
+import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.upgrade.meoku.user;
+package com.upgrade.meoku.user.data;
 
 
 import jakarta.persistence.*;
@@ -21,12 +21,8 @@ public class MeokuUserRole {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private MeokuUser user;
-
     @Column(name = "ROLE_NAME", nullable = false)
     private String roleName; // e.g., "ROLE_USER", "ROLE_ADMIN"
-
-    @Column(name = "DESCRIPTION")
-    private String description; // 권한 설명 (선택)
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE", updatable = false)

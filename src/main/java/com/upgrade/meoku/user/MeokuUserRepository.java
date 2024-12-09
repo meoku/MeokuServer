@@ -1,5 +1,6 @@
 package com.upgrade.meoku.user;
 
+import com.upgrade.meoku.user.data.MeokuUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
