@@ -18,15 +18,16 @@ public class MeokuSecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    private static final String[] AUTH_EXCLOUD_LIST = {
-            "/api/v1/auth/*" //로그인, 회원가입 관련
-    };
 
+
+    // 이 등록으로 모든 요청을 이 함수를 거쳐 수행되도록 설정 (이 함수를 넘어가면 Jwt인증필터가 작동)
+    // SecurityFilterChain: 보안 정책을 설정하는 곳 (허용할 경로, 인증 필터 등)
+    // JWT 필터: 실제 인증을 처리하는 곳 (사용자 요청에 대한 JWT 토큰 확인)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // 새로운 방식으로 CSRF 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(AUTH_EXCLOUD_LIST).permitAll()
+                .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
         );
         return http.build();
