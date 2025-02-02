@@ -1,5 +1,7 @@
 package com.upgrade.meoku.user.data;
 
+import com.upgrade.meoku.user.data.MeokuUserDTO;
+import com.upgrade.meoku.user.data.MeokuUserRoleDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

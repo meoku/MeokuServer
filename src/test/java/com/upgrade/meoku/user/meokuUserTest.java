@@ -4,7 +4,6 @@ import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
 import com.upgrade.meoku.user.data.MeokuUserDetails;
 import com.upgrade.meoku.user.data.MeokuUserRole;
-import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class meokuUserTest {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    private MeokuAuthService meokuAuthService;
+    private MeokuUserDetailsService userDetailsService;
 
     @Test
     @DisplayName("회원가입")
@@ -86,7 +85,7 @@ public class meokuUserTest {
     @Test
     @DisplayName("jwt filter에서 사용될 유저 확인 메소드 테스트")
     public void getUserByIdTest(){
-        MeokuUserDetails meokuUserDetails = meokuAuthService.loadUserById("mkadmin");
+        MeokuUserDetails meokuUserDetails = (MeokuUserDetails) userDetailsService.loadUserByUsername("mkadmin");
 
         assertNotNull(meokuUserDetails.getUsername());
         System.out.println(meokuUserDetails.getAuthorities().toString());

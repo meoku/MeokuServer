@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class MeokuSecurityConfig {
@@ -27,9 +27,12 @@ public class MeokuSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // 새로운 방식으로 CSRF 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/**").permitAll()
-                .anyRequest().authenticated()
-        );
+                .anyRequest().permitAll() // 모두 허용하는 이유가 @PreAuthorize로 이 필터가 끝난 후 AOP로 인가를 할 예정이기 때문
+                //.anyRequest().authenticated()
+            ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        //http.addFilterBefore(new JwtAuthenticationFilter(Meoku), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
