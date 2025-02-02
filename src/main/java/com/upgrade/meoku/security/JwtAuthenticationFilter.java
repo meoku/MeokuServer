@@ -26,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final MeokuUserDetailsService meokuUserDetailsService;
     private final JwtUtil jwtUtil;
 
+    // 인증을 하지 않는 요청들
     private static final String[] AUTH_EXCLOUD_LIST = {
             "/swagger-ui/**" // swagger 관련
             ,"/v3/api-docs/**"
@@ -34,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ,"/api/v1/auth/*" //로그인, 회원가입 관련
             ,"/api/v1/meokumenu/weekdaysmenu" //메뉴조회
             ,"/api/v1/meokumenu/searchMenuTag" //메뉴태그조회
+            ,"/api/v1/meoku/getCurrentWeatherData" //날씨 데이터 조회
     };
 
     @Override
