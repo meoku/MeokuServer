@@ -4,6 +4,7 @@ import com.upgrade.meoku.security.JwtUtil;
 import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
 import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
+import com.upgrade.meoku.user.data.MeokuUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -46,6 +47,17 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
         String accessToken = jwtUtil.generateToken(userDTO);
 
         return accessToken;
+    }
+
+    // jwtFilter에서 사용될 유저 확인 메소드
+    @Override
+    public MeokuUserDetails loadUserById(String id) throws UsernameNotFoundException {
+        MeokuUser user = meokuUserRepository.findMeokuUserById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("없는 ID 입니다."));
+
+        MeokuUserDTO userDTO = USER_MAPPER_INSTANCE.userEntityToDto(user);
+
+        return new MeokuUserDetails(userDTO);
     }
 
 }

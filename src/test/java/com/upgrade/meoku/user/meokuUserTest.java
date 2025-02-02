@@ -2,6 +2,7 @@ package com.upgrade.meoku.user;
 
 import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
+import com.upgrade.meoku.user.data.MeokuUserDetails;
 import com.upgrade.meoku.user.data.MeokuUserRole;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,9 @@ public class meokuUserTest {
     private MeokuUesrRoleRepository userRoleRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MeokuAuthService meokuAuthService;
 
     @Test
     @DisplayName("회원가입")
@@ -77,5 +81,14 @@ public class meokuUserTest {
         MeokuUserDTO meokuUserDTO = USER_MAPPER_INSTANCE.userEntityToDto(savedUser.get());
         System.out.println(meokuUserDTO.toString());
 
+    }
+
+    @Test
+    @DisplayName("jwt filter에서 사용될 유저 확인 메소드 테스트")
+    public void getUserByIdTest(){
+        MeokuUserDetails meokuUserDetails = meokuAuthService.loadUserById("mkadmin");
+
+        assertNotNull(meokuUserDetails.getUsername());
+        System.out.println(meokuUserDetails.getAuthorities().toString());
     }
 }
