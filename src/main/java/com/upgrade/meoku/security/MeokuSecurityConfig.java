@@ -1,24 +1,25 @@
 package com.upgrade.meoku.security;
 
+import com.upgrade.meoku.user.MeokuUserDetailsService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity  // ✅ 이게 없으면 PreAuthrize 작동 안함! (메소드 보안 활성화 필수!)
+@AllArgsConstructor
 public class MeokuSecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    @Autowired
-    public MeokuSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
-
-
+    private final MeokuUserDetailsService meokuUserDetailsService;
+    private final JwtUtil jwtUtil;
 
     // 이 등록으로 모든 요청을 이 함수를 거쳐 수행되도록 설정 (이 함수를 넘어가면 Jwt인증필터가 작동)
     // SecurityFilterChain: 보안 정책을 설정하는 곳 (허용할 경로, 인증 필터 등)
@@ -31,7 +32,7 @@ public class MeokuSecurityConfig {
                 //.anyRequest().authenticated()
             ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        //http.addFilterBefore(new JwtAuthenticationFilter(Meoku), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(meokuUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

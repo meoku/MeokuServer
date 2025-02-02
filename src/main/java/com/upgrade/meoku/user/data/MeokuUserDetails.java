@@ -21,7 +21,7 @@ public class MeokuUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
         for(MeokuUserRoleDTO role : userDTO.getUserRoleDTOList()){
-            roles.add(role.getRoleName());
+            roles.add("ROLE_" + role.getRoleName());
         }
 
         return roles.stream()
