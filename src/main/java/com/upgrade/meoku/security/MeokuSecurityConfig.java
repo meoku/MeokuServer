@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,16 +22,17 @@ public class MeokuSecurityConfig {
     private final MeokuUserDetailsService meokuUserDetailsService;
     private final JwtUtil jwtUtil;
 
-    // 이 등록으로 모든 요청을 이 함수를 거쳐 수행되도록 설정 (이 함수를 넘어가면 Jwt인증필터가 작동)
     // SecurityFilterChain: 보안 정책을 설정하는 곳 (허용할 경로, 인증 필터 등)
     // JWT 필터: 실제 인증을 처리하는 곳 (사용자 요청에 대한 JWT 토큰 확인)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // 새로운 방식으로 CSRF 비활성화
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // 모두 허용하는 이유가 @PreAuthorize로 이 필터가 끝난 후 AOP로 인가를 할 예정이기 때문
-                //.anyRequest().authenticated()
-            ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .httpBasic(AbstractHttpConfigurer::disable) // ❌ HTTP 기본 인증 비활성화 (jwt와 같이 쓰면 충돌하여 혼란이 올 수 있음!)
+                .formLogin(AbstractHttpConfigurer::disable) // ❌ 폼 로그인 비활성화 (폼로그인은 UsernamePasswordAuthenticationFilter 을 실행시키는데 우리는 jwt 인증을 하니 확인 할 필요가 없음)
+                .authorizeHttpRequests(auth -> auth
+                    .anyRequest().permitAll() // 모두 허용하는 이유가 @PreAuthorize로 이 필터가 끝난 후 AOP로 인가를 할 예정이기 때문
+                    //.anyRequest().authenticated()
+                ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(new JwtAuthenticationFilter(meokuUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
