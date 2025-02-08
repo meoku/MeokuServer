@@ -56,22 +56,23 @@ public class MenuUtil {
 
                 if (menuTypeParts[1].trim().equalsIgnoreCase("lunch")) {    //점심메뉴 파싱
 
-                    curDailyMenuDTO.setMenuDate(MenuUtil.getDate(menuArray[0]));//첫번째는 날짜이므로 Date로 변환한 값 저장
+                    //curDailyMenuDTO.setMenuDate(MenuUtil.getDate(menuArray[0]));//첫번째는 날짜이므로 Date로 변환한 값 저장
+                    // -> 2025-02-08 부로 날짜는 OCR에서 가져오지 않고 웹에서 같이 던져주는 것으로 변경
 
                     //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
                     menuArray = Arrays.stream(menuArray)
                             .map(MeokuUtil::removeCharacters)
                             .toArray(String[]::new);
 
-                    // 총 메뉴 길이가 최소 13개이상 일 때 메뉴정보 넣기
-                    if(menuArraySize > 13){
+                    // 총 메뉴 길이가 최소 12개이상 일 때 메뉴정보 넣기
+                    if(menuArraySize > 12){
                         curDailyMenuDTO.setHolidayFg("N");
                         curDailyMenuDTO.setRestaurantOpenFg("Y");
                         //한식 (6개)
                         SubMenuDetailsDTO koreaMenuDetailsDTO = new SubMenuDetailsDTO();
                         koreaMenuDetailsDTO.setMenuDetailsName("한식");
                         koreaMenuDetailsDTO.setMainMealYn("Y");
-                        for(int i = 1; i <= 6 ; i++){
+                        for(int i = 0; i <= 5 ; i++){
                             SubMenuDetailsItemBridgeDTO bridgeDTO = new SubMenuDetailsItemBridgeDTO();
                             bridgeDTO.setMenuItemName(menuArray[i]);
                             if(i == 1) bridgeDTO.setMainMenuYn("Y");
@@ -84,10 +85,10 @@ public class MenuUtil {
                         SubMenuDetailsDTO oneMenuDetailsDTO = new SubMenuDetailsDTO();
                         oneMenuDetailsDTO.setMenuDetailsName("일품");
                         oneMenuDetailsDTO.setMainMealYn("Y");
-                        for(int i = 7; i <= 11 ; i++){
+                        for(int i = 6; i <= 10 ; i++){
                             SubMenuDetailsItemBridgeDTO bridgeDTO = new SubMenuDetailsItemBridgeDTO();
                             bridgeDTO.setMenuItemName(menuArray[i]);
-                            if(i == 7) bridgeDTO.setMainMenuYn("Y");
+                            if(i == 6) bridgeDTO.setMainMenuYn("Y");
                             else bridgeDTO.setMainMenuYn("N");
                             oneMenuDetailsDTO.getSubBridgeList().add(bridgeDTO);
                         }

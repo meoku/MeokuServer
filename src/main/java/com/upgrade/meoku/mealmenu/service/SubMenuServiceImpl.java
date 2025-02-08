@@ -111,6 +111,8 @@ public class SubMenuServiceImpl implements SubMenuService{
 
             //Details(상세식단) 안에 있는 브릿지로 Details, menuItem 선 저장 후 bridge까지 한번에 저장하는 로직
             for(SubMenuDetailsDTO menuDetailsDTO : dailyMenuDTO.getMenuDetailsList()){
+                menuDetailsDTO.setMenuDetailsName(menuDetailsDTO.getMenuDetailsName());
+
                 SubMenuDetails savedMenuDetails = new SubMenuDetails();
                 savedMenuDetails.setSubDailyMenu(savedDailyMenu);                               //일일메뉴데이터(Entity)
                 savedMenuDetails.setDailyMenuDate(dailyMenuDTO.getMenuDate());                  //식단날짜
@@ -125,7 +127,11 @@ public class SubMenuServiceImpl implements SubMenuService{
                 List<SubMenuDetailsItemBridge> savedBridgeList = new ArrayList<>();
 
                 for(SubMenuDetailsItemBridgeDTO bridgeDTO : menuDetailsDTO.getSubBridgeList()){
-                    SubMenuItem savedMenuItem = subMenuDao.menuItemCountUpAndSave(bridgeDTO.getMenuItemName());
+
+                    // 원래 이자리에 메뉴 이름이 빈칸, 공백 이면 해당 날짜와 식단 이름을 표시하며 공백의 메뉴가 입력돼었다는 "에러" 발생 해야 함
+                    // 아직 커스텀 에러를 설정하고 만들지 않았으므로 우선 패스
+
+                    SubMenuItem savedMenuItem = subMenuDao.menuItemCountUpAndSave(bridgeDTO.getMenuItemName().trim()); //메뉴이름에 양쪽 공백 없애기
                     // 만약 메뉴 이름이 ""라서 null이 반환됐다면 bridge를 포함항 menuItem데이터 저장하지 않아야함
                     if(savedMenuItem == null) continue;
 
@@ -146,7 +152,7 @@ public class SubMenuServiceImpl implements SubMenuService{
 
                     SubMenuDetailsItemBridge savedBridge = new SubMenuDetailsItemBridge();
                     savedBridge.setMainMenuYn(bridgeDTO.getMainMenuYn());
-                    savedBridge.setMenuItemName(bridgeDTO.getMenuItemName());
+                    savedBridge.setMenuItemName(bridgeDTO.getMenuItemName().trim()); //메뉴이름에 양쪽 공백 없애기
                     savedBridge.setSubMenuDetails(savedMenuDetails);
                     savedBridge.setSubMenuItem(savedMenuItem);
 

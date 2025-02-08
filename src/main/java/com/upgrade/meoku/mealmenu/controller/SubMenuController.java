@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,8 +34,29 @@ public class SubMenuController {
         this.subMenuService = subMenuService;
     }
 
+    @Operation(summary = "new 주간별 식단메뉴 불러오기 -  리팩터링", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
+    @PostMapping(value = "weekdaysmenu")
+    public List<SubDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
+        //String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
+        String date = (String)jsonData.get("date");
+        LocalDate transDate = LocalDate.parse(date);
+
+        List<SubDailyMenuDTO> resultMealMenuList = null;
+        resultMealMenuList = subMenuService.searchDailyMenuOfWeek(transDate);
+
+        return resultMealMenuList;
+    }
+
+    @Operation(summary = "메뉴id List로 해당 메뉴 태그정보 가져오기", description = "List형태로 MenuId를 \"menuIdList\" 변수에 넣어 전달")
+    @PostMapping(value = "searchMenuTag")
+    public List<SubMenuItemDTO> searchMenuTag(@RequestBody Map<String, Object> jsonData) {
+        List<Integer> menuIdList = (List<Integer>)jsonData.get("menuIdList");
+
+        return subMenuService.searchMenuTag(menuIdList);
+    }
 
     @Operation(summary = "new 식단 이미지 OCR - 리팩터링", description = "업로드된 이미지 or 파일을 받아 API를 이용해 식단 데이터를 반환한다")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/MenuImageUploadAndReturnMenuData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public List<SubDailyMenuDTO> MenuImageUploadAndReturnMenuData(@RequestParam("menuFile") MultipartFile menuFile) throws Exception {
@@ -46,6 +68,7 @@ public class SubMenuController {
     }
 
     @Operation(summary = "new 주간 식단데이터 업로드 - 리팩터링", description = "업로드된 이미지에서 추출한 식단데이터를 확인 후 서버DB로 저장 후 저장 날짜 반환")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/WeekMenuUpload")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> WeekMenuUpload(@RequestBody List<SubDailyMenuDTO> weekMenu){
@@ -62,20 +85,8 @@ public class SubMenuController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "new 주간별 식단메뉴 불러오기 -  리팩터링", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
-    @PostMapping(value = "weekdaysmenu")
-    public List<SubDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
-        //String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
-        String date = (String)jsonData.get("date");
-        LocalDate transDate = LocalDate.parse(date);
-
-        List<SubDailyMenuDTO> resultMealMenuList = null;
-        resultMealMenuList = subMenuService.searchDailyMenuOfWeek(transDate);
-
-        return resultMealMenuList;
-    }
-
     @Operation(summary = "특정 날짜식단정보 모두 삭제", description = "입력예시 2024-07-31")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "deleteMenuData")
     public void deleteMenuData(@RequestBody Map<String, Object> jsonData) {
         String date = (String)jsonData.get("date");
@@ -83,13 +94,4 @@ public class SubMenuController {
 
         subMenuService.deleteMenuData(deleteDate);
     }
-
-    @Operation(summary = "메뉴id List로 해당 메뉴 태그정보 가져오기", description = "List형태로 MenuId를 \"menuIdList\" 변수에 넣어 전달")
-    @PostMapping(value = "searchMenuTag")
-    public List<SubMenuItemDTO> searchMenuTag(@RequestBody Map<String, Object> jsonData) {
-        List<Integer> menuIdList = (List<Integer>)jsonData.get("menuIdList");
-
-        return subMenuService.searchMenuTag(menuIdList);
-    }
-
 }

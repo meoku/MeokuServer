@@ -4,7 +4,7 @@ import com.upgrade.meoku.security.JwtUtil;
 import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
 import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
-import lombok.RequiredArgsConstructor;
+import com.upgrade.meoku.user.data.MeokuUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

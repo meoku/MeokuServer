@@ -78,8 +78,8 @@ public class SubMenuDaoImpl implements SubMenuDao{
     // 메뉴를 찾고 있으면 cnt + 1
     @Override
     public SubMenuItem menuItemCountUpAndSave(String menuName) {
-        //메뉴이름 이 없으면 null 반환
-        if(menuName == null || menuName.isEmpty()) return null;
+        //메뉴이름 이 없으면 null 반환 (사실 여기에 빈값 들어 오는거 자체가 에러를 발생시켜야 하는 상황임)
+        if(menuName == null || menuName.isEmpty() || menuName.equals("")) return null;
 
         SubMenuItem searchedMenuItem = menuItemRepository.findByMenuItemName(menuName);
         if (searchedMenuItem == null) {

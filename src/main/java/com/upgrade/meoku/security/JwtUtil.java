@@ -25,7 +25,7 @@ public class JwtUtil {
         List<String> roles = userDTO.getUserRoleDTOList().stream()
                 .map(role -> role.getRoleName())
                 .collect(Collectors.toList());
-        //Claims 생성 :
+        //Claims 생성 : id, roles 저장
         Claims claims = Jwts.claims().setSubject(userDTO.getId());
         claims.put("roles", roles); // 권한 필드 추가
 
