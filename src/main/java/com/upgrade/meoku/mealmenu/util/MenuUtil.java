@@ -43,6 +43,14 @@ public class MenuUtil {
 
                 String inferText = (String) field.get("inferText");//메뉴목록 get
                 String[] menuArray = inferText.split("\\r?\\n");//줄바꿈으로 구분되어있는 메뉴들 to 배열
+
+                // 맨 처음 데이터가 날짜가 있을 수도 있고 없을 수도 있는데
+                // 날짜 패턴이 확인되면 그 첫줄은 제거 (MM월 dd일(요일) 형식)
+                // 이런 방식 정말 좋지 않은데 입력 자체가 고정되지 않는 상황이라 어쩔 수 없음 ...
+                if (menuArray.length > 0 && menuArray[0].matches("^\\d{2}월 \\d{2}일\\(.*\\)$")) {
+                    menuArray = Arrays.copyOfRange(menuArray, 1, menuArray.length); // 첫 줄 제거
+                }
+
                 int menuArraySize = menuArray.length;
 
                 //점심,저녁 * 5일 해서 총 10개의 데이터가 들어오는데 주간 데이터는 5개이므로 아래와 같이 인덱싱
