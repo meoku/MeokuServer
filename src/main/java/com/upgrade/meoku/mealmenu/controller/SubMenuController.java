@@ -6,6 +6,9 @@ import com.upgrade.meoku.mealmenu.data.dto.SubMenuItemDTO;
 import com.upgrade.meoku.mealmenu.data.entity.SubMenuItem;
 import com.upgrade.meoku.mealmenu.service.SubMenuService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +37,7 @@ public class SubMenuController {
         this.subMenuService = subMenuService;
     }
 
-    @Operation(summary = "new 주간별 식단메뉴 불러오기 -  리팩터링", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {isMonthOrWeek : [week or month], date : YYYY-mm-dd}")
+    @Operation(summary = "new 주간별 식단메뉴 불러오기 -  리팩터링", description = "한주에 속하는 날짜를 입력하면 해당 주간의 식단을 가져옵니다. \n 입력 예제 {date : YYYY-mm-dd}")
     @PostMapping(value = "weekdaysmenu")
     public List<SubDailyMenuDTO> getWeekendMealMenu(@RequestBody Map<String, Object> jsonData) {
         //String isMonthOrWeek = (String)jsonData.get("isMonthOrWeek");
@@ -85,7 +88,7 @@ public class SubMenuController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "특정 날짜식단정보 모두 삭제", description = "입력예시 2024-07-31")
+    @Operation(summary = "특정 날짜식단정보 모두 삭제", description = "입력예시 \"date\" : \"2024-07-31\"")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "deleteMenuData")
     public void deleteMenuData(@RequestBody Map<String, Object> jsonData) {
