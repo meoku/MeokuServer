@@ -91,10 +91,22 @@ public class SubMenuController {
     @Operation(summary = "특정 날짜식단정보 모두 삭제", description = "입력예시 \"date\" : \"2024-07-31\"")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "deleteMenuData")
-    public void deleteMenuData(@RequestBody Map<String, Object> jsonData) {
+    public ResponseEntity<Map<String, Object>> deleteMenuData(@RequestBody Map<String, Object> jsonData) {
         String date = (String)jsonData.get("date");
         LocalDate deleteDate = LocalDate.parse(date);
 
-        subMenuService.deleteMenuData(deleteDate);
+        Map<String, Object> responseBody = new HashMap<>();
+        try{
+            //식단 정보 저장
+            subMenuService.deleteMenuData(deleteDate);
+            responseBody.put("result", date + "삭제 성공");
+        }catch (Exception e) {
+            responseBody.put("error", "Internal server error");
+            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
