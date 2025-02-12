@@ -1,10 +1,7 @@
 package com.upgrade.meoku.security;
 
 import com.upgrade.meoku.user.data.MeokuUserDTO;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
@@ -45,9 +42,17 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+
+            // 🔹 만료 시간 검증 추가
+            if (claims.getExpiration().before(new Date())) {
+                throw new RuntimeException("Expired JWT Token");
+            }
+
             return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("Expired JWT Token", e);  // 인증시간 만료
         } catch (JwtException | IllegalArgumentException e) {
-            throw new RuntimeException("Invalid JWT Token", e);
+            throw new RuntimeException("Invalid JWT Token", e);  // 이상한 토큰
         }
     }
 }
