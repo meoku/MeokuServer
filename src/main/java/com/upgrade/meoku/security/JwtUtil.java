@@ -47,7 +47,6 @@ public class JwtUtil {
             if (claims.getExpiration().before(new Date())) {
                 throw new RuntimeException("Expired JWT Token");
             }
-
             return claims.getSubject();
         } catch (ExpiredJwtException e) {
             throw new RuntimeException("Expired JWT Token", e);  // 인증시간 만료
