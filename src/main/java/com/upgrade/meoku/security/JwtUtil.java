@@ -45,13 +45,15 @@ public class JwtUtil {
 
             // 🔹 만료 시간 검증 추가
             if (claims.getExpiration().before(new Date())) {
-                throw new RuntimeException("Expired JWT Token");
+                throw new ExpiredJwtException(null, claims, "Expired JWT Token");  // ExpiredJwtException 던짐
             }
             return claims.getSubject();
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException("Expired JWT Token", e);  // 인증시간 만료
+            throw e;  // 인증시간 만료
         } catch (JwtException | IllegalArgumentException e) {
-            throw new RuntimeException("Invalid JWT Token", e);  // 이상한 토큰
+            throw e;  // 올바르지 않은 토큰
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error", e);  // 예기치 못한 예외 처리
         }
     }
 }

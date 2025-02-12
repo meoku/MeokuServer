@@ -1,6 +1,7 @@
 package com.upgrade.meoku.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,6 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // JWT 관련 예외 핸들러 (잘못된 JWT 토큰) : 400
+    @ExceptionHandler({ JwtException.class, IllegalArgumentException.class })
+    public ResponseEntity<String> handleJwtException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 JWT 토큰입니다.");
+    }
 
     // JWT 관련 예외 핸들러 (인증시간 만료) : 401
     @ExceptionHandler(ExpiredJwtException.class)
