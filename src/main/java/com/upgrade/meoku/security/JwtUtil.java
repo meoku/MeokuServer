@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
     private static final String SECRET_KEY = "cRZkgSHTE+QbBe6FKaYKZGLKJKBJhPtLHooiXt1sUCI="; // 임시로 해놓음
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간 임시로 해놓음
+    private static final long EXPIRATION_TIME = 1; // 1시간 임시로 해놓음
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     // JWT 토큰 생성 (로그인 시)
@@ -35,25 +35,31 @@ public class JwtUtil {
     }
 
     // JWT 토큰 검증 (요청으로 온 헤더에서 담긴 JWT로 인증)
+    // 단일 책임의 원칙으로 에러 핸들링을 이를 사용하는 상위 로직에서 처리 하고 이곳에서는 단순하게 검증만 처리
     public String validateToken(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
+
+        Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token)
+                    .parseClaimsJws(token) //서명 검증, 만료시간 검증, 기타 JWT 포멧 검증까지 함
                     .getBody();
 
-            // 🔹 만료 시간 검증 추가
-            if (claims.getExpiration().before(new Date())) {
-                throw new ExpiredJwtException(null, claims, "Expired JWT Token");  // ExpiredJwtException 던짐
-            }
             return claims.getSubject();
-        } catch (ExpiredJwtException e) {
-            throw e;  // 인증시간 만료
-        } catch (JwtException | IllegalArgumentException e) {
-            throw e;  // 올바르지 않은 토큰
-        } catch (Exception e) {
-            throw new RuntimeException("Unexpected error", e);  // 예기치 못한 예외 처리
-        }
+
+//        try {
+//            Claims claims = Jwts.parserBuilder()
+//                    .setSigningKey(key)
+//                    .build()
+//                    .parseClaimsJws(token) //서명 검증, 만료시간 검증, 기타 JWT 포멧 검증까지 함
+//                    .getBody();
+//
+//            return claims.getSubject();
+//        } catch (ExpiredJwtException e) {
+//            throw e;  // 인증시간 만료
+//        } catch (JwtException | IllegalArgumentException e) {
+//            throw e;  // 올바르지 않은 토큰
+//        } catch (Exception e) {
+//            throw new RuntimeException("Unexpected error", e);  // 예기치 못한 예외 처리
+//        }
     }
 }

@@ -3,6 +3,8 @@ package com.upgrade.meoku.security;
 import com.upgrade.meoku.user.MeokuAuthService;
 import com.upgrade.meoku.user.MeokuUserDetailsService;
 import com.upgrade.meoku.user.data.MeokuUserDetails;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,7 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //"Baarer "이후의 토큰 값만 추출
         String token = header.substring(7);
         try {
-
             // 토큰 유효성 검증 (유효기간 등 )
             String id = jwtUtil.validateToken(token);
             // 유저 확인
@@ -72,9 +73,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // SecurityContext에 인증 정보 저장 (SecurityContext는 세션과 다르게 현재 요청 범위에서만 존재하며 이는 요청이 끝나면 사라짐)
             SecurityContextHolder.getContext().setAuthentication(
                     new PreAuthenticatedAuthenticationToken(meokuUserDetails, null, meokuUserDetails.getAuthorities()));
-        } catch (RuntimeException e) {
+
+        } catch (ExpiredJwtException e) { // 인증시간 만료
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid Token");
+            response.getWriter().write("JWT 토큰이 만료되었습니다.");
+            return;
+        } catch (JwtException | IllegalArgumentException e) {// 올바르지 않은 토큰
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("잘못된 JWT 토큰입니다");
+            return;
+        } catch (Exception e) {
+            // 그 외의 예기치 못한 에러는 500 에러 반환
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("서버 오류: " + e.getMessage());
             return;
         }
 
