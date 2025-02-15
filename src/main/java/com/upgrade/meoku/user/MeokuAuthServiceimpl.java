@@ -4,12 +4,14 @@ import com.upgrade.meoku.security.JwtUtil;
 import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
 import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
-import com.upgrade.meoku.user.data.MeokuUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
 
@@ -30,7 +32,7 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
     }
 
     @Override
-    public String login(MeokuLoginRequestDTO loginRequestDto) {
+    public Map<String, Object> login(MeokuLoginRequestDTO loginRequestDto) {
         String id = loginRequestDto.getId();
         String password = loginRequestDto.getPassword();
         MeokuUser user = meokuUserRepository.findMeokuUserById(id)
@@ -43,9 +45,14 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
 
         MeokuUserDTO userDTO = USER_MAPPER_INSTANCE.userEntityToDto(user);
 
-        String accessToken = jwtUtil.generateToken(userDTO);
+        String accessToken = jwtUtil.generateAccessToken(userDTO);
+        String refreshToken = jwtUtil.generateRefreshToken(userDTO);
 
-        return accessToken;
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("refreshToken", refreshToken);
+
+        return result;
     }
 
 }

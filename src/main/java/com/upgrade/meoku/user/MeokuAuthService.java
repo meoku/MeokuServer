@@ -1,9 +1,9 @@
 package com.upgrade.meoku.user;
 
 import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
-import com.upgrade.meoku.user.data.MeokuUserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.Map;
 
 public interface MeokuAuthService {
-    public String login(MeokuLoginRequestDTO mlrd);
+     Map<String, Object> login(MeokuLoginRequestDTO mlrd);
 }

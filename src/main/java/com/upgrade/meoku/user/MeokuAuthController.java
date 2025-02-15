@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Tag(name = "회원인증 컨트롤러", description = "로그인, 회원가입 인증 절차 ")
 @RestController
@@ -21,9 +21,8 @@ public class MeokuAuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> getMemberProfile(@Valid @RequestBody MeokuLoginRequestDTO request) {
-        String token = meokuAuthService.login(request);
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+    public ResponseEntity<?> getMemberProfile(@Valid @RequestBody MeokuLoginRequestDTO request) {
+        Map<String, Object> tokenMap = meokuAuthService.login(request);
+        return ResponseEntity.ok(tokenMap);
     }
-
 }
