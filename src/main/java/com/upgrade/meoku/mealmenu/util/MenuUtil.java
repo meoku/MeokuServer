@@ -47,7 +47,7 @@ public class MenuUtil {
                 // 맨 처음 데이터가 날짜가 있을 수도 있고 없을 수도 있는데
                 // 날짜 패턴이 확인되면 그 첫줄은 제거 (MM월 dd일(요일) 형식)
                 // 이런 방식 정말 좋지 않은데 입력 자체가 고정되지 않는 상황이라 어쩔 수 없음 ...
-                if (menuArray.length > 0 && menuArray[0].matches("^\\d{2}월 \\d{2}일\\(.*\\)$")) {
+                if (menuArray.length > 0 && menuArray[0].matches(".*\\d{2}월 \\d{2}일.*")) {
                     menuArray = Arrays.copyOfRange(menuArray, 1, menuArray.length); // 첫 줄 제거
                 }
 

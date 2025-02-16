@@ -42,7 +42,7 @@ public class meokuUserControllerTest {
         String token = "generated.jwt.token";
 
         // Service가 반환할 값을 mock
-        when(authService.login(loginRequestDTO)).thenReturn(token);
+        //when(authService.login(loginRequestDTO)).thenReturn(token);
 
         // 로그인 요청 테스트
         // CSRF 토큰을 발급
