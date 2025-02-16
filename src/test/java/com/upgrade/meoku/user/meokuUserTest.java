@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Optional;
 
 import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
@@ -88,5 +90,15 @@ public class meokuUserTest {
 
         assertNotNull(meokuUserDetails.getUsername());
         System.out.println(meokuUserDetails.getAuthorities().toString());
+    }
+
+    @Test
+    @DisplayName("Secret Key 생성")
+    public void getSecretKeyTest(){
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[32]; // 32바이트 키
+        random.nextBytes(key);
+        String secretKey = Base64.getEncoder().encodeToString(key);
+        System.out.println(secretKey);
     }
 }
