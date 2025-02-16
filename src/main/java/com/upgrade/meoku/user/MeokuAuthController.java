@@ -32,7 +32,7 @@ public class MeokuAuthController {
     }
 
     @Operation(summary = "Refresh token으로 Access token 갱신", description = "우선 Access token, Refresh Token 갱신", security = @SecurityRequirement(name = "bearerAuth"))
-    @PostMapping("refreshAccessToken")
+    @PostMapping("/refreshAccessToken")
     public ResponseEntity<?> refreshAccessToken(
             @RequestHeader("Authorization")
             @Parameter(hidden = true)
