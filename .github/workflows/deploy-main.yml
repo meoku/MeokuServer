@@ -45,6 +45,12 @@ jobs:
                   value: ${{ secrets.naver_api_secret_key }}
                 - name: TEMPLATEIDS   
                   value: "${{ secrets.TEMPLATEIDS }}"  # 숫자값을 문자열로 감싸서 전달
+                - name: JWT_SECRET_KEY   
+                  value: ${{ secrets.JWT_SECRET_KEY }}
+                - name: ACCESS_TOKEN_EXPIRATION_TIME   
+                  value: ${{ secrets.ACCESS_TOKEN_EXPIRATION_TIME }}
+                - name: REFRESH_TOKEN_EXPIRATION_TIME   
+                  value: ${{ secrets.REFRESH_TOKEN_EXPIRATION_TIME }}
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
