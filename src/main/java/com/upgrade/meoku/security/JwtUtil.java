@@ -1,10 +1,12 @@
 package com.upgrade.meoku.security;
 
 import com.upgrade.meoku.user.data.MeokuUserDTO;
+import com.upgrade.meoku.user.data.MeokuUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Component
 public class JwtUtil {
@@ -80,22 +84,33 @@ public class JwtUtil {
                     .getBody();
 
             return claims.getSubject();
+    }
 
+    // Jwt Claim에서 내용 추출
+    public MeokuUserDetails extractUserDetailsFromJwt(String token) {
+        MeokuUserDTO meokuUserDTO = new MeokuUserDTO();
 
-//        try {
-//            Claims claims = Jwts.parserBuilder()
-//                    .setSigningKey(key)
-//                    .build()
-//                    .parseClaimsJws(token) //서명 검증, 만료시간 검증, 기타 JWT 포멧 검증까지 함
-//                    .getBody();
-//
-//            return claims.getSubject();
-//        } catch (ExpiredJwtException e) {
-//            throw e;  // 인증시간 만료
-//        } catch (JwtException | IllegalArgumentException e) {
-//            throw e;  // 올바르지 않은 토큰
-//        } catch (Exception e) {
-//            throw new RuntimeException("Unexpected error", e);  // 예기치 못한 예외 처리
-//        }
+        // JWT에서 Claims 추출
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        String username = claims.getSubject(); // ID 가져오기
+        List<GrantedAuthority> authorities = getAuthorities(claims); // 권한 정보 가져오기
+
+        meokuUserDTO.setId(username);
+        meokuUserDTO.setUserRoleDTOList(null);
+
+        return new MeokuUserDetails(meokuUserDTO);
+    }
+
+    // 추출한 Claim에서 권한 목록 가져오기
+    private List<GrantedAuthority> getAuthorities(Claims claims) {
+        List<String> roles = claims.get("roles", List.class);
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 }
