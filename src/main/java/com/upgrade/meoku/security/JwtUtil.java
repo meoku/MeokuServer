@@ -2,6 +2,7 @@ package com.upgrade.meoku.security;
 
 import com.upgrade.meoku.user.data.MeokuUserDTO;
 import com.upgrade.meoku.user.data.MeokuUserDetails;
+import com.upgrade.meoku.user.data.MeokuUserRoleDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -98,19 +99,19 @@ public class JwtUtil {
                 .getBody();
 
         String username = claims.getSubject(); // ID 가져오기
-        List<GrantedAuthority> authorities = getAuthorities(claims); // 권한 정보 가져오기
+        List<String> roles = claims.get("roles", List.class);// 권한 정보 가져오기
+        List<MeokuUserRoleDTO> roleDTOs = roles.stream()
+                .map(role -> {
+                    MeokuUserRoleDTO dto = new MeokuUserRoleDTO();
+                    dto.setRoleName(role);
+                    return dto;
+                })
+                .toList();
 
         meokuUserDTO.setId(username);
-        meokuUserDTO.setUserRoleDTOList(null);
+        meokuUserDTO.setUserRoleDTOList(roleDTOs);
 
         return new MeokuUserDetails(meokuUserDTO);
     }
 
-    // 추출한 Claim에서 권한 목록 가져오기
-    private List<GrantedAuthority> getAuthorities(Claims claims) {
-        List<String> roles = claims.get("roles", List.class);
-        return roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
 }

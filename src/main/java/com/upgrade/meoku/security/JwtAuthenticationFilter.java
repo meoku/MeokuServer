@@ -65,11 +65,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //"Baarer "이후의 토큰 값만 추출
         String token = header.substring(7);
+        System.out.println(token);
         try {
             // 토큰 유효성 검증 (유효기간 등 )
             String id = jwtUtil.validateToken(token);
             // 유저 확인
-            UserDetails meokuUserDetails = meokuUserDetailsService.loadUserByUsername(id);
+            //UserDetails meokuUserDetails = meokuUserDetailsService.loadUserByUsername(id);
+            UserDetails meokuUserDetails = jwtUtil.extractUserDetailsFromJwt(token);
+
             // SecurityContext에 인증 정보 저장 (SecurityContext는 세션과 다르게 현재 요청 범위에서만 존재하며 이는 요청이 끝나면 사라짐)
             SecurityContextHolder.getContext().setAuthentication(
                     new PreAuthenticatedAuthenticationToken(meokuUserDetails, null, meokuUserDetails.getAuthorities()));
@@ -81,6 +84,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JwtException | IllegalArgumentException e) {// 올바르지 않은 토큰
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("잘못된 JWT 토큰입니다");
+
+            System.out.println(e.getMessage());
             return;
         } catch (Exception e) {
             // 그 외의 예기치 못한 에러는 500 에러 반환

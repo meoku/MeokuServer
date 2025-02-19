@@ -51,7 +51,7 @@ public class meokuUserTest {
 
         MeokuUserRole meokuUserRole = new MeokuUserRole();
         meokuUserRole.setUser(meokuUser);
-        meokuUserRole.setRoleName("ROLE_USER");
+        meokuUserRole.setRoleName("USER");
         //3. 유저 권한 저장
         userRoleRepository.save(meokuUserRole);
 
@@ -61,7 +61,7 @@ public class meokuUserTest {
         assertTrue(passwordEncoder.matches("testuser", meokuUser.getPassword()));
 
         assertNotNull(meokuUserRole.getRoleId());
-        assertEquals("ROLE_USER", meokuUserRole.getRoleName());
+        assertEquals("USER", meokuUserRole.getRoleName());
         assertEquals(meokuUser.getUserId(), meokuUserRole.getUser().getUserId());
 
     }
