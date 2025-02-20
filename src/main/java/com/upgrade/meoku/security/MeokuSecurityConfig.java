@@ -2,7 +2,6 @@ package com.upgrade.meoku.security;
 
 import com.upgrade.meoku.user.MeokuUserDetailsService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +32,8 @@ public class MeokuSecurityConfig {
                     .anyRequest().permitAll() // 모두 허용하는 이유가 @PreAuthorize로 이 필터가 끝난 후 AOP로 인가를 할 예정이기 때문
                     //.anyRequest().authenticated()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.addFilterBefore(new JwtAuthenticationFilter(meokuUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        // 메인 필터 체인이 시작하기 전 인증을 담당하는 jwt 필터를 앞에 배치하여 실행(UsernamePasswordAuthenticationFilter가 다음 실행돼야 하기 때문에 인자로 넣지만 위에 disable 시켜서 수행되지는 않음)
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
