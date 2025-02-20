@@ -25,7 +25,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final MeokuUserDetailsService meokuUserDetailsService;
     private final JwtUtil jwtUtil;
 
     // 인증을 하지 않는 요청들
@@ -65,18 +64,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //"Baarer "이후의 토큰 값만 추출
         String token = header.substring(7);
-        System.out.println(token);
         try {
             // 토큰 유효성 검증 (유효기간 등 )
             String id = jwtUtil.validateToken(token);
             // 유저 확인
-            //UserDetails meokuUserDetails = meokuUserDetailsService.loadUserByUsername(id);
             UserDetails meokuUserDetails = jwtUtil.extractUserDetailsFromJwt(token);
 
             // SecurityContext에 인증 정보 저장 (SecurityContext는 세션과 다르게 현재 요청 범위에서만 존재하며 이는 요청이 끝나면 사라짐)
             SecurityContextHolder.getContext().setAuthentication(
                     new PreAuthenticatedAuthenticationToken(meokuUserDetails, null, meokuUserDetails.getAuthorities()));
-
         } catch (ExpiredJwtException e) { // 인증시간 만료
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("JWT 토큰이 만료되었습니다.");
