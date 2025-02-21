@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     // JWT 관련 예외 핸들러 (잘못된 JWT 토큰) : 400
     @ExceptionHandler({ JwtException.class, IllegalArgumentException.class })
     public ResponseEntity<String> handleJwtException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 JWT 토큰입니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     // JWT 관련 예외 핸들러 (인증시간 만료) : 401
