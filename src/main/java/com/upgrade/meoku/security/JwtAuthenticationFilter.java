@@ -1,8 +1,5 @@
 package com.upgrade.meoku.security;
 
-import com.upgrade.meoku.user.MeokuAuthService;
-import com.upgrade.meoku.user.MeokuUserDetailsService;
-import com.upgrade.meoku.user.data.MeokuUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -66,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = header.substring(7);
         try {
             // 토큰 유효성 검증 (유효기간 등 )
-            String id = jwtUtil.validateToken(token);
+            String id = jwtUtil.validateAccessToken(token);
             // 유저 확인
             UserDetails meokuUserDetails = jwtUtil.extractUserDetailsFromJwt(token);
 

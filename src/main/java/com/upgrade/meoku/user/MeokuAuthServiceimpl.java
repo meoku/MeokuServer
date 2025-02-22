@@ -6,14 +6,11 @@ import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
@@ -53,17 +50,15 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
     public Map<String, Object> refreshAccessToken(String refreshToken) {
         try{
             // refresh token 검증
-            String id = jwtUtil.validateToken(refreshToken);
+            String id = jwtUtil.validateRefreshToken(refreshToken);
 
             // 유저 정보 가져오기
             MeokuUserDTO userDTO = this.loadMeokuUserDTO(id);
 
             return jwtUtil.generateTokenMap(userDTO);
         }catch(JwtException e){
-            System.out.println(e.getMessage());
             throw e;
         }catch(IllegalArgumentException e){
-            System.out.println(e.getMessage());
             throw e;
         }catch(Exception e){
             throw e;
