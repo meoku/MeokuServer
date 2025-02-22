@@ -31,7 +31,7 @@ public class MeokuAuthController {
         return ResponseEntity.ok(tokenMap);
     }
 
-    @Operation(summary = "Refresh token으로 Access token 갱신", description = "우선 Access token, Refresh Token 갱신", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Refresh token으로 Access token 갱신", description = "파라메터 없고 헤더에 Authorization 으로 리프레시 토큰을 넣으면 access, refresh token 객체 반환. 이때 헤더에 리프레시 토큰이 아닌 엑세스 토큰 넣으면 에러 반환됨", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/refreshAccessToken")
     public ResponseEntity<?> refreshAccessToken(
             @RequestHeader("Authorization")
