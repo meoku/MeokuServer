@@ -1,6 +1,8 @@
 package com.upgrade.meoku.user;
 
 import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
+import com.upgrade.meoku.user.data.MeokuSignUpRequestDTO;
+import com.upgrade.meoku.user.data.MeokuUserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -29,6 +31,19 @@ public class MeokuAuthController {
     public ResponseEntity<?> getMemberProfile(@Valid @RequestBody MeokuLoginRequestDTO request) {
         Map<String, Object> tokenMap = meokuAuthService.login(request);
         return ResponseEntity.ok(tokenMap);
+    }
+
+    @Operation(summary = "회원가입", description = "일반유저 회원가입")
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody MeokuSignUpRequestDTO signUpRequestDTO) {
+        MeokuUserDTO savedUserDto;
+        try{
+            savedUserDto = meokuAuthService.signup(signUpRequestDTO);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok("회원가입 성공! ID: " + savedUserDto.getId());
     }
 
     @Operation(summary = "Refresh token으로 Access token 갱신", description = "파라메터 없고 헤더에 Authorization 으로 리프레시 토큰을 넣으면 access, refresh token 객체 반환. 이때 헤더에 리프레시 토큰이 아닌 엑세스 토큰 넣으면 에러 반환됨", security = @SecurityRequirement(name = "bearerAuth"))
