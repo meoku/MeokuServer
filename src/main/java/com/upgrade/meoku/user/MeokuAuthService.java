@@ -9,7 +9,7 @@ import java.util.Map;
 public interface MeokuAuthService {
      MeokuUserDTO loadMeokuUserDTO(String username);
      Map<String, Object> login(MeokuLoginRequestDTO mlrd);
-     Map<String, Object> refreshAccessToken(String refreshToken);
+     boolean checkDuplicateId(String checkedId);
      MeokuUserDTO signup(MeokuSignUpRequestDTO signUpRequestDTO);
-
+     Map<String, Object> refreshAccessToken(String refreshToken);
 }

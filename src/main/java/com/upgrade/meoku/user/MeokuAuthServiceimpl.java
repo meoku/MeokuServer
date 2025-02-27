@@ -48,22 +48,8 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
     }
 
     @Override
-    public Map<String, Object> refreshAccessToken(String refreshToken) {
-        try{
-            // refresh token 검증
-            String id = jwtUtil.validateRefreshToken(refreshToken);
-
-            // 유저 정보 가져오기
-            MeokuUserDTO userDTO = this.loadMeokuUserDTO(id);
-
-            return jwtUtil.generateTokenMap(userDTO);
-        }catch(JwtException e){
-            throw e;
-        }catch(IllegalArgumentException e){
-            throw e;
-        }catch(Exception e){
-            throw e;
-        }
+    public boolean checkDuplicateId(String checkedId) {
+        return meokuUserRepository.findMeokuUserById(checkedId).isPresent();
     }
 
     @Override
@@ -88,4 +74,24 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
 
         return USER_MAPPER_INSTANCE.userEntityToDto(savedUser);
     }
+
+    @Override
+    public Map<String, Object> refreshAccessToken(String refreshToken) {
+        try{
+            // refresh token 검증
+            String id = jwtUtil.validateRefreshToken(refreshToken);
+
+            // 유저 정보 가져오기
+            MeokuUserDTO userDTO = this.loadMeokuUserDTO(id);
+
+            return jwtUtil.generateTokenMap(userDTO);
+        }catch(JwtException e){
+            throw e;
+        }catch(IllegalArgumentException e){
+            throw e;
+        }catch(Exception e){
+            throw e;
+        }
+    }
+
 }
