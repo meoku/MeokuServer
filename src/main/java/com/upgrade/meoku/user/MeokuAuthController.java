@@ -1,10 +1,10 @@
 package com.upgrade.meoku.user;
 
 import com.upgrade.meoku.user.data.MeokuLoginRequestDTO;
+import com.upgrade.meoku.user.data.MeokuSignUpRequestDTO;
+import com.upgrade.meoku.user.data.MeokuUserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +31,38 @@ public class MeokuAuthController {
         return ResponseEntity.ok(tokenMap);
     }
 
-    @Operation(summary = "Refresh token으로 Access token 갱신", description = "우선 Access token, Refresh Token 갱신", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "회원가입", description = "일반유저 회원가입")
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody MeokuSignUpRequestDTO signUpRequestDTO) {
+        MeokuUserDTO savedUserDto;
+        try{
+            savedUserDto = meokuAuthService.signup(signUpRequestDTO);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok("회원가입 성공! ID: " + savedUserDto.getId());
+    }
+
+    @Operation(summary = "id중복체크", description = "입력 형식 { \"checkedId\":\"아이디입력\"}, 반환 형식 {\"message\":메시지, \"available\": true or false}")
+    @PostMapping("/checkDuplicateId")
+    public ResponseEntity<?> checkDuplicateId(@RequestParam String checkedId){
+        // 유효성 검사도 추가해야하는데 소셜 로그인 방식도 겸하면 어떻게 될지 모르니 일단은 중복체크만
+
+        boolean isDuplicate = meokuAuthService.checkDuplicateId(checkedId);
+        Map<String, Object> response = new HashMap<>();
+        if (isDuplicate) {
+            response.put("message", "이미 사용 중인 아이디입니다.");
+            response.put("available", false);
+        } else {
+            response.put("message", "사용 가능한 아이디입니다.");
+            response.put("available", true);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Refresh token으로 Access token 갱신", description = "파라메터 없고 헤더에 Authorization 으로 리프레시 토큰을 넣으면 access, refresh token 객체 반환. 이때 헤더에 리프레시 토큰이 아닌 엑세스 토큰 넣으면 에러 반환됨", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/refreshAccessToken")
     public ResponseEntity<?> refreshAccessToken(
             @RequestHeader("Authorization")
