@@ -51,8 +51,6 @@ public class MenuUtil {
                     menuArray = Arrays.copyOfRange(menuArray, 1, menuArray.length); // 첫 줄 제거
                 }
 
-                int menuArraySize = menuArray.length;
-
                 //점심,저녁 * 5일 해서 총 10개의 데이터가 들어오는데 주간 데이터는 5개이므로 아래와 같이 인덱싱
                 SubDailyMenuDTO curDailyMenuDTO = returnList.get(idx/2);
 
@@ -70,7 +68,10 @@ public class MenuUtil {
                     //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
                     menuArray = Arrays.stream(menuArray)
                             .map(MeokuUtil::removeCharacters)
+                            .filter(s -> !s.isBlank())        // 빈 문자열이면 제외
                             .toArray(String[]::new);
+
+                    int menuArraySize = menuArray.length;
 
                     // 총 메뉴 길이가 최소 12개이상 일 때 메뉴정보 넣기
                     if(menuArraySize > 12){
@@ -137,11 +138,15 @@ public class MenuUtil {
                         curDailyMenuDTO.setRestaurantOpenFg("N");
                     }
                 }else if(menuTypeParts[1].trim().equalsIgnoreCase("diner")) {//저녁메뉴 파싱
+                    //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
+                    menuArray = Arrays.stream(menuArray)
+                            .map(MeokuUtil::removeCharacters)
+                            .filter(s -> !s.isBlank())        // 빈 문자열이면 제외
+                            .toArray(String[]::new);
+
+                    int menuArraySize = menuArray.length;
+
                     if(menuArraySize >= 6){
-                        //OCR로 나온 메뉴에서 특수문자 및 영어 제거 By MeokuUtil
-                        menuArray = Arrays.stream(menuArray)
-                                .map(MeokuUtil::removeCharacters)
-                                .toArray(String[]::new);
 
                         //석식 (6개씩)
                         SubMenuDetailsDTO dinerMenuDetailsDTO = new SubMenuDetailsDTO();
