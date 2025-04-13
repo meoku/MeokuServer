@@ -102,7 +102,7 @@ public class MainController {
         return resultMealMenuList;
     }
 
-    @Operation(summary = "날씨 데이터 가져오기", description = "기상청 API 호출로 구현 (1000번 제한있으므로 추후 개선 필요)")
+    @Operation(summary = "날씨 데이터 가져오기", description = "기상청 API 호출로 구현")
     @GetMapping(value = "/getCurrentWeatherData")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getCurrentWeatherData() {
