@@ -40,6 +40,8 @@ public class JwtUtil {
         Map<String, Object> tokenMap = new HashMap<>();
         tokenMap.put("access_token", accessToken);
         tokenMap.put("refresh_token", refreshToken);
+        //닉네임도 추가
+        tokenMap.put("nickname", userDTO.getNickname());
 
         return tokenMap;
     }
