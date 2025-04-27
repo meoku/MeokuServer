@@ -203,6 +203,20 @@ public class SubMenuDaoImpl implements SubMenuDao{
         return resultCode;
     }
 
+    // 메뉴이름으로 메뉴 찾기
+    @Override
+    public List<SubMenuItemDTO> searchMenuData(String menuItemName) {
+        List<SubMenuItem> srchMenuItemList = menuItemRepository.findByMenuItemNameContaining(menuItemName);
+
+        List<SubMenuItemDTO> searchedItemDTOList = new ArrayList<>();
+        for(SubMenuItem mt : srchMenuItemList){
+            SubMenuItemDTO mtDTO = MENU_MAPPER_INSTANCE.menuItemEntityToDtoNoBridge(mt);
+            searchedItemDTOList.add(mtDTO);
+        }
+
+        return searchedItemDTOList;
+    }
+
     //메뉴에 태그 저장
     @Override
     public SubMenuTag insertMenuTag(SubMenuTag subMenuTag) {

@@ -13,6 +13,10 @@ import java.util.Optional;
 
 public interface SubMenuItemRepository extends JpaRepository<SubMenuItem, Integer> {
     SubMenuItem findByMenuItemName(String menuDetailName);
+
+    @Query("SELECT mi FROM SubMenuItem mi WHERE mi.menuItemName LIKE %:menuItemName%")
+    List<SubMenuItem> findByMenuItemNameContaining(@Param("menuItemName") String menuItemName);
+
     Optional<SubMenuItem> findByMenuItemId(Integer menuItemId);
     // 메뉴id list를 받아 해당하는 모든 태그를 가져오기
 //    @Query(value = "SELECT ITEM.*, TAG.MENU_TAG_NAME" +

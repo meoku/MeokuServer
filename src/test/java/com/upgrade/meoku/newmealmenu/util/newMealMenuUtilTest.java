@@ -20,7 +20,7 @@ public class newMealMenuUtilTest {
     public void testSimilarMenuSearch() {
         //이부분은 이제 dao로 교체 예정
         List<String> menuList = Arrays.asList("캔참치야채비빔밥", "참치김치찌개동원하지", "원점자캔참치야채비빔밥", "캔참치야채비빔밥동원정지", "김치볶음밥", "오므라이스");
-        String input = "캔참치";
+        String input = "캔참치야채비범밥";
 
         List<String> result = MenuSimilaritySearchUtil.searchSimilarMenuSmart(input, menuList, 5);
 

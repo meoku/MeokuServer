@@ -4,6 +4,7 @@ import com.upgrade.meoku.config.NaverCloudConfig;
 import com.upgrade.meoku.mealmenu.data.dao.SubMenuDao;
 import com.upgrade.meoku.mealmenu.data.dto.*;
 import com.upgrade.meoku.mealmenu.data.entity.*;
+import com.upgrade.meoku.mealmenu.util.MenuSimilaritySearchUtil;
 import com.upgrade.meoku.mealmenu.util.MenuUtil;
 import com.upgrade.meoku.util.MeokuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,5 +196,13 @@ public class SubMenuServiceImpl implements SubMenuService{
         return subMenuDao.searchMenuTag(menuIdList);
     }
 
+    //메뉴 이름 검색하기
+    @Override
+    public List<SubMenuItemDTO> searchMenuData(String menuItemName) {
+        List<SubMenuItemDTO> searchedMenuItemList = subMenuDao.searchMenuData(menuItemName);
+
+        //like로 가져온 item들을  검색한 메뉴 유사도 상위 3등 까지만 추려서 가져오기
+        return MenuSimilaritySearchUtil.searchSimilarMenuSmartForMenuItemDTO(menuItemName, searchedMenuItemList, 3);
+    }
 
 }

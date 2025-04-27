@@ -106,7 +106,22 @@ public class SubMenuController {
             return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
 
+    @Operation(summary = "메뉴검색요청", description = "입력은 searchMenuItemName : ~")
+    @PostMapping(value = "searchMenuData")
+    public ResponseEntity<Map<String, Object>> searchMenuData(@RequestBody Map<String, Object> jsonData) {
+        String searchMenuItemName = jsonData.get("searchMenuItemName").toString();
+
+        Map<String, Object> responseBody = new HashMap<>();
+        try{
+            List<SubMenuItemDTO> result = subMenuService.searchMenuData(searchMenuItemName);
+            responseBody.put("result", result);
+        }catch(Exception e){
+            responseBody.put("error", "Internal server error");
+            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }

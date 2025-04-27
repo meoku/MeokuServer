@@ -17,5 +17,5 @@ public interface SubMenuService {
     public void deleteMenuData (LocalDate delDate);
 
     public List<SubMenuItemDTO> searchMenuTag(List<Integer> menuIdList);
-
+    public List<SubMenuItemDTO> searchMenuData(String menuItemName);
 }
