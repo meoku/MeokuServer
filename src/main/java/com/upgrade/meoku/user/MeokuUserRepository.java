@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface MeokuUserRepository extends JpaRepository<MeokuUser, Integer> {
     Optional<MeokuUser> findMeokuUserById(String id);
+    Boolean existsById(String id);
+    Boolean existsByNickname(String id);
 }

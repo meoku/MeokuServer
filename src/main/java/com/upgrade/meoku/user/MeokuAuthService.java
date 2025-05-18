@@ -10,6 +10,7 @@ public interface MeokuAuthService {
      MeokuUserDTO loadMeokuUserDTO(String username);
      Map<String, Object> login(MeokuLoginRequestDTO mlrd);
      boolean checkDuplicateId(String checkedId);
-     MeokuUserDTO signup(MeokuSignUpRequestDTO signUpRequestDTO);
+     MeokuUserDTO signup(MeokuSignUpRequestDTO signUpRequestDTO) throws Exception;
      Map<String, Object> refreshAccessToken(String refreshToken);
+     String generateUniqueNickname();
 }

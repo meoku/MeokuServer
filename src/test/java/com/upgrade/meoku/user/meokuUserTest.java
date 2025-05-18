@@ -1,16 +1,22 @@
 package com.upgrade.meoku.user;
 
-import com.upgrade.meoku.user.data.MeokuUser;
-import com.upgrade.meoku.user.data.MeokuUserDTO;
-import com.upgrade.meoku.user.data.MeokuUserDetails;
-import com.upgrade.meoku.user.data.MeokuUserRole;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.upgrade.meoku.user.data.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.hamcrest.Matchers.containsString;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -20,7 +26,14 @@ import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class meokuUserTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MeokuUserRepository userRepository;
@@ -31,12 +44,43 @@ public class meokuUserTest {
 
     @Autowired
     private MeokuUserDetailsService userDetailsService;
+    @Autowired
+    private MeokuAuthService authService;
 
     @Test
     @DisplayName("회원가입")
+    public void generateNickname(){
+        String newNickname = authService.generateUniqueNickname();
+        System.out.println(newNickname);
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트 - 오류 테스트")
+    @Transactional// 이걸 해야 실제로 데이터가 안남음
+    public void testSignupSuccess() throws Exception {
+        MeokuSignUpRequestDTO signUpRequest = new MeokuSignUpRequestDTO();
+        signUpRequest.setId("테스터");
+//        signUpRequest.setEmail("test@example.com");
+        signUpRequest.setPassword("Test@1234");
+        signUpRequest.setName("테스터");
+//        signUpRequest.setNickname("tester");
+        signUpRequest.setSex("M");
+        signUpRequest.setAge(25);
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(signUpRequest)))
+                        .andExpect(status().isBadRequest())
+//                        .andExpect(content().string(containsString("잘못된 성별 표기입니다.")));
+                        .andExpect(content().string(containsString("아이디는 5~20자의 영문 또는 숫자여야 합니다.")));
+
+//                .andExpect(status().isOk())
+//                .andExpect(content().string(containsString("회원가입 성공! ID:")));
+    }
+    @Test
+    @DisplayName("회원가입해보기")
     @Transactional
     @Commit
-    public void joinMemberTest(){
+    public void joinMember(){
         MeokuUser meokuUser = new MeokuUser();
         //1. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode("testuser");

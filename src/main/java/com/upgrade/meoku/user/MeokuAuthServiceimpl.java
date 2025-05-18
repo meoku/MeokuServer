@@ -53,7 +53,12 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
     }
 
     @Override
-    public MeokuUserDTO signup(MeokuSignUpRequestDTO signUpRequestDTO) {
+    public MeokuUserDTO signup(MeokuSignUpRequestDTO signUpRequestDTO) throws Exception {
+        // ID 중복체크는 타이밍상 중복 될 수있으므로 한번 더 체크
+        if (meokuUserRepository.existsById(signUpRequestDTO.getId())){
+            throw new Exception("이미 사용 중인 ID입니다.");
+        }
+
         MeokuUser meokuUser = new MeokuUser();
         //1. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signUpRequestDTO.getPassword());
@@ -62,7 +67,7 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
         meokuUser.setAge(signUpRequestDTO.getAge());
         meokuUser.setName(signUpRequestDTO.getName());
         meokuUser.setSex(signUpRequestDTO.getSex());
-        meokuUser.setNickname(signUpRequestDTO.getNickname());
+        meokuUser.setNickname(this.generateUniqueNickname()); // nickname 생성해서 주입
         //2. 유저 저장
         MeokuUser savedUser = meokuUserRepository.save(meokuUser);
 
@@ -92,6 +97,28 @@ public class MeokuAuthServiceimpl implements MeokuAuthService{
         }catch(Exception e){
             throw e;
         }
+    }
+
+    @Override
+    public String generateUniqueNickname() {
+        // 최대 3번까지 중복 체크 시도
+        int maxRetry = 3;
+        for (int i = 0; i < maxRetry; i++) {
+            String nickname = NicknameGenerator.generate();
+            if (!meokuUserRepository.existsByNickname(nickname)) {
+                return nickname;
+            }
+        }
+
+        // fallback: 3회시도 이후에도 안되면 뒤에 랜덤 숫자 붙이기
+        for (int i = 0; i < 100; i++) {
+            String fallback = NicknameGenerator.generate() + i;
+            if (!meokuUserRepository.existsByNickname(fallback)) {
+                return fallback;
+            }
+        }
+
+        throw new RuntimeException("닉네임을 생성할 수 없습니다. 너무 많이 중복됨");
     }
 
 }
