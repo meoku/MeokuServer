@@ -47,10 +47,16 @@ public class MeokuAuthController {
     @Operation(summary = "id중복체크", description = "입력 형식 { \"checkedId\":\"아이디입력\"}, 반환 형식 {\"message\":메시지, \"available\": true or false}")
     @PostMapping("/checkDuplicateId")
     public ResponseEntity<?> checkDuplicateId(@RequestParam String checkedId){
-        // 유효성 검사도 추가해야하는데 소셜 로그인 방식도 겸하면 어떻게 될지 모르니 일단은 중복체크만
+        Map<String, Object> response = new HashMap<>();
+        // 입력 유효성 검사
+        if (!checkedId.matches("^[a-zA-Z0-9]{5,20}$")) {
+            response.put("message", "ID는 5~20자의 영문 또는 숫자만 가능합니다.");
+            response.put("available", false);
+            return ResponseEntity.ok(response);
+        }
 
         boolean isDuplicate = meokuAuthService.checkDuplicateId(checkedId);
-        Map<String, Object> response = new HashMap<>();
+
         if (isDuplicate) {
             response.put("message", "이미 사용 중인 아이디입니다.");
             response.put("available", false);

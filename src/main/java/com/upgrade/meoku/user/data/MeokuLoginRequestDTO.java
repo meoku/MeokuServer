@@ -8,7 +8,6 @@ import lombok.Data;
 public class MeokuLoginRequestDTO {
 
     @NotNull(message = "id는 필수입니다.")
-    @Email
     private String id;
 
     @NotNull(message = "패스워드 필수입니다.")
