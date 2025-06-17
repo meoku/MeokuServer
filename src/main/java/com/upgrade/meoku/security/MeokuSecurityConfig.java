@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class MeokuSecurityConfig {
     private final MeokuUserDetailsService meokuUserDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtUtil jwtUtil;
 
     // SecurityFilterChain: 보안 정책을 설정하는 곳 (허용할 경로, 인증 필터 등)
@@ -31,7 +32,12 @@ public class MeokuSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                     .anyRequest().permitAll() // 모두 허용하는 이유가 @PreAuthorize로 이 필터가 끝난 후 AOP로 인가를 할 예정이기 때문
                     //.anyRequest().authenticated()
-                ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(oauth -> oauth // 소셜로그인관련
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService) // ✅ 소셜 로그인 후 가져온 code로 access_token 발급 받고 사용자 정보 요청한 뒤 customOAuth2UserService에 넘겨줌
+                        )
+        );
         // 메인 필터 체인이 시작하기 전 인증을 담당하는 jwt 필터를 앞에 배치하여 실행(UsernamePasswordAuthenticationFilter가 다음 실행돼야 하기 때문에 인자로 넣지만 위에 disable 시켜서 수행되지는 않음)
         http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 

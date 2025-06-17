@@ -31,6 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ,"/swagger-resources/**"
             ,"/webjars/**"
             ,"/api/v1/auth/*" //로그인, 회원가입 관련
+            ,"/oauth2/**" // 소셜 로그인 관련
             ,"/api/v1/meokumenu/weekdaysmenu" //메뉴조회
             ,"/api/v1/meokumenu/searchMenuTag" //메뉴태그조회
             ,"/api/v1/meokumenu/searchMenuData"//메뉴검색
