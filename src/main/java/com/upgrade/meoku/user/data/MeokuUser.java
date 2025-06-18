@@ -34,8 +34,12 @@ public class MeokuUser {
     private String nickname;
     @Column(name = "AGE")
     private int age;
+    @Column(name = "AGE_RANGE")
+    private String ageRange;
     @Column(name = "SEX")
     private String sex;
+    @Column(name = "BIRTH_YEAR")
+    private String birthYear;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<MeokuUserRole> userRoleList = new ArrayList<>();

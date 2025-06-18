@@ -1,5 +1,6 @@
 package com.upgrade.meoku.security;
 
+import com.upgrade.meoku.user.MeokuAuthService;
 import com.upgrade.meoku.user.MeokuUserRepository;
 import com.upgrade.meoku.user.data.MeokuUser;
 import com.upgrade.meoku.user.data.MeokuUserDTO;
@@ -18,6 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
 
@@ -45,14 +47,30 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (registrationId.equals("naver")) {
             attributes = (Map<String, Object>) oAuth2User.getAttribute("response");
             email = (String) attributes.get("email");
+            System.out.println(attributes.toString());
         } else {
             throw new OAuth2AuthenticationException("Unsupported provider");
         }
 
         // 이부분 약식이며 추후 보완 해야함 (없으면 회원가입 처리하도록)
-        MeokuUser user = meokuUserRepository.findMeokuUserByEmail(email).get();
+        Optional<MeokuUser> userOptional = meokuUserRepository.findMeokuUserByEmail(email);
+        MeokuUser meokuUser = userOptional.orElse(null);
+        // email 기준으로 없는 아이디라면 회원가입
+        if (!userOptional.isPresent()) {
+            MeokuUser newUser = new MeokuUser();
+            newUser.setId((String) attributes.get("id"));
+            newUser.setEmail(email);
+            newUser.setName((String) attributes.get("name"));
+            newUser.setAgeRange((String) attributes.get("age"));
+            newUser.setBirthYear((String) attributes.get("birthYear"));
+            //newUser.setNickname(meokuAuthService.generateUniqueNickname());
 
-        MeokuUserDTO userDTO = USER_MAPPER_INSTANCE.userEntityToDto(user);
+            meokuUserRepository.save(newUser);
+
+            meokuUser = newUser;
+        }
+
+        MeokuUserDTO userDTO = USER_MAPPER_INSTANCE.userEntityToDto(meokuUser);
 
         // JWT 발급
         Map<String, Object> tokenMap = jwtUtil.generateTokenMap(userDTO);
