@@ -21,6 +21,7 @@ import java.util.Map;
 public class MeokuAuthController {
 
     MeokuAuthService meokuAuthService;
+
     public MeokuAuthController(MeokuAuthService meokuAuthService){
         this.meokuAuthService = meokuAuthService;
     }

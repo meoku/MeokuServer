@@ -37,6 +37,10 @@ public class MeokuSecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService) // ✅ 소셜 로그인 후 가져온 code로 access_token 발급 받고 사용자 정보 요청한 뒤 customOAuth2UserService에 넘겨줌
                         )
+                        .successHandler((request, response, authentication) -> {
+                            // 로그인 성공 시 리디렉션
+                            response.sendRedirect("http://localhost:5173");
+                        })
         );
         // 메인 필터 체인이 시작하기 전 인증을 담당하는 jwt 필터를 앞에 배치하여 실행(UsernamePasswordAuthenticationFilter가 다음 실행돼야 하기 때문에 인자로 넣지만 위에 disable 시켜서 수행되지는 않음)
         http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
