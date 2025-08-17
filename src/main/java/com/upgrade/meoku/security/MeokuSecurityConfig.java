@@ -51,20 +51,16 @@ public class MeokuSecurityConfig {
 
                             Map<String, Object> tokenMap = jwtUtil.generateTokenMap(user);
 
-                            // JWT를 HttpOnly 쿠키로 클라이언트에 전달
-//                            HttpServletResponse response = ((ServletRequestAttributes)
-//                                    RequestContextHolder.getRequestAttributes()).getResponse();
-
                             ResponseCookie accessCookie = ResponseCookie.from("access_token", (String) tokenMap.get("access_token"))
-                                    .httpOnly(true)
-                                    .secure(true) // HTTPS 환경이면 true
+                                    .httpOnly(false) // false를 해야 프론트에서 js로 읽을 수 있음
+                                    .secure(false) // HTTPS 환경이면 true
                                     .path("/")
                                     .maxAge(jwtUtil.getAccessTokenExpirationTime())
                                     .build();
 
                             ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", (String) tokenMap.get("refresh_token"))
-                                    .httpOnly(true)
-                                    .secure(true)
+                                    .httpOnly(false) // false를 해야 프론트에서 js로 읽을 수 있음
+                                    .secure(false)
                                     .path("/")
                                     .maxAge(jwtUtil.getRefreshTokenExpirationTime())
                                     .build();

@@ -36,6 +36,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+        //이 loadUser 함수를 호출하는 OAuth2LoginAuthenticationProvider가 직전에 발급받은 Acceess Token이 들어있는
+        //OAuth2UserRequest로 사용자 정보를 외부에서 가져옴
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(request);
 
         String registrationId = request.getClientRegistration().getRegistrationId();
@@ -45,20 +47,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 네이버 소셜 로그인 일 때
         if (registrationId.equals("naver")) {
             attributes = (Map<String, Object>) oAuth2User.getAttribute("response");
-            email = (String) attributes.get("email");
             System.out.println(attributes.toString());
         } else {
             throw new OAuth2AuthenticationException("Unsupported provider");
         }
 
-        // 이부분 약식이며 추후 보완 해야함 (없으면 회원가입 처리하도록)
-        Optional<MeokuUser> userOptional = meokuUserRepository.findMeokuUserByEmail(email);
+        // 소셜로그인으로 가져온 정보중 id는 불변으로 거의무조건 받아 오기 때문에 이거 기준으로 저장하고 검색한다
+        Optional<MeokuUser> userOptional = meokuUserRepository.findMeokuUserById((String) attributes.get("id"));
         MeokuUser meokuUser = userOptional.orElse(null);
         // email 기준으로 없는 아이디라면 회원가입
         if (!userOptional.isPresent()) {
             MeokuUser newUser = new MeokuUser();
             newUser.setId((String) attributes.get("id"));
-            newUser.setEmail(email);
+            newUser.setEmail((String) attributes.get("email"));
             newUser.setName((String) attributes.get("name"));
             newUser.setAgeRange((String) attributes.get("age"));
             newUser.setBirthYear((String) attributes.get("birthYear"));
@@ -73,13 +74,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // loadUser()
         Map<String,Object> principalAttrs = new HashMap<>();
-        principalAttrs.put("email", userDTO.getEmail());
+        principalAttrs.put("id", userDTO.getId());
         principalAttrs.put("userDTO", userDTO); // 그냥 객체로 넣어도 이 요청 동안은 OK
 
         return new DefaultOAuth2User(
                 List.of(new SimpleGrantedAuthority("ROLE_USER")),
                 principalAttrs,
-                "email"
+                "id"
         );
 //        // JWT 발급
 //        Map<String, Object> tokenMap = jwtUtil.generateTokenMap(userDTO);
