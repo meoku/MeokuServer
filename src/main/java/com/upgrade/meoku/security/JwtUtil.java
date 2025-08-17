@@ -32,6 +32,9 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
+    public long getAccessTokenExpirationTime() {return ACCESS_TOKEN_EXPIRATION_TIME;}
+    public long getRefreshTokenExpirationTime() {return REFRESH_TOKEN_EXPIRATION_TIME;}
+
     public Map<String, Object> generateTokenMap(MeokuUserDTO userDTO) {
 
         String accessToken = this.generateAccessToken(userDTO);

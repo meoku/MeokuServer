@@ -9,15 +9,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,11 +30,6 @@ import static com.upgrade.meoku.user.data.UserMapper.USER_MAPPER_INSTANCE;
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
-    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
-    private long ACCESS_TOKEN_EXPIRATION_TIME;
-    @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
-    private long REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final MeokuUserRepository meokuUserRepository;
     private final JwtUtil jwtUtil;
@@ -63,7 +62,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             newUser.setName((String) attributes.get("name"));
             newUser.setAgeRange((String) attributes.get("age"));
             newUser.setBirthYear((String) attributes.get("birthYear"));
-            //newUser.setNickname(meokuAuthService.generateUniqueNickname());
+//            newUser.setNickname(meokuAuthService.generateUniqueNickname());
 
             meokuUserRepository.save(newUser);
 
@@ -72,30 +71,40 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         MeokuUserDTO userDTO = USER_MAPPER_INSTANCE.userEntityToDto(meokuUser);
 
-        // JWT 발급
-        Map<String, Object> tokenMap = jwtUtil.generateTokenMap(userDTO);
+        // loadUser()
+        Map<String,Object> principalAttrs = new HashMap<>();
+        principalAttrs.put("email", userDTO.getEmail());
+        principalAttrs.put("userDTO", userDTO); // 그냥 객체로 넣어도 이 요청 동안은 OK
 
-        // JWT를 HttpOnly 쿠키로 클라이언트에 전달
-        HttpServletResponse response = ((ServletRequestAttributes)
-                RequestContextHolder.getRequestAttributes()).getResponse();
-
-        ResponseCookie accessCookie = ResponseCookie.from("access_token", (String) tokenMap.get("accessToken"))
-                .httpOnly(true)
-                .secure(true) // HTTPS 환경이면 true
-                .path("/")
-                .maxAge(ACCESS_TOKEN_EXPIRATION_TIME)
-                .build();
-
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", (String) tokenMap.get("refreshToken"))
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(REFRESH_TOKEN_EXPIRATION_TIME)
-                .build();
-
-        response.addHeader("Set-Cookie", accessCookie.toString());
-        response.addHeader("Set-Cookie", refreshCookie.toString());
-
-        return oAuth2User;
+        return new DefaultOAuth2User(
+                List.of(new SimpleGrantedAuthority("ROLE_USER")),
+                principalAttrs,
+                "email"
+        );
+//        // JWT 발급
+//        Map<String, Object> tokenMap = jwtUtil.generateTokenMap(userDTO);
+//
+//        // JWT를 HttpOnly 쿠키로 클라이언트에 전달
+//        HttpServletResponse response = ((ServletRequestAttributes)
+//                RequestContextHolder.getRequestAttributes()).getResponse();
+//
+//        ResponseCookie accessCookie = ResponseCookie.from("access_token", (String) tokenMap.get("access_token"))
+//                .httpOnly(true)
+//                .secure(true) // HTTPS 환경이면 true
+//                .path("/")
+//                .maxAge(ACCESS_TOKEN_EXPIRATION_TIME)
+//                .build();
+//
+//        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", (String) tokenMap.get("refresh_token"))
+//                .httpOnly(true)
+//                .secure(true)
+//                .path("/")
+//                .maxAge(REFRESH_TOKEN_EXPIRATION_TIME)
+//                .build();
+//
+//        response.addHeader("Set-Cookie", accessCookie.toString());
+//        response.addHeader("Set-Cookie", refreshCookie.toString());
+//
+//        return oAuth2User;
     }
 }

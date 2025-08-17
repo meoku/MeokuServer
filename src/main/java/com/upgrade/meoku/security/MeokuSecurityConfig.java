@@ -1,9 +1,13 @@
 package com.upgrade.meoku.security;
 
 import com.upgrade.meoku.user.MeokuUserDetailsService;
+import com.upgrade.meoku.user.data.MeokuUserDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -11,13 +15,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Map;
 
 @Configuration
 @EnableMethodSecurity  // ✅ 이게 없으면 PreAuthrize 작동 안함! (메소드 보안 활성화 필수!)
 @AllArgsConstructor
 public class MeokuSecurityConfig {
+
     private final MeokuUserDetailsService meokuUserDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtUtil jwtUtil;
@@ -34,12 +44,35 @@ public class MeokuSecurityConfig {
                     //.anyRequest().authenticated()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth -> oauth // 소셜로그인관련
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService) // ✅ 소셜 로그인 후 가져온 code로 access_token 발급 받고 사용자 정보 요청한 뒤 customOAuth2UserService에 넘겨줌
-                        )
-                        .successHandler((request, response, authentication) -> {
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))  // ✅ 소셜 로그인 후 가져온 code로 access_token 발급 받고 사용자 정보 요청한 뒤 customOAuth2UserService에 넘겨서 사용자 정보 조회 수행
+                        .successHandler((request, response, auth) -> {
+                            OAuth2User principal = (OAuth2User) auth.getPrincipal();
+                            MeokuUserDTO user = (MeokuUserDTO) principal.getAttribute("userDTO");
+
+                            Map<String, Object> tokenMap = jwtUtil.generateTokenMap(user);
+
+                            // JWT를 HttpOnly 쿠키로 클라이언트에 전달
+//                            HttpServletResponse response = ((ServletRequestAttributes)
+//                                    RequestContextHolder.getRequestAttributes()).getResponse();
+
+                            ResponseCookie accessCookie = ResponseCookie.from("access_token", (String) tokenMap.get("access_token"))
+                                    .httpOnly(true)
+                                    .secure(true) // HTTPS 환경이면 true
+                                    .path("/")
+                                    .maxAge(jwtUtil.getAccessTokenExpirationTime())
+                                    .build();
+
+                            ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", (String) tokenMap.get("refresh_token"))
+                                    .httpOnly(true)
+                                    .secure(true)
+                                    .path("/")
+                                    .maxAge(jwtUtil.getRefreshTokenExpirationTime())
+                                    .build();
+
+                            response.addHeader("Set-Cookie", accessCookie.toString());
+                            response.addHeader("Set-Cookie", refreshCookie.toString());
                             // 로그인 성공 시 리디렉션
-                            response.sendRedirect("http://localhost:5173");
+                            response.sendRedirect("http://localhost:5173/oauth/callback");
                         })
         );
         // 메인 필터 체인이 시작하기 전 인증을 담당하는 jwt 필터를 앞에 배치하여 실행(UsernamePasswordAuthenticationFilter가 다음 실행돼야 하기 때문에 인자로 넣지만 위에 disable 시켜서 수행되지는 않음)
