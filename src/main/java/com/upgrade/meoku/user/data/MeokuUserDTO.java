@@ -13,6 +13,7 @@ public class MeokuUserDTO {
     //PK
     private Integer userId;
 
+    private String provider;
     private String id;
     private String email;
     private String password;

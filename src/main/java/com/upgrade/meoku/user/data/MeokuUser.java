@@ -22,7 +22,9 @@ public class MeokuUser {
     @Column(name = "USER_ID")
     private Integer userId;
 
-    @Column(name = "ID", nullable = false, unique = true)
+    @Column(name = "PROVIDER", nullable = false)
+    private String provider;
+    @Column(name = "ID", nullable = false)
     private String id;
     @Column(name = "EMAIL")
     private String email;

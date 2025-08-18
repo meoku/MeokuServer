@@ -47,9 +47,9 @@ public class MeokuSecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))  // ✅ 소셜 로그인 후 가져온 code로 access_token 발급 받고 사용자 정보 요청한 뒤 customOAuth2UserService에 넘겨서 사용자 정보 조회 수행
                         .successHandler((request, response, auth) -> {
                             OAuth2User principal = (OAuth2User) auth.getPrincipal();
-                            MeokuUserDTO user = (MeokuUserDTO) principal.getAttribute("userDTO");
+                            MeokuUserDTO userDTO = (MeokuUserDTO) principal.getAttribute("userDTO");
 
-                            Map<String, Object> tokenMap = jwtUtil.generateTokenMap(user);
+                            Map<String, Object> tokenMap = jwtUtil.generateTokenMap(userDTO);
 
                             ResponseCookie accessCookie = ResponseCookie.from("access_token", (String) tokenMap.get("access_token"))
                                     .httpOnly(false) // false를 해야 프론트에서 js로 읽을 수 있음

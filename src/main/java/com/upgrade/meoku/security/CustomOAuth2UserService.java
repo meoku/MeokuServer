@@ -46,23 +46,30 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // 네이버 소셜 로그인 일 때
         if (registrationId.equals("naver")) {
-            attributes = (Map<String, Object>) oAuth2User.getAttribute("response");
+            attributes = oAuth2User.getAttribute("response");
             System.out.println(attributes.toString());
+        } else if (registrationId.equals("kakao")) {
+            attributes = oAuth2User.getAttributes();// 카카오는 response 안감싸져있음
+            System.out.println("카카오 로그인");
         } else {
             throw new OAuth2AuthenticationException("Unsupported provider");
         }
 
+        // 소셜로그인 후 id 받아왔는지 가볍게 확인만
+        String id = String.valueOf(attributes.get("id")); // 안전하게 Long → String 변환(null-safe)
+        System.out.println(registrationId + " 소셜 로그인 id : " + id);
         // 소셜로그인으로 가져온 정보중 id는 불변으로 거의무조건 받아 오기 때문에 이거 기준으로 저장하고 검색한다
-        Optional<MeokuUser> userOptional = meokuUserRepository.findMeokuUserById((String) attributes.get("id"));
+        Optional<MeokuUser> userOptional = meokuUserRepository.findMeokuUserById(id);
         MeokuUser meokuUser = userOptional.orElse(null);
         // email 기준으로 없는 아이디라면 회원가입
         if (!userOptional.isPresent()) {
             MeokuUser newUser = new MeokuUser();
-            newUser.setId((String) attributes.get("id"));
-            newUser.setEmail((String) attributes.get("email"));
-            newUser.setName((String) attributes.get("name"));
-            newUser.setAgeRange((String) attributes.get("age"));
-            newUser.setBirthYear((String) attributes.get("birthYear"));
+            newUser.setId(id);
+            newUser.setProvider(registrationId);
+//            newUser.setEmail((String) attributes.get("email"));
+//            newUser.setName((String) attributes.get("name"));
+//            newUser.setAgeRange((String) attributes.get("age"));
+//            newUser.setBirthYear((String) attributes.get("birthYear"));
 //            newUser.setNickname(meokuAuthService.generateUniqueNickname());
 
             meokuUserRepository.save(newUser);
