@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upgrade.meoku.util.RequestApiUtil;
 import com.upgrade.meoku.weather.WeatherDataDTO;
 import com.upgrade.meoku.weather.api.KMAApiConstants;
+import com.upgrade.meoku.weather.api.KMAHttp;
 import com.upgrade.meoku.weather.api.KMAApiShortTermResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class KMAAPIShortTerm implements KMAApiService {
         // 이미 인코딩된 serviceKey 추가 (UriComponentsBuilder 에서 인코딩 가능성이 있음)
         uriString += "&serviceKey=" + weatherApiKey;
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = KMAHttp.newRestTemplate();
         // serviceKey가 이미 인코딩 돼있기 때문에 추가 인코딩 방지
         URI uri = URI.create(uriString);
         //API 호출!
